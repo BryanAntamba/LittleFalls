@@ -1,0 +1,36 @@
+
+.navbar {
+  padding: 0.8rem 1rem;
+  background-color: white;
+}
+
+.container-fluid{
+    background-color: white;
+}
+
+.navbar-brand {
+  font-weight: bold;
+  color: #51C2CB;
+}
+
+
+.nav-link {
+  font-weight: 500;
+  color: #000000;
+}
+
+.nav-link:hover {
+  color: #51C2CB;
+}
+
+.btn{
+    border: none;
+    color: black;
+}
+
+.btn:hover {
+    background-color: #51C2CB;
+    border-color: #51C2CB;
+    color: white;
+}
+

@@ -1,0 +1,127 @@
+/* ===== SECCIÓN FORMULARIO DE CITA ===== */
+.formulario-cita {
+  padding: 80px 10%;
+  background: linear-gradient(rgba(202, 202, 202, 0.9), rgba(186, 186, 186, 0.9)),url("/assets/fondo-Veterinaria.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 100vh;
+  animation: slideUp 1.5s ease-out;
+}
+
+.formulario-cita form {
+  background-color: #fff;
+  border-radius: 20px;
+  padding: 50px;
+  max-width: 600px;
+  width: 100%;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.1);
+  animation: slideUp 1.2s ease-out;
+}
+
+.formulario-cita h2 {
+  text-align: center;
+  font-size: 2.5rem;
+  color: #111;
+  font-weight: 800;
+  margin-bottom: 40px;
+  position: relative;
+}
+
+.formulario-cita h2::after {
+  content: "";
+  display: block;
+  width: 100px;
+  height: 4px;
+  background-color: #00bfa6;
+  margin: 12px auto 0;
+  border-radius: 2px;
+}
+
+/* ===== CAMPOS DEL FORMULARIO ===== */
+.formulario-cita .form-label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 8px;
+}
+
+.formulario-cita .form-control {
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  color: #333;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+}
+
+.formulario-cita .form-control:focus {
+  border-color: #00bfa6;
+  box-shadow: 0 0 8px rgba(0, 191, 166, 0.2);
+  outline: none;
+}
+
+/* ===== BOTÓN ===== */
+.formulario-cita .btn {
+  display: block;
+  width: 100%;
+  padding: 14px;
+  font-size: 1.1rem;
+  font-weight: 700;
+  background-color: #51C2CB;
+  border: none;
+  border-radius: 30px;
+  color: #fff;
+  margin-top: 20px;
+  transition: background-color 0.3s ease, transform 0.2s ease;
+}
+
+.formulario-cita .btn:hover {
+  background-color: #04b19a;
+  transform: translateY(-2px);
+}
+/* ===== SELECTS ===== */
+.formulario-cita .form-select {
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px 15px;
+  font-size: 1rem;
+  color: #333;
+  background-color: #fff;
+  transition: border-color 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+}
+
+.formulario-cita .form-select:focus {
+  border-color: #00bfa6;
+  box-shadow: 0 0 8px rgba(0, 191, 166, 0.2);
+  outline: none;
+}
+
+/*OPTIONS DE BOOTSTRAP*/
+.formulario-cita .form-select option {
+  font-size: 1rem;
+  padding: 10px;
+  background-color: #fff;
+  color: #333;
+}
+
+/* Hover/Sombreado dentro de la lista de opciones*/
+.formulario-cita .form-select option:hover {
+  background-color: #e6fffa;
+}
+
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 768px) {
+  .formulario-cita {
+    padding: 60px 6%;
+  }
+
+  .formulario-cita form {
+    padding: 35px 25px;
+  }
+
+  .formulario-cita h2 {
+    font-size: 2rem;
+  }
+}

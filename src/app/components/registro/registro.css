@@ -1,0 +1,198 @@
+/* ===== SECCIÓN LOGIN ===== */
+.login-section {
+  position: relative;
+  height: 130vh;
+  background: url("/assets/fondo-Veterinaria.jpg") no-repeat center center/cover;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 60px 10%;
+  overflow: hidden;
+}
+
+/* Capa semitransparente de fondo */
+.login-section::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.55);
+  z-index: 1;
+}
+
+/* Botón regresar fijo dentro de la sección */
+.btn-regresar {
+  position: absolute;
+  top: 25px;
+  left: 25px;
+  z-index: 3; /* encima de todo */
+  display: inline-flex;
+  align-items: center;
+  font-weight: 600;
+  color: #00bfa6;
+  text-decoration: none;
+  font-size: 1rem;
+  padding: 8px 12px;
+  transition: all 0.3s ease;
+}
+
+.btn-regresar i {
+  margin-right: 6px;
+}
+
+.btn-regresar:hover {
+  color: #05998a;
+  transform: translateY(-2px);
+}
+
+
+/* ===== FORMULARIO ===== */
+.login-form {
+  position: relative;
+  z-index: 2;
+  background: rgba(255, 255, 255, 0.95);
+  backdrop-filter: blur(10px);
+  padding: 50px 40px;
+  border-radius: 20px;
+  box-shadow: 0 5px 25px rgba(0, 0, 0, 0.2);
+  max-width: 450px;
+  width: 100%;
+  animation: slideUp 1.5s ease-out;
+}
+
+/* ===== TÍTULO ===== */
+.login-form h2 {
+  text-align: center;
+  font-size: 2.2rem;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 30px;
+  position: relative;
+}
+
+.login-form h2::after {
+  content: "";
+  display: block;
+  width: 80px;
+  height: 4px;
+  background-color: #00bfa6;
+  margin: 12px auto 0;
+  border-radius: 2px;
+}
+
+.login-form p{
+    text-align: center ;
+}
+
+/* ===== CAMPOS ===== */
+.login-form .form-label {
+  font-weight: 600;
+  color: #333;
+}
+
+.login-form .form-control {
+  border: 2px solid #e0e0e0;
+  border-radius: 10px;
+  padding: 12px;
+  font-size: 1rem;
+  transition: all 0.3s ease;
+}
+
+.login-form .form-control:focus {
+  border-color: #00bfa6;
+  box-shadow: 0 0 10px rgba(0, 191, 166, 0.3);
+  outline: none;
+}
+
+/* ===== TEXTOS DE AYUDA ===== */
+.login-form .form-text {
+  color: #666;
+  font-size: 0.9rem;
+  margin-top: 5px;
+}
+
+/* ===== BOTÓN ===== */
+.login-form .btn {
+  display: block;
+  width: 100%;
+  background-color: #51C2CB;
+  color: #fff;
+  border: none;
+  padding: 12px;
+  border-radius: 30px;
+  font-weight: 700;
+  margin-top: 25px;
+  transition: all 0.3s ease;
+}
+
+.login-form .btn:hover {
+  background-color: #04b19a;
+  transform: translateY(-2px);
+}
+/* ===== ENLACES DE LOGIN ===== */
+.login-links {
+  margin-top: 20px;
+  text-align: center;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+.login-links a {
+  color: #00bfa6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease, transform 0.2s ease;
+}
+
+.login-links a:hover {
+  color: #048d7f;
+  transform: scale(1.05);
+  text-decoration: underline;
+}
+
+
+/* ===== ANIMACIÓN DE ENTRADA ===== */
+@keyframes slideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 35px 25px;
+  }
+
+  .login-form h2 {
+    font-size: 1.8rem;
+  }
+}
+/* Responsividad: mantener visible en móvil */
+@media (max-width: 768px) {
+  .btn-regresar {
+    top: 15px;
+    left: 15px;
+    font-size: 0.95rem;
+    padding: 6px 10px;
+  }
+}
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 768px) {
+  .login-form {
+    padding: 35px 25px;
+  }
+
+  .login-form h2 {
+    font-size: 1.8rem;
+  }
+}

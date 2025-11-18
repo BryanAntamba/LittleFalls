@@ -1,0 +1,39 @@
+<nav class="navbar navbar-expand-lg">
+  <div class="container-fluid">
+
+    <!-- Logo con imagen y texto -->
+    <a class="navbar-brand d-flex align-items-center" href="#">
+      <!-- Imagen de la clínica -->
+      <img src="assets/Icono-LittleFalls.jpg" alt="Logo LittleFalls" width="40" height="40" class="me-2">
+      <!-- Texto del título -->
+      <span>LittleFalls</span>
+    </a>
+
+    <!-- Botón hamburguesa al lado derecho -->
+    <button class="navbar-toggler ms-auto" type="button"
+            data-bs-toggle="collapse"
+            data-bs-target="#navbarTogglerDemo01"
+            aria-controls="navbarTogglerDemo01"
+            aria-expanded="false"
+            aria-label="Toggle navigation">
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <!-- Contenido del menú -->
+    <div class="collapse navbar-collapse" id="navbarTogglerDemo01">
+      <ul class="navbar-nav ms-auto mb-2 mb-lg-0">
+        <li class="nav-item"><a class="nav-link" href="#inicio">Inicio</a></li>
+        <li class="nav-item"><a class="nav-link" href="#nosotros">Nosotros</a></li>
+        <li class="nav-item"><a class="nav-link" href="#especialidades">Especialidades</a></li>
+        <li class="nav-item"><a class="nav-link" href="#equipo">Equipo</a></li>
+        <li class="nav-item"><a class="nav-link" href="#contactos">Contactos</a></li>
+        <li class="nav-item"><a class="nav-link" routerLink="/AgendamientoCita">citas</a></li>
+      </ul>
+
+      <!-- Botón al final -->
+      <form class="d-flex ms-lg-3" role="search">
+        <button class="btn btn-outline-success" type="submit" routerLink="/Login-LittleFalls">Iniciar Sesión</button>
+      </form>
+    </div>
+  </div>
+</nav>

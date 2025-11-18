@@ -1,0 +1,41 @@
+<app-barra-navegacion></app-barra-navegacion>
+
+<section class="agenda" id="agenda">
+  <div class="agenda-contenido">
+    <h2>AGENDA TU CITA</h2>
+    <div class="linea-decorativa"></div>
+    <p>Seleccione el día, hora, y fecha para programar la atencion de su visita médica.</p>
+
+    <div class="dias-container">
+      <!-- Día Lunes -->
+      <div class="dia">
+        <h3>ESTAMOS DE LUNES A SABADOS PARA TI Y TU MASCOTA</h3>
+        <p class="texto-dia">Nuestros horarios de jornada de trabajo son apartir de lunes a sabado de las semanadas
+          con el horario disponible de 8:00 AM a 9:00 PM. En dias festivos puede cambiar los horarios.</p>
+        <p class="texto-dia-secundario">Selecciona su hora y fecha para su atencion.</p>
+        <select>
+          <option>Seleccionar hora</option>
+          <option>8:30 AM</option>
+          <option>9:00 AM</option>
+          <option>10:00 AM</option>
+          <option>11:00 AM</option>
+          <option>12:00 PM</option>
+          <option>1:00 PM</option>
+          <option>2:00 PM</option>
+          <option>3:00 PM</option>
+          <option>4:00 PM</option>
+          <option>5:00 PM</option>
+          <option>6:00 PM</option>
+          <option>7:00 PM</option>
+          <option>8:00 PM</option>
+        </select>
+        <input type="date" class="fecha-cita" id="fechaLunes">
+      </div>
+    </div>
+    <button class="btn-agendar btn-final" routerLink="/FormularioCita">
+        Siguiente
+      </button>
+  </div>
+</section>
+
+<app-pie-pagina></app-pie-pagina>

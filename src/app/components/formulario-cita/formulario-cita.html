@@ -1,0 +1,61 @@
+<app-barra-navegacion></app-barra-navegacion>
+<section class="formulario-cita">
+  <form>
+    <h2>Agenda tu cita</h2>
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre:</label>
+      <input type="text" class="form-control" id="nombre" placeholder="Ingrese su nombre.">
+    </div>
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Apellido:</label>
+      <input type="text" class="form-control" id="Apellido" placeholder="Ingrese su apellido.">
+    </div>
+
+    <div class="mb-3">
+      <label for="correo" class="form-label">Correo Electrónico:</label>
+      <input type="email" class="form-control" id="correo" placeholder="Ingrese su correo electrónico.">
+    </div>
+
+    <div class="mb-3">
+      <label for="telefono" class="form-label">Teléfono:</label>
+      <input type="tel" class="form-control" id="telefono" placeholder="Ingrese su número de teléfono.">
+    </div>
+    <div class="mb-3">
+      <label for="nombre" class="form-label">Nombre de la mascota:</label>
+      <input type="text" class="form-control" id="nombre" placeholder="Ingrese el nobmre de su mascota">
+    </div>
+
+    <div class="mb-3">
+      <label for="Edad" class="form-label">Edad de la mascota:</label>
+      <input type="number" class="form-control" id="Edad" placeholder="Ingrese la edad de su mascota.">
+    </div>
+    <div class="mb-3">
+      <label for="option" class="form-label">Tipo de mascota:</label>
+      <select class="form-select" aria-label="Default select example">
+        <option value="1">Perro</option>
+        <option value="2">Gato</option>
+        <option value="3">Conejo</option>
+        <option value="4">Hammster</option>
+        <option value="5">Ave</option>
+        <option value="6">Cuy</option>
+        <option value="7">Raton</option>
+        </select>
+    </div>
+    <div class="mb-3">
+      <label for="option" class="form-label">Sexo de la mascota:</label>
+      <select class="form-select" aria-label="Default select example">
+        <option value="1">Macho</option>
+        <option value="2">Hembra</option>
+        </select>
+    </div>
+    <div class="mb-3">
+      <label for="descripcion" class="form-label">Descripción:</label>
+      <textarea class="form-control" id="descripcion" rows="3"
+        placeholder="Describa el motivo de su cita medica."></textarea>
+    </div>
+
+    <button type="submit" class="btn btn-primary" routerLink="">Agendar Cita</button>
+  </form>
+</section>
+
+<app-pie-pagina></app-pie-pagina>

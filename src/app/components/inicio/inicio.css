@@ -1,0 +1,430 @@
+
+/* ===== SECCIÓN HERO ===== */
+.hero {
+  position: relative;
+  height: 100vh;
+  background: url("/assets/fondo-Veterinaria.jpg") no-repeat center center/cover;
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  padding-left: 8%;
+  padding-right: 8%;
+  color: #fff;
+  overflow: hidden;
+}
+
+/* Capa semitransparente para resaltar el texto */
+.hero::before {
+  content: "";
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: rgba(0, 0, 0, 0.4);
+  z-index: 1;
+}
+
+/* Contenedor del texto */
+.hero-content {
+  position: relative;
+  z-index: 2;
+  max-width: 600px;
+  animation: slideUp 1.5s ease-out;
+}
+
+/* Título */
+.hero-content h1 {
+  font-size: 4rem;
+  font-weight: 800;
+  margin-bottom: 15px;
+  text-transform: uppercase;
+  letter-spacing: 1.5px;
+}
+
+/* Texto descriptivo */
+.hero-content p {
+  font-size: 1.25rem;
+  line-height: 1.5;
+  margin-bottom: 25px;
+  opacity: 0.95;
+}
+
+/* Botón */
+.hero-content .btn {
+  display: inline-block;
+  padding: 12px 30px;
+  background-color: #51C2CB;
+  color: white;
+  border-radius: 25px;
+  text-decoration: none;
+  font-weight: bold;
+  transition: background 0.3s ease;
+}
+
+.hero-content .btn:hover {
+  background-color: #04b19a;
+}
+
+/* ===== SECCIÓN NOSOTROS ===== */
+.nosotros {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 80px 10%;
+  background-color: #f9f9f9;
+  flex-wrap: wrap;
+}
+
+/* Imagen a la izquierda */
+.nosotros-img {
+  flex: 1 1 45%;
+  animation: slideUp 1.2s ease-out;
+}
+
+.nosotros-img img {
+  width: 100%;
+  border-radius: 20px;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.15);
+  transition: transform 0.4s ease;
+}
+
+/* Texto a la derecha */
+.nosotros-text {
+  flex: 1 1 45%;
+  animation: slideUp 1.4s ease-out;
+}
+
+.nosotros-text h2 {
+  font-size: 2.5rem;
+  color: #222;
+  margin-bottom: 20px;
+  position: relative;
+}
+
+.nosotros-text p {
+  font-size: 1.15rem;
+  line-height: 1.6;
+  color: #555;
+  margin-top: 25px;
+  text-align: justify;
+}
+
+/* ===== ANIMACIÓN DESDE ABAJO ===== */
+@keyframes slideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+
+
+/* ===== ANIMACIÓN DESDE ABAJO ===== */
+@keyframes slideUp {
+  from {
+    transform: translateY(60px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+/* ===== CONSULTA ESPECIALIZADA ===== */
+.especialidades {
+  padding: 80px 8%;
+  background: #fff;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+.especialidades-contenido {
+  display: grid;
+  grid-template-columns: 3fr 2fr;
+  align-items: start;
+  gap: 90px;
+  max-width: 1200px;
+  width: 100%;
+}
+
+/* === Listas de especialidades === */
+.especialidades-listas {
+  display: flex;
+  justify-content: space-between;
+  gap: 70px;
+}
+
+.especialidades-listas ul {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.especialidades-listas li {
+  font-size: 1.2rem;
+  color: #333;
+  margin-bottom: 20px;
+  letter-spacing: 0.5px;
+}
+
+/* === Texto lateral === */
+.especialidades-texto {
+  text-align: left;
+}
+
+.especialidades-texto h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  margin-bottom: 25px;
+  line-height: 1.2;
+  color: #111;
+}
+
+.especialidades-texto p {
+  font-size: 1.1rem;
+  color: #444;
+  line-height: 1.6;
+  margin-bottom: 12px;
+}
+
+.especialidades-texto .agenda a {
+  color: #00bfa6;
+  font-weight: 600;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.especialidades-texto .agenda a:hover {
+  color: #04a28f;
+  text-decoration: underline;
+}
+
+/* ===== SECCIÓN EQUIPO ===== */
+.equipo-section {
+  text-align: center;
+  padding: 80px 10%;
+  background-color: #f9f9f9;
+}
+
+.equipo-section h2 {
+  font-size: 2.8rem;
+  font-weight: 800;
+  color: #111;
+  margin-bottom: 60px;
+  position: relative;
+}
+
+.equipo-section h2::after {
+  content: "";
+  display: block;
+  width: 150px;
+  height: 4px;
+  background-color: #00bfa6;
+  margin: 15px auto 0;
+  border-radius: 2px;
+}
+
+/* ===== GALERÍA DE EQUIPO ===== */
+.equipo-galeria {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(230px, 1fr));
+  gap: 30px;
+  justify-items: center;
+}
+
+/* ===== CADA MIEMBRO ===== */
+.miembro {
+  position: relative;
+  overflow: hidden;
+  border-radius: 15px;
+  box-shadow: 0 5px 20px rgba(0, 0, 0, 0.1);
+  transition: transform 0.4s ease;
+}
+
+.miembro:hover {
+  transform: scale(1.05);
+}
+
+.miembro img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  display: block;
+  border-radius: 15px;
+  transition: filter 0.4s ease;
+}
+
+.miembro:hover img {
+  filter: brightness(60%);
+}
+
+/* ===== OVERLAY ===== */
+.overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  height: 0;
+  background: rgba(0, 191, 166, 0.9);
+  color: #fff;
+  overflow: hidden;
+  border-radius: 0 0 15px 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  transition: height 0.4s ease;
+  text-align: center;
+  padding: 0 15px;
+}
+
+.miembro:hover .overlay {
+  height: 100%;
+}
+
+.overlay h3 {
+  margin: 0;
+  font-size: 1.5rem;
+  font-weight: 700;
+}
+
+.overlay p {
+  font-size: 1rem;
+  margin-top: 10px;
+  line-height: 1.4;
+}
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 992px) {
+  .hero {
+    align-items: flex-end;
+    padding-bottom: 60px;
+  }
+
+  .hero-content h1 {
+    font-size: 3rem;
+  }
+
+  .hero-content p {
+    font-size: 1.1rem;
+  }
+}
+
+@media (max-width: 576px) {
+  .hero {
+    padding: 40px 20px;
+    height: 80vh;
+  }
+
+  .hero-content h1 {
+    font-size: 2.2rem;
+    text-align: left;
+  }
+
+  .hero-content p {
+    font-size: 1rem;
+  }
+
+  .hero-content .btn {
+    padding: 10px 20px;
+    font-size: 0.9rem;
+  }
+}
+
+/* Pantallas medianas (tablets) */
+@media (max-width: 992px) {
+  .nosotros {
+    gap: 30px;
+    padding: 60px 8%;
+  }
+
+  .nosotros-text h2 {
+    font-size: 2rem;
+  }
+
+  .nosotros-text p {
+    font-size: 1.05rem;
+  }
+}
+
+/* Pantallas pequeñas (celulares) */
+@media (max-width: 768px) {
+  .nosotros {
+    flex-direction: column;
+    text-align: center;
+  }
+
+  .nosotros-img,
+  .nosotros-text {
+    flex: 1 1 100%;
+  }
+
+  .nosotros-text h2::after {
+    left: 50%;
+    transform: translateX(-50%);
+  }
+
+  .nosotros-text h2 {
+    margin-top: 20px;
+    font-size: 1.8rem;
+  }
+
+  .nosotros-text p {
+    text-align: center;
+    font-size: 1rem;
+    margin-top: 15px;
+  }
+}
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 992px) {
+  .especialidades-contenido {
+    grid-template-columns: 1fr;
+    text-align: center;
+    gap: 50px;
+  }
+
+  .especialidades-listas {
+    flex-direction: column;
+    align-items: center;
+    gap: 25px;
+  }
+
+  .especialidades-listas li {
+    font-size: 1.1rem;
+  }
+
+  .especialidades-texto {
+    text-align: center;
+  }
+
+  .especialidades-texto h2 {
+    font-size: 2rem;
+  }
+}
+
+/* ===== RESPONSIVIDAD ===== */
+@media (max-width: 768px) {
+  .equipo-section {
+    padding: 60px 5%;
+  }
+
+  .equipo-section h2 {
+    font-size: 2.2rem;
+  }
+
+  .overlay h3 {
+    font-size: 1.2rem;
+  }
+
+  .overlay p {
+    font-size: 0.95rem;
+  }
+}
+

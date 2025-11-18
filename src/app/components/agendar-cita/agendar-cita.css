@@ -1,0 +1,175 @@
+.agenda {
+    padding: 80px 8%;
+    background-color: #f9f9f9;
+    text-align: center;
+    animation: slideUp 1.2s ease-out;
+}
+
+.agenda-contenido h2 {
+    font-size: 2.8rem;
+    font-weight: 800;
+    color: #111;
+    margin-bottom: 15px;
+}
+
+.agenda-contenido p {
+    font-size: 1.2rem;
+    color: #444;
+    margin-bottom: 40px;
+}
+
+.linea-decorativa {
+    width: 160px;
+    height: 4px;
+    background-color: #00bfa6;
+    margin: 0 auto 35px;
+    border-radius: 2px;
+}
+
+/* ===== DÍAS ===== */
+.dias-container {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+    gap: 25px;
+    justify-content: center;
+}
+
+.dia {
+    background: #ffffff;
+    border-radius: 15px;
+    box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
+    padding: 25px;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+.dia:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 6px 18px rgba(0, 191, 166, 0.25);
+}
+
+.dia h3 {
+    color: #00bfa6;
+    margin-bottom: 10px;
+    font-weight: 700;
+}
+
+/* Textos dentro de cada día */
+.texto-dia {
+    color: #555;
+    font-size: 0.95rem;
+    margin-bottom: 5px;
+}
+
+.texto-dia-secundario {
+    color: #888;
+    font-size: 0.9rem;
+    margin-bottom: 15px;
+}
+
+/* Turnos */
+.turnos {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    align-items: center;
+}
+
+/* Botones (mantienen el estilo general) */
+.btn-agendar {
+    display: inline-block;
+    padding: 12px 30px;
+    background-color: #00bfa6;
+    color: #fff;
+    font-weight: 700;
+    border-radius: 25px;
+    text-decoration: none;
+    border: none;
+    cursor: pointer;
+    transition: background 0.3s ease;
+}
+
+.btn-agendar:hover {
+    background-color: #04a28f;
+}
+
+.btn-final {
+    margin-top: 50px;
+}
+
+select {
+    width: 100%;
+    padding: 10px 15px;
+    border: 2px solid #00bfa6;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+    background-repeat: no-repeat;
+    background-position: right 12px center;
+    background-size: 18px;
+}
+
+select:hover {
+    background-color: #eafaf8;
+    border-color: #04a28f;
+}
+
+select:focus {
+    color: white;
+    border-color: #03c4aa;
+    background-color: #03c4aa;
+    box-shadow: 0 0 6px rgba(0, 191, 166, 0.3);
+}
+
+/* Opciones dentro del select */
+select option {
+    background: #ffffff;
+    color: #333;
+    font-size: 0.95rem;
+}
+/*Estilo del selector de fecha*/
+.fecha-cita {
+    width: 100%;
+    margin-top: 12px;
+    padding: 10px 15px;
+    border: 2px solid #00bfa6;
+    border-radius: 10px;
+    font-size: 1rem;
+    color: #333;
+    background-color: #f8f8f8;
+    transition: all 0.3s ease;
+    outline: none;
+    cursor: pointer;
+}
+
+.fecha-cita:hover {
+    background-color: #eafaf8;
+    border-color: #04a28f;
+}
+
+.fecha-cita:focus {
+    color: white;
+    border-color: #03c4aa;
+    background-color: #03c4aa;
+    box-shadow: 0 0 6px rgba(0, 191, 166, 0.3);
+}
+
+
+/* Mejora visual dentro de los contenedores */
+.dia select {
+    margin-top: 10px;
+}
+
+/* Responsividad */
+@media (max-width: 768px) {
+    .agenda-contenido h2 {
+        font-size: 2rem;
+    }
+
+    .agenda-contenido p {
+        font-size: 1rem;
+    }
+}

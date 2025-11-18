@@ -1,0 +1,39 @@
+<section class="login-section">
+    <a routerLink="" class="btn-regresar">
+        <i class="fa-solid fa-arrow-left"></i> Regresar
+    </a>
+    <form class="login-form">
+        <h2>Registrate</h2>
+        <div class="mb-3">
+            <label for="inputText" class="form-label">Nombre:</label>
+            <input type="text" id="inputText" class="form-control" placeholder="Ingrese su nombre"
+                aria-describedby="TextHelpBlock" required>
+        </div>
+        <div class="mb-3">
+            <label for="inputText" class="form-label">Apellido:</label>
+            <input type="text" id="inputText" class="form-control" placeholder="Ingrese su apellido"
+                aria-describedby="TextHelpBlock" required>
+        </div>
+        <div class="mb-3">
+            <label for="inputNumber" class="form-label">Edad:</label>
+            <input type="number" id="inputNumber" class="form-control" placeholder="Ingrese su apellido"
+                aria-describedby="NumberHelpBlock" required>
+        </div>
+        <div class="mb-3">
+            <label for="inputEmail" class="form-label">Correo:</label>
+            <input type="email" id="inputEmail" class="form-control" placeholder="Ingrese su correo electronico"
+                aria-describedby="emailHelpBlock"  required>
+
+        </div>
+        <div class="mb-3">
+            <label for="inputPassword" class="form-label">Contraseña:</label>
+            <input type="password" id="inputPassword" class="form-control" placeholder="Ingrese una contraseña"
+                aria-describedby="emailHelpBlock" required>
+        </div>
+        <button type="button" class="btn btn-primary" routerLink="/Login-LittleFalls">Registrarse</button>
+        <div class="login-links">
+    </div>
+    </form>
+</section>
+
+<app-pie-pagina></app-pie-pagina>

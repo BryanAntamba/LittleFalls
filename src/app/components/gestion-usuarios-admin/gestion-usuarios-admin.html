@@ -1,0 +1,47 @@
+<app-barra-navegacion-admin></app-barra-navegacion-admin>
+
+<h2 class="table-title">Lista de Usuarios</h2>
+<p class="table-description">
+  Aquí puedes gestionar todos los veterinarios registrados en la plataforma. Puedes agregar nuevos veterinarios, editar información existente o eliminar incluso cuentas.
+</p>
+
+<div class="btn-container">
+  <button type="button" class="btn-action btn-edit btn-agregar">Ingresar Veterinario</button>
+</div>
+<table class="custom-table">
+  <thead>
+    <tr>
+      <th class="col-nombre">Nombre</th>
+      <th class="col-apellido">Apellido</th>
+      <th class="col-edad">Edad</th>
+      <th class="col-correo">Correo Electrónico</th>
+      <th class="col-acciones">Acciones</th>
+    </tr>
+  </thead>
+
+  <tbody>
+    <tr>
+      <td class="col-nombre">Bryan</td>
+      <td class="col-apellido">Justin</td>
+      <td class="col-edad">22</td>
+      <td class="col-correo">bryan@gmail.com</td>
+      <td class="col-acciones">
+        <button class="btn-action btn-edit">Editar</button>
+        <button class="btn-action btn-disable">Desactivar</button>
+        <button class="btn-action btn-delete">Eliminar</button>
+      </td>
+    </tr>
+
+    <tr>
+      <td class="col-nombre">María</td>
+      <td class="col-apellido">Gómez</td>
+      <td class="col-edad">30</td>
+      <td class="col-correo">maria@gmail.com</td>
+      <td class="col-acciones">
+        <button class="btn-action btn-edit">Editar</button>
+        <button class="btn-action btn-disable">Desactivar</button>
+        <button class="btn-action btn-delete">Eliminar</button>
+      </td>
+    </tr>
+  </tbody>
+</table>
