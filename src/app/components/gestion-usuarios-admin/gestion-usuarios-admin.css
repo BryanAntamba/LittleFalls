@@ -1,4 +1,9 @@
-/* Título */
+/* ========================================
+   ESTILOS COMPONENTE GESTIÓN USUARIOS ADMIN
+   ======================================== */
+
+/* ===== TÍTULO PRINCIPAL ===== */
+/* Título centrado con estilo bold y subrayado decorativo */
 .table-title {
   text-align: center;
   font-size: 2rem;
@@ -8,6 +13,7 @@
   position: relative;
 }
 
+/* Línea decorativa debajo del título (color turquesa corporativo) */
 .table-title::after {
   content: "";
   display: block;
@@ -18,7 +24,8 @@
   border-radius: 2px;
 }
 
-/* Texto representativo */
+/* ===== TEXTO DESCRIPTIVO ===== */
+/* Descripción secundaria del propósito de la tabla */
 .table-description {
   text-align: center;
   font-size: 1.1rem;
@@ -27,7 +34,8 @@
   margin-bottom: 20px;
 }
 
-/* Contenedor para alinear el botón a la derecha */
+/* ===== CONTENEDOR DE BOTÓN ===== */
+/* Alinea el botón "Ingresar Veterinario" al centro */
 .btn-container {
   width: 100%;
   display: flex;
@@ -35,14 +43,16 @@
   margin-bottom: 20px;
 }
 
-/* Botón Ingresar Veterinario adaptado */
+/* ===== BOTÓN AGREGAR ===== */
+/* Botón para abrir modal de ingreso de nuevo veterinario */
 .btn-agregar {
   padding: 10px 20px;
   border-radius: 20px;
   font-weight: 700;
 }
 
-/* Tabla */
+/* ===== TABLA DE VETERINARIOS ===== */
+/* Tabla principal con bordes colapsados para diseño limpio */
 .custom-table {
   width: 100%;
   border-collapse: collapse;
@@ -50,23 +60,27 @@
   font-size: 1rem;
 }
 
+/* Cabecera con color turquesa corporativo */
 .custom-table thead {
   background-color: #00bfa6;
   color: white;
 }
 
+/* Espaciado y bordes para celdas */
 .custom-table th,
 .custom-table td {
   padding: 12px;
   border-bottom: 2px solid #e0e0e0;
 }
 
+/* Efecto hover en filas para mejor UX */
 .custom-table tbody tr:hover {
-  background-color: rgba(0, 191, 166, 0.1);
+  background-color: rgba(0, 191, 166, 0.1); /* Fondo turquesa semitransparente */
   transition: 0.3s;
 }
 
-/* Botones */
+/* ===== BOTONES DE ACCIÓN ===== */
+/* Estilo base para todos los botones de acción (Editar, Eliminar, Desactivar) */
 .btn-action {
   padding: 8px 15px;
   border-radius: 20px;
@@ -76,6 +90,7 @@
   transition: all 0.3s ease;
 }
 
+/* Botón Editar - Azul turquesa */
 .btn-edit {
   background-color: #51C2CB;
   color: #fff;
@@ -83,9 +98,10 @@
 
 .btn-edit:hover {
   background-color: #04b19a;
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Efecto de elevación */
 }
 
+/* Botón Eliminar - Rojo */
 .btn-delete {
   background-color: #ff6b6b;
   color: #fff;
@@ -93,9 +109,10 @@
 
 .btn-delete:hover {
   background-color: #e54848;
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Efecto de elevación */
 }
-/* Botón Desactivar */
+
+/* Botón Desactivar - Amarillo/naranja */
 .btn-disable {
   background-color: #f7b731;
   color: #fff;
@@ -103,30 +120,320 @@
 
 .btn-disable:hover {
   background-color: #d49a22;
-  transform: translateY(-2px);
+  transform: translateY(-2px); /* Efecto de elevación */
 }
 
+/* Espacio entre iconos y texto en botones */
+.btn-action i {
+  margin-right: 5px;
+}
 
-/* Animación */
-@keyframes slideUp {
+/* ========================================
+   ESTILOS DE LOS MODALES
+   ======================================== */
+
+/* ===== OVERLAY DEL MODAL ===== */
+/* 
+  Capa semitransparente que oscurece el fondo
+  Permite cerrar modal al hacer clic fuera del contenido
+*/
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Negro con 60% opacidad */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000; /* Por encima de todos los elementos */
+  animation: fadeIn 0.3s ease; /* Animación de aparición suave */
+}
+
+/* Animación de aparición del overlay (fade in) */
+@keyframes fadeIn {
   from {
-    transform: translateY(60px);
     opacity: 0;
   }
   to {
-    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+/* ===== CONTENEDOR DEL MODAL ===== */
+/* Caja blanca central con contenido del formulario */
+.modal-content {
+  background: white;
+  border-radius: 20px;
+  width: 90%;
+  max-width: 700px; /* Ancho máximo para modal de ingreso */
+  max-height: 90vh; /* 90% de la altura de la ventana */
+  overflow-y: auto; /* Scroll si el contenido es muy largo */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* Sombra profunda */
+  animation: slideUp 0.3s ease; /* Animación de deslizamiento hacia arriba */
+}
+
+/* ===== ENCABEZADO DEL MODAL ===== */
+/* 
+  Gradiente turquesa con título y botón cerrar
+  Sticky para que permanezca visible al hacer scroll
+*/
+.modal-header {
+  background: linear-gradient(135deg, #00bfa6, #33aaeb); /* Gradiente diagonal */
+  color: white;
+  padding: 20px 30px;
+  border-radius: 20px 20px 0 0; /* Esquinas redondeadas solo arriba */
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  position: sticky; /* Se mantiene visible al hacer scroll */
+  top: 0;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Icono al lado del título */
+.modal-header h2 i {
+  margin-right: 10px;
+}
+
+/* ===== BOTÓN CERRAR (X) ===== */
+/* Botón circular en la esquina superior derecha del modal */
+.btn-close {
+  background: rgba(255, 255, 255, 0.2); /* Fondo blanco semitransparente */
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Botón circular */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.3);
+  transform: rotate(90deg); /* Rotación al pasar el cursor */
+}
+
+/* ===== CUERPO DEL MODAL ===== */
+/* Contenedor del formulario con padding generoso */
+.modal-body {
+  padding: 30px;
+}
+
+/* ===== SECCIONES DEL FORMULARIO ===== */
+/* 
+  Cada sección agrupa campos relacionados
+  Fondo gris claro con borde turquesa izquierdo para jerarquía visual
+*/
+.seccion {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa; /* Gris muy claro */
+  border-radius: 12px;
+  border-left: 4px solid #00bfa6; /* Barra de color corporativo */
+}
+
+.seccion h3 {
+  color: #00bfa6;
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* Icono al lado del título de sección */
+.seccion h3 i {
+  margin-right: 8px;
+}
+
+/* ===== FILAS DE FORMULARIO ===== */
+/* 
+  Grid responsive: columnas se ajustan automáticamente
+  Mínimo 200px por columna, máximo 1fr (fracción disponible)
+*/
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+  gap: 15px;
+  margin-bottom: 15px;
+}
+
+/* ===== GRUPOS DE CAMPOS ===== */
+/* Cada campo (label + input) en columna vertical */
+.form-group {
+  display: flex;
+  flex-direction: column;
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+/* ===== INPUTS Y SELECTS ===== */
+/* Estilo uniforme para todos los campos de entrada */
+.form-group input,
+.form-group select {
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0;
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease;
+  font-family: inherit; /* Hereda la fuente del body */
+}
+
+/* Estado focus: borde turquesa y sombra suave */
+.form-group input:focus,
+.form-group select:focus {
+  outline: none;
+  border-color: #00bfa6;
+  box-shadow: 0 0 0 3px rgba(0, 191, 166, 0.1); /* Sombra turquesa */
+}
+
+/* ===== PIE DEL MODAL ===== */
+/* Contiene botones Cancelar y Guardar alineados a la derecha */
+.modal-footer {
+  padding: 20px 30px;
+  background: #f8f9fa;
+  border-radius: 0 0 20px 20px; /* Esquinas redondeadas solo abajo */
+  display: flex;
+  justify-content: flex-end; /* Botones a la derecha */
+  gap: 15px;
+  position: sticky; /* Se mantiene visible al hacer scroll */
+  bottom: 0;
+}
+
+/* ===== BOTONES DEL FOOTER ===== */
+.btn-cancelar,
+.btn-guardar {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px;
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Botón Cancelar - Gris neutro */
+.btn-cancelar {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.btn-cancelar:hover {
+  background: #d0d0d0;
+  transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* Botón Guardar - Gradiente turquesa con sombra */
+.btn-guardar {
+  background: linear-gradient(135deg, #00bfa6, #33aaeb);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3);
+}
+
+.btn-guardar:hover {
+  transform: translateY(-2px); /* Efecto de elevación */
+  box-shadow: 0 6px 16px rgba(0, 191, 166, 0.4); /* Sombra más pronunciada */
+}
+
+/* Icono en botón Guardar */
+.btn-guardar i {
+  margin-right: 8px;
+}
+
+/* ===== MODAL DE EDICIÓN ===== */
+/* Versión más compacta del modal para edición rápida */
+.modal-editar {
+  max-width: 650px;
+}
+
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+/* Scrollbar turquesa para mantener consistencia visual */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: #00bfa6; /* Color turquesa corporativo */
+  border-radius: 10px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #04b19a; /* Tono más oscuro al pasar cursor */
+}
+
+/* ===== ANIMACIÓN SLIDE UP ===== */
+/* Modal aparece deslizándose desde abajo con fade in */
+@keyframes slideUp {
+  from {
+    transform: translateY(60px); /* Comienza 60px abajo */
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0); /* Termina en posición normal */
     opacity: 1;
   }
 }
 
 /* ========================================================= */
-/* ======== RESPONSIVIDAD SIN data-label (solo clases) ===== */
+/* ======== ESTILOS RESPONSIVOS PARA MÓVILES =============== */
 /* ========================================================= */
 @media (max-width: 768px) {
+  /* ===== AJUSTES DE MODAL EN MÓVILES ===== */
+  /* Modales ocupan casi toda la pantalla en dispositivos pequeños */
+  .modal-content {
+    width: 95%;
+    max-height: 95vh;
+  }
+
+  /* Título más pequeño para ahorrar espacio */
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Padding reducido en formularios */
+  .modal-body {
+    padding: 20px;
+  }
+
+  /* Una columna en lugar de grid */
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+
+  /* Secciones más compactas */
+  .seccion {
+    padding: 15px;
+  }
+
+  /* ===== TABLA RESPONSIVE (TARJETAS) ===== */
+  /* En móviles, la tabla se convierte en tarjetas verticales */
+  
+  /* Ocultar cabecera de tabla */
   .custom-table thead {
     display: none;
   }
 
+  /* Convertir tabla a bloques */
   .custom-table,
   .custom-table tbody,
   .custom-table tr,
@@ -135,23 +442,29 @@
     width: 100%;
   }
 
+  /* Cada fila se convierte en una tarjeta */
   .custom-table tr {
     margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Efecto glassmorphism */
     padding: 15px;
     border-radius: 15px;
     box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   }
 
-  /* Labels dinámicos por clase */
+  /* ===== LABELS DINÁMICOS PARA CELDAS ===== */
+  /* 
+    Cada celda muestra su etiqueta a la izquierda
+    Valor a la derecha - similar a un formulario
+  */
   .custom-table td {
     text-align: right;
-    padding-left: 50%;
+    padding-left: 50%; /* Espacio para el label */
     position: relative;
     border-bottom: 1px solid #e0e0e0;
   }
 
+  /* Definición de labels por columna usando clases */
   .custom-table td.col-nombre::before {
     content: "Nombre";
   }
@@ -172,14 +485,17 @@
     content: "Acciones";
   }
 
-  /* Estilo de los labels */
+  /* ===== ESTILO DE LOS LABELS ===== */
+  /* Posicionamiento y color de las etiquetas */
   .custom-table td::before {
     position: absolute;
     left: 15px;
     font-weight: 700;
-    color: #00bfa6;
+    color: #00bfa6; /* Color turquesa corporativo */
   }
 
+  /* ===== BOTONES EN MÓVILES ===== */
+  /* Botones de acción ocupan casi la mitad del ancho para alineación horizontal */
   .btn-action {
     width: 48%;
     margin-top: 10px;

@@ -1,7 +1,13 @@
+<!-- Componente de la barra de navegación del veterinario -->
 <app-barra-navegacion-veterinario></app-barra-navegacion-veterinario>
+
+<!-- Sección principal con la tabla de citas -->
 <section class="fondo-lista-usuarios">
     <h2 class="table-title">Lista de citas medicas</h2>
+    
+    <!-- Tabla que muestra todas las citas médicas -->
     <table class="custom-table">
+        <!-- Encabezados de la tabla -->
         <thead>
             <tr>
                 <th class="col-nombre">Nombre</th>
@@ -18,52 +24,311 @@
             </tr>
         </thead>
 
+        <!-- Cuerpo de la tabla con datos dinámicos -->
         <tbody>
-            <tr>
-                <td class="col-nombre">Bryan</td>
-                <td class="col-apellido">Justin</td>
-                <td class="col-correo">bryan123@gmail.com</td>
-                <td class="col-telefono">0995336712</td>
-                <th class="col-nombreMascota">Maxi</th>
-                <th class="col-edadMascota">3</th>
-                <th class="col-generoMascota">Macho</th>
-                <th class="col-tipoMascota">Gato</th>
-                <td class="col-descripcion">Mi mascota es un gato angora de 3 años que esta teniendo problemas al
-                    caminar y
-                    nose que es y necesito su ayuda para que le revicen porfavor.</td>
-                    <td>
-                        <button class="btn-action btn-Regitro">Registro clinico</button>
-                    </td>
-                <td class="col-acciones">
-                    <button class="btn-action btn-edit">Editar</button>
-                    <button class="btn-action btn-revisado">Revisado</button>
-                    <button class="btn-action btn-delete">Eliminar</button>
-
-                </td>
-            </tr>
-
-            <tr>
-                <td class="col-nombre">María</td>
-                <td class="col-apellido">Gómez</td>
-                <td class="col-correo">maria4000@gmail.com</td>
-                <td class="col-telefono">09178126643</td>
-                <th class="col-nombreMascota">Kary</th>
-                <th class="col-edadMascota">5</th>
-                <th class="col-generoMascota">Hembra</th>
-                <th class="col-tipoMascota">Perro</th>
-                <td class="col-descripcion">Buenas noches, necesito su ayuda ya que mi perrito de 5 añitos no quiere
-                    comer
-                    nada y solo pasa acostado y canzado, necesito que me ayuden con mi mascota, les agradeceria mucho.
-                </td>
+            <!-- 
+                *ngFor: Itera sobre el array 'citas' y crea una fila por cada cita
+                let i = index: Captura el índice de cada elemento para identificarlo
+            -->
+            <tr *ngFor="let cita of citas; let i = index">
+                <!-- Interpolación {{ }} muestra los datos de cada cita -->
+                <td class="col-nombre">{{ cita.nombre }}</td>
+                <td class="col-apellido">{{ cita.apellido }}</td>
+                <td class="col-correo">{{ cita.correo }}</td>
+                <td class="col-telefono">{{ cita.telefono }}</td>
+                <th class="col-nombreMascota">{{ cita.nombreMascota }}</th>
+                <th class="col-edadMascota">{{ cita.edadMascota }}</th>
+                <th class="col-generoMascota">{{ cita.generoMascota }}</th>
+                <th class="col-tipoMascota">{{ cita.tipoMascota }}</th>
+                <td class="col-descripcion">{{ cita.descripcion }}</td>
+                
+                <!-- Columna con botón para crear registro clínico -->
                 <td>
-                        <button class="btn-action btn-Regitro">Registro clinico</button>
-                    </td>
+                    <!-- (click): Event binding que ejecuta el método al hacer clic -->
+                    <button class="btn-action btn-Regitro" (click)="abrirModal()">Registro clinico</button>
+                </td>
+                
+                <!-- Columna con botones de acción -->
                 <td class="col-acciones">
-                    <button class="btn-action btn-edit">Editar</button>
-                    <button class="btn-action btn-revisado">Revisado</button>
-                    <button class="btn-action btn-delete">Eliminar</button>
+                    <!-- Botón Editar: Pasa la cita completa y su índice al método -->
+                    <button class="btn-action btn-edit" (click)="abrirModalEditar(cita, i)">Editar</button>
+                    <!-- Botón Revisado: Marca la cita como revisada -->
+                    <button class="btn-action btn-revisado" (click)="marcarRevisado(i)">Revisado</button>
+                    <!-- Botón Eliminar: Elimina la cita del array -->
+                    <button class="btn-action btn-delete" (click)="eliminarCita(i)">Eliminar</button>
                 </td>
             </tr>
         </tbody>
     </table>
 </section>
+
+<!-- ========== MODAL DE REGISTRO CLÍNICO ========== -->
+<!-- 
+    *ngIf: Solo se muestra cuando mostrarModal es true
+    (click): Cierra el modal si se hace clic en el fondo oscuro
+-->
+<div class="modal-overlay" *ngIf="mostrarModal" (click)="cerrarModal()">
+    <!-- 
+        $event.stopPropagation(): Evita que el clic dentro del modal lo cierre
+        Permite hacer clic en el contenido sin cerrar el modal
+    -->
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <!-- Encabezado del modal con título y botón cerrar -->
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-clipboard-list"></i> Registro Clínico Veterinario</h2>
+            <button class="btn-close" (click)="cerrarModal()">&times;</button>
+        </div>
+
+        <!-- Formulario con todos los campos del registro clínico -->
+        <form class="modal-body">
+            
+            <!-- ===== SECCIÓN: Información Básica ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-file-medical"></i> Información Básica</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha de Consulta</label>
+                        <!-- 
+                            [(ngModel)]: Two-way data binding
+                            Vincula el input con la propiedad del objeto
+                            Los cambios se reflejan automáticamente en ambas direcciones
+                        -->
+                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo de Consulta</label>
+                        <input type="text" [(ngModel)]="registroClinico.motivoConsulta" name="motivoConsulta" placeholder="¿Por qué vino la mascota?">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Síntomas Observados</label>
+                    <textarea [(ngModel)]="registroClinico.sintomas" name="sintomas" rows="2" placeholder="Describa los síntomas..."></textarea>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Examen Físico ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-stethoscope"></i> Examen Físico</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <!-- step="0.1": Permite decimales con precisión de 0.1 -->
+                        <input type="number" [(ngModel)]="registroClinico.peso" name="peso" step="0.1" placeholder="0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Temperatura (°C)</label>
+                        <input type="number" [(ngModel)]="registroClinico.temperatura" name="temperatura" step="0.1" placeholder="38.5">
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Frecuencia Cardíaca (lat/min)</label>
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaCardiaca" name="frecuenciaCardiaca" placeholder="120">
+                    </div>
+                    <div class="form-group">
+                        <label>Frecuencia Respiratoria</label>
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaRespiratoria" name="frecuenciaRespiratoria" placeholder="30">
+                    </div>
+                    <div class="form-group">
+                        <label>Condición Corporal (1-5)</label>
+                        <select [(ngModel)]="registroClinico.condicionCorporal" name="condicionCorporal">
+                            <option value="">Seleccione</option>
+                            <option value="1">1 - Muy delgado</option>
+                            <option value="2">2 - Delgado</option>
+                            <option value="3">3 - Normal</option>
+                            <option value="4">4 - Sobrepeso</option>
+                            <option value="5">5 - Obeso</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Diagnóstico y Tratamiento ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-notes-medical"></i> Diagnóstico y Tratamiento</h3>
+                <div class="form-group">
+                    <label>Diagnóstico</label>
+                    <textarea [(ngModel)]="registroClinico.diagnostico" name="diagnostico" rows="2" placeholder="Diagnóstico del veterinario..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tratamiento Prescrito</label>
+                    <textarea [(ngModel)]="registroClinico.tratamiento" name="tratamiento" rows="2" placeholder="Medicamentos, dosis, duración..."></textarea>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Procedimientos Realizados</label>
+                        <input type="text" [(ngModel)]="registroClinico.procedimientos" name="procedimientos" placeholder="Vacunas, cirugías, etc.">
+                    </div>
+                    <div class="form-group">
+                        <label>Próxima Cita</label>
+                        <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Vacunación ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-syringe"></i> Vacunación</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo de Vacuna</label>
+                        <input type="text" [(ngModel)]="registroClinico.tipoVacuna" name="tipoVacuna" placeholder="Ej: Antirrábica, Triple Felina">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Aplicación</label>
+                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna">
+                    </div>
+                    <div class="form-group">
+                        <label>Próxima Dosis</label>
+                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis">
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Documentación ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-camera"></i> Documentación</h3>
+                <div class="form-group">
+                    <label>Foto del Carnet de Vacunación</label>
+                    <!-- 
+                        (change): Evento que se dispara cuando se selecciona un archivo
+                        accept: Limita los tipos de archivo a solo imágenes
+                    -->
+                    <input type="file" (change)="onFileSelect($event, 'carnet')" accept="image/*" class="input-file">
+                </div>
+                <div class="form-group">
+                    <label>Imágenes de Exámenes (Múltiples)</label>
+                    <!-- 
+                        multiple: Permite seleccionar varios archivos a la vez
+                        accept: Acepta imágenes y archivos PDF
+                    -->
+                    <input type="file" (change)="onFileSelect($event, 'examenes')" accept="image/*,.pdf" multiple class="input-file">
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Observaciones ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-comment-medical"></i> Observaciones</h3>
+                <div class="form-group">
+                    <label>Notas Adicionales del Veterinario</label>
+                    <textarea [(ngModel)]="registroClinico.observaciones" name="observaciones" rows="2" placeholder="Notas adicionales..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Recomendaciones para el Dueño</label>
+                    <textarea [(ngModel)]="registroClinico.recomendaciones" name="recomendaciones" rows="2" placeholder="Instrucciones y cuidados..."></textarea>
+                </div>
+            </div>
+        </form>
+
+        <!-- Pie del modal con botones de acción -->
+        <div class="modal-footer">
+            <button class="btn-cancelar" (click)="cerrarModal()">Cancelar</button>
+            <button class="btn-guardar" (click)="guardarRegistro()">Guardar Registro</button>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MODAL DE EDICIÓN DE CITA ========== -->
+<!-- 
+    Modal más compacto para editar la información de una cita existente
+    Se muestra cuando mostrarModalEditar es true
+-->
+<div class="modal-overlay" *ngIf="mostrarModalEditar" (click)="cerrarModalEditar()">
+    <!-- modal-editar: Clase adicional para estilos específicos (más compacto) -->
+    <div class="modal-content modal-editar" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-pen-to-square"></i> Editar Información de la Cita</h2>
+            <button class="btn-close" (click)="cerrarModalEditar()">&times;</button>
+        </div>
+
+        <form class="modal-body">
+            <!-- ===== SECCIÓN: Información del Dueño ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-user"></i> Información del Dueño</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre</label>
+                        <!-- 
+                            citaEditar: Objeto temporal que contiene los datos a editar
+                            Al guardar, estos datos se copian de vuelta al array 'citas'
+                        -->
+                        <input type="text" [(ngModel)]="citaEditar.nombre" name="nombre" placeholder="Nombre del dueño" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Apellido</label>
+                        <input type="text" [(ngModel)]="citaEditar.apellido" name="apellido" placeholder="Apellido del dueño" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Correo Electrónico</label>
+                        <!-- type="email": Validación automática de formato de correo -->
+                        <input type="email" [(ngModel)]="citaEditar.correo" name="correo" placeholder="correo@ejemplo.com" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Teléfono</label>
+                        <!-- type="tel": Optimizado para entrada de teléfono en móviles -->
+                        <input type="tel" [(ngModel)]="citaEditar.telefono" name="telefono" placeholder="0999999999" required>
+                    </div>
+                </div>
+            </div>
+
+            <!-- ===== SECCIÓN: Información de la Mascota ===== -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-paw"></i> Información de la Mascota</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Nombre de la Mascota</label>
+                        <input type="text" [(ngModel)]="citaEditar.nombreMascota" name="nombreMascota" placeholder="Nombre de la mascota" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Edad</label>
+                        <input type="number" [(ngModel)]="citaEditar.edadMascota" name="edadMascota" placeholder="Edad en años" required>
+                    </div>
+                </div>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Género</label>
+                        <!-- 
+                            Select con opciones predefinidas
+                            El valor seleccionado se vincula automáticamente con citaEditar.generoMascota
+                        -->
+                        <select [(ngModel)]="citaEditar.generoMascota" name="generoMascota" required>
+                            <option value="">Seleccione</option>
+                            <option value="Macho">Macho</option>
+                            <option value="Hembra">Hembra</option>
+                        </select>
+                    </div>
+                    <div class="form-group">
+                        <label>Tipo de Mascota</label>
+                        <select [(ngModel)]="citaEditar.tipoMascota" name="tipoMascota" required>
+                            <option value="">Seleccione</option>
+                            <option value="Perro">Perro</option>
+                            <option value="Gato">Gato</option>
+                            <option value="Conejo">Conejo</option>
+                            <option value="Hamster">Hamster</option>
+                            <option value="Ave">Ave</option>
+                            <option value="Otro">Otro</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Descripción del Motivo de la Cita</label>
+                    <textarea [(ngModel)]="citaEditar.descripcion" name="descripcion" rows="4" placeholder="Describa el motivo de la consulta..." required></textarea>
+                </div>
+            </div>
+        </form>
+
+        <!-- Pie del modal de edición con botones -->
+        <div class="modal-footer">
+            <button class="btn-cancelar" (click)="cerrarModalEditar()">Cancelar</button>
+            <!-- 
+                Al hacer clic en Guardar Cambios:
+                1. Se ejecuta guardarEdicion()
+                2. Se actualiza el array 'citas' con los datos de 'citaEditar'
+                3. Los cambios se reflejan inmediatamente en la tabla
+            -->
+            <button class="btn-guardar" (click)="guardarEdicion()">Guardar Cambios</button>
+        </div>
+    </div>
+</div>

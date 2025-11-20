@@ -1,14 +1,28 @@
+<!-- Componente de la barra de navegación del administrador -->
 <app-barra-navegacion-admin></app-barra-navegacion-admin>
 
+<!-- Título de la página -->
 <h2 class="table-title">Lista de Usuarios</h2>
+
+<!-- Descripción de la funcionalidad -->
 <p class="table-description">
   Aquí puedes gestionar todos los veterinarios registrados en la plataforma. Puedes agregar nuevos veterinarios, editar información existente o eliminar incluso cuentas.
 </p>
 
+<!-- ===== BOTÓN PARA AGREGAR VETERINARIO ===== -->
 <div class="btn-container">
-  <button type="button" class="btn-action btn-edit btn-agregar">Ingresar Veterinario</button>
+  <!-- 
+    Botón con icono de Font Awesome
+    (click): Event binding que ejecuta el método al hacer clic
+  -->
+  <button type="button" class="btn-action btn-edit btn-agregar" (click)="abrirModalIngresar()">
+    <i class="fa-solid fa-user-plus"></i> Ingresar Veterinario
+  </button>
 </div>
+
+<!-- ===== TABLA DE VETERINARIOS ===== -->
 <table class="custom-table">
+  <!-- Encabezados de la tabla -->
   <thead>
     <tr>
       <th class="col-nombre">Nombre</th>
@@ -19,29 +33,234 @@
     </tr>
   </thead>
 
+  <!-- Cuerpo de la tabla con datos dinámicos -->
   <tbody>
-    <tr>
-      <td class="col-nombre">Bryan</td>
-      <td class="col-apellido">Justin</td>
-      <td class="col-edad">22</td>
-      <td class="col-correo">bryan@gmail.com</td>
+    <!-- 
+      *ngFor: Directiva que itera sobre el array 'veterinarios'
+      let veterinario of veterinarios: Variable temporal para cada elemento
+      let i = index: Captura el índice de cada elemento (0, 1, 2...)
+    -->
+    <tr *ngFor="let veterinario of veterinarios; let i = index">
+      <!-- Interpolación {{ }} muestra los datos de cada veterinario -->
+      <td class="col-nombre">{{ veterinario.nombre }}</td>
+      <td class="col-apellido">{{ veterinario.apellido }}</td>
+      <td class="col-edad">{{ veterinario.edad }}</td>
+      <td class="col-correo">{{ veterinario.correo }}</td>
+      
+      <!-- Columna con botones de acción -->
       <td class="col-acciones">
-        <button class="btn-action btn-edit">Editar</button>
-        <button class="btn-action btn-disable">Desactivar</button>
-        <button class="btn-action btn-delete">Eliminar</button>
-      </td>
-    </tr>
-
-    <tr>
-      <td class="col-nombre">María</td>
-      <td class="col-apellido">Gómez</td>
-      <td class="col-edad">30</td>
-      <td class="col-correo">maria@gmail.com</td>
-      <td class="col-acciones">
-        <button class="btn-action btn-edit">Editar</button>
-        <button class="btn-action btn-disable">Desactivar</button>
-        <button class="btn-action btn-delete">Eliminar</button>
+        <!-- Botón EDITAR: Abre modal con datos del veterinario -->
+        <button class="btn-action btn-edit" (click)="abrirModalEditar(veterinario, i)">
+          <i class="fa-solid fa-pen-to-square"></i> Editar
+        </button>
+        
+        <!-- Botón DESACTIVAR: Cambia el estado del veterinario -->
+        <button class="btn-action btn-disable" (click)="toggleDesactivar(i)">
+          <i class="fa-solid fa-ban"></i> Desactivar
+        </button>
+        
+        <!-- Botón ELIMINAR: Elimina el veterinario del array -->
+        <button class="btn-action btn-delete" (click)="eliminarVeterinario(i)">
+          <i class="fa-solid fa-trash"></i> Eliminar
+        </button>
       </td>
     </tr>
   </tbody>
 </table>
+
+<!-- ========== MODAL INGRESAR VETERINARIO ========== -->
+<!-- 
+  *ngIf: Solo se muestra cuando mostrarModalIngresar es true
+  (click): Cierra el modal si se hace clic en el fondo oscuro
+-->
+<div class="modal-overlay" *ngIf="mostrarModalIngresar" (click)="cerrarModalIngresar()">
+  <!-- 
+    $event.stopPropagation(): Evita que el clic dentro del modal lo cierre
+    Permite interactuar con el contenido sin cerrar el modal
+  -->
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <!-- Encabezado del modal con título y botón cerrar -->
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-user-doctor"></i> Ingresar Nuevo Veterinario</h2>
+      <button class="btn-close" (click)="cerrarModalIngresar()">&times;</button>
+    </div>
+
+    <!-- Formulario del modal -->
+    <form class="modal-body">
+      <!-- ===== SECCIÓN: Información Personal ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-id-card"></i> Información Personal</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <!-- 
+              [(ngModel)]: Two-way data binding
+              Vincula el input con nuevoVeterinario.nombre
+              Los cambios se reflejan automáticamente
+            -->
+            <input type="text" [(ngModel)]="nuevoVeterinario.nombre" name="nombre" placeholder="Nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Apellido *</label>
+            <input type="text" [(ngModel)]="nuevoVeterinario.apellido" name="apellido" placeholder="Apellido" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Edad</label>
+            <input type="number" [(ngModel)]="nuevoVeterinario.edad" name="edad" placeholder="Edad">
+          </div>
+          <div class="form-group">
+            <label>Cédula</label>
+            <input type="text" [(ngModel)]="nuevoVeterinario.cedula" name="cedula" placeholder="1234567890">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECCIÓN: Información de Contacto ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-address-book"></i> Información de Contacto</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Correo Electrónico *</label>
+            <!-- type="email": Validación automática de formato de correo -->
+            <input type="email" [(ngModel)]="nuevoVeterinario.correo" name="correo" placeholder="correo@ejemplo.com" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <!-- type="tel": Optimizado para entrada de teléfono en móviles -->
+            <input type="tel" [(ngModel)]="nuevoVeterinario.telefono" name="telefono" placeholder="0999999999">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECCIÓN: Información Profesional ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-briefcase-medical"></i> Información Profesional</h3>
+        <div class="form-group">
+          <label>Especialidad</label>
+          <!-- Select con opciones predefinidas de especialidades veterinarias -->
+          <select [(ngModel)]="nuevoVeterinario.especialidad" name="especialidad">
+            <option value="">Seleccione una especialidad</option>
+            <option value="Medicina General">Medicina General</option>
+            <option value="Cirugía Veterinaria">Cirugía Veterinaria</option>
+            <option value="Dermatología">Dermatología</option>
+            <option value="Odontología">Odontología</option>
+            <option value="Cardiología">Cardiología</option>
+            <option value="Oftalmología">Oftalmología</option>
+            <option value="Traumatología">Traumatología</option>
+            <option value="Medicina Interna">Medicina Interna</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <!-- Pie del modal con botones -->
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModalIngresar()">Cancelar</button>
+      <!-- 
+        Al hacer clic en Guardar:
+        1. Se validan los campos obligatorios
+        2. Se agrega el veterinario al array
+        3. La tabla se actualiza automáticamente
+      -->
+      <button class="btn-guardar" (click)="guardarNuevoVeterinario()">
+        <i class="fa-solid fa-floppy-disk"></i> Guardar Veterinario
+      </button>
+    </div>
+  </div>
+</div>
+
+<!-- ========== MODAL EDITAR VETERINARIO ========== -->
+<!-- 
+  Modal más compacto para edición rápida
+  Usa veterinarioEditar en lugar de nuevoVeterinario
+  Pre-carga datos del veterinario seleccionado
+-->
+<div class="modal-overlay" *ngIf="mostrarModalEditar" (click)="cerrarModalEditar()">
+  <!-- modal-editar: Clase adicional para estilo más compacto (max-width: 650px) -->
+  <div class="modal-content modal-editar" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2><i class="fa-solid fa-pen-to-square"></i> Editar Veterinario</h2>
+      <button class="btn-close" (click)="cerrarModalEditar()">&times;</button>
+    </div>
+
+    <form class="modal-body">
+      <!-- ===== SECCIÓN: Información Personal ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-id-card"></i> Información Personal</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nombre *</label>
+            <!-- 
+              veterinarioEditar: Contiene la copia del veterinario seleccionado
+              Los cambios no afectan la tabla hasta presionar "Guardar Cambios"
+            -->
+            <input type="text" [(ngModel)]="veterinarioEditar.nombre" name="nombre" placeholder="Nombre" required>
+          </div>
+          <div class="form-group">
+            <label>Apellido *</label>
+            <input type="text" [(ngModel)]="veterinarioEditar.apellido" name="apellido" placeholder="Apellido" required>
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Edad</label>
+            <input type="number" [(ngModel)]="veterinarioEditar.edad" name="edad" placeholder="Edad">
+          </div>
+          <div class="form-group">
+            <label>Cédula</label>
+            <input type="text" [(ngModel)]="veterinarioEditar.cedula" name="cedula" placeholder="1234567890">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECCIÓN: Información de Contacto ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-address-book"></i> Información de Contacto</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Correo Electrónico *</label>
+            <input type="email" [(ngModel)]="veterinarioEditar.correo" name="correo" placeholder="correo@ejemplo.com" required>
+          </div>
+          <div class="form-group">
+            <label>Teléfono</label>
+            <input type="tel" [(ngModel)]="veterinarioEditar.telefono" name="telefono" placeholder="0999999999">
+          </div>
+        </div>
+      </div>
+
+      <!-- ===== SECCIÓN: Información Profesional ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-briefcase-medical"></i> Información Profesional</h3>
+        <div class="form-group">
+          <label>Especialidad</label>
+          <select [(ngModel)]="veterinarioEditar.especialidad" name="especialidad">
+            <option value="">Seleccione una especialidad</option>
+            <option value="Medicina General">Medicina General</option>
+            <option value="Cirugía Veterinaria">Cirugía Veterinaria</option>
+            <option value="Dermatología">Dermatología</option>
+            <option value="Odontología">Odontología</option>
+            <option value="Cardiología">Cardiología</option>
+            <option value="Oftalmología">Oftalmología</option>
+            <option value="Traumatología">Traumatología</option>
+            <option value="Medicina Interna">Medicina Interna</option>
+          </select>
+        </div>
+      </div>
+    </form>
+
+    <!-- Pie del modal con botones -->
+    <div class="modal-footer">
+      <button class="btn-cancelar" (click)="cerrarModalEditar()">Cancelar</button>
+      <!-- 
+        Al guardar cambios:
+        1. veterinarioEditar se copia de vuelta al array en la posición indiceEditando
+        2. La tabla se actualiza mostrando los nuevos datos
+      -->
+      <button class="btn-guardar" (click)="guardarEdicion()">
+        <i class="fa-solid fa-check"></i> Guardar Cambios
+      </button>
+    </div>
+  </div>
+</div>

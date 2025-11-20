@@ -1,10 +1,15 @@
+/* ========================================
+   ESTILOS GENERALES DE LA PÁGINA
+   ======================================== */
+
+/* Contenedor principal con fondo gris claro */
 .fondo-lista-usuarios {
   background-color: #ebebeb;
   padding: 40px 0;
-  min-height: 100vh;
+  min-height: 100vh; /* Altura mínima de toda la pantalla */
 }
 
-/* Título */
+/* ===== TÍTULO DE LA TABLA ===== */
 .table-title {
   text-align: center;
   font-size: 2rem;
@@ -14,108 +19,411 @@
   position: relative;
 }
 
+/* Línea decorativa debajo del título */
 .table-title::after {
-  content: "";
+  content: ""; /* Pseudo-elemento vacío */
   display: block;
   width: 80px;
   height: 4px;
-  background-color: #00bfa6;
+  background-color: #00bfa6; /* Color turquesa de la página */
   margin: 10px auto 0;
   border-radius: 2px;
 }
 
-/* Tabla */
+/* ===== ESTILOS DE LA TABLA ===== */
 .custom-table {
   width: 100%;
-  border-collapse: collapse;
+  border-collapse: collapse; /* Une los bordes de las celdas */
   text-align: center;
   font-size: 1rem;
 }
 
+/* Encabezado de la tabla con color turquesa */
 .custom-table thead {
   background-color: #00bfa6;
   color: white;
 }
 
+/* Espaciado y bordes de celdas */
 .custom-table th,
 .custom-table td {
   padding: 12px;
   border-bottom: 2px solid #e0e0e0;
 }
 
+/* Efecto hover en las filas - fondo turquesa suave */
 .custom-table tbody tr:hover {
-  background-color: rgba(0, 191, 166, 0.1);
-  transition: 0.3s;
+  background-color: rgba(0, 191, 166, 0.1); /* 10% de opacidad */
+  transition: 0.3s; /* Transición suave */
 }
 
-/* Botones */
+/* ===== BOTONES DE ACCIÓN ===== */
+/* Estilos base para todos los botones */
 .btn-action {
   padding: 8px 15px;
-  border-radius: 20px;
+  border-radius: 20px; /* Bordes redondeados */
   border: none;
   font-weight: 700;
   cursor: pointer;
-  transition: all 0.3s ease;
+  transition: all 0.3s ease; /* Transición suave para hover */
 }
 
-
+/* Botón EDITAR - Color turquesa claro */
 .btn-edit {
   background-color: #51C2CB;
   color: #fff;
 }
 
 .btn-edit:hover {
-  background-color: #04b19a;
-  transform: translateY(-2px);
+  background-color: #04b19a; /* Turquesa más oscuro */
+  transform: translateY(-2px); /* Efecto de levantamiento */
 }
 
+/* Botón REVISADO - Color verde */
 .btn-revisado {
   background-color: #39d353;
   color: white;
 }
 
 .btn-revisado:hover {
-  background-color: #2fb347;
+  background-color: #2fb347; /* Verde más oscuro */
   transform: translateY(-2px);
 }
 
+/* Botón ELIMINAR - Color rojo */
 .btn-delete {
   background-color: #ff6b6b;
   color: #fff;
 }
 
 .btn-delete:hover {
-  background-color: #e54848;
+  background-color: #e54848; /* Rojo más oscuro */
   transform: translateY(-2px);
 }
 
+/* Botón REGISTRO CLÍNICO - Color azul */
 .btn-Regitro{
   background-color: #33aaeb;
   color: white;
 }
+
 .btn-Regitro:hover{
-  background-color: #2495d2;
+  background-color: #2495d2; /* Azul más oscuro */
   color: white;
 }
 
-/* Animación */
-@keyframes slideUp {
+/* ========================================
+   ESTILOS DE LOS MODALES
+   ======================================== */
+
+/* ===== OVERLAY/FONDO DEL MODAL ===== */
+.modal-overlay {
+  position: fixed; /* Fijo en la pantalla */
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.6); /* Fondo negro semi-transparente */
+  display: flex;
+  justify-content: center; /* Centra horizontalmente */
+  align-items: center; /* Centra verticalmente */
+  z-index: 1000; /* Por encima de todo el contenido */
+  animation: fadeIn 0.3s ease; /* Animación de entrada */
+}
+
+/* Animación de aparición gradual del overlay */
+@keyframes fadeIn {
   from {
-    transform: translateY(60px);
-    opacity: 0;
+    opacity: 0; /* Invisible al inicio */
   }
   to {
-    transform: translateY(0);
-    opacity: 1;
+    opacity: 1; /* Totalmente visible al final */
   }
 }
 
-/*RESPONSIVIDAD*/
+/* ===== CONTENEDOR DEL MODAL ===== */
+.modal-content {
+  background: white;
+  border-radius: 20px; /* Esquinas redondeadas */
+  width: 90%; /* 90% del ancho de la pantalla */
+  max-width: 900px; /* Máximo 900px en pantallas grandes */
+  max-height: 90vh; /* Máximo 90% de la altura de la ventana */
+  overflow-y: auto; /* Scroll vertical si el contenido es muy largo */
+  box-shadow: 0 10px 40px rgba(0, 0, 0, 0.3); /* Sombra profunda */
+  animation: slideUp 0.3s ease; /* Animación de deslizamiento hacia arriba */
+}
+
+/* ===== ENCABEZADO DEL MODAL ===== */
+.modal-header {
+  /* Gradiente con los colores de la página */
+  background: linear-gradient(135deg, #00bfa6, #33aaeb);
+  color: white;
+  padding: 20px 30px;
+  border-radius: 20px 20px 0 0; /* Esquinas superiores redondeadas */
+  display: flex;
+  justify-content: space-between; /* Título a la izquierda, botón a la derecha */
+  align-items: center;
+  position: sticky; /* Se mantiene visible al hacer scroll */
+  top: 0;
+  z-index: 10;
+}
+
+.modal-header h2 {
+  margin: 0;
+  font-size: 1.6rem;
+  font-weight: 700;
+}
+
+/* Iconos en los títulos del modal */
+.modal-header h2 i {
+  margin-right: 10px; /* Espacio entre icono y texto */
+}
+
+/* Iconos en los subtítulos de secciones */
+.seccion h3 i {
+  margin-right: 8px; /* Espacio entre icono y texto */
+}
+
+/* ===== BOTÓN CERRAR (X) ===== */
+.btn-close {
+  background: rgba(255, 255, 255, 0.2); /* Fondo blanco semi-transparente */
+  border: none;
+  color: white;
+  font-size: 2rem;
+  width: 40px;
+  height: 40px;
+  border-radius: 50%; /* Forma circular */
+  cursor: pointer;
+  transition: all 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  line-height: 1;
+}
+
+/* Efecto hover del botón cerrar */
+.btn-close:hover {
+  background: rgba(255, 255, 255, 0.3); /* Más opaco */
+  transform: rotate(90deg); /* Rotación de 90 grados */
+}
+
+/* ===== CUERPO DEL MODAL ===== */
+.modal-body {
+  padding: 30px;
+}
+
+/* ===== SECCIONES DEL FORMULARIO ===== */
+.seccion {
+  margin-bottom: 30px;
+  padding: 20px;
+  background: #f8f9fa; /* Fondo gris muy claro */
+  border-radius: 12px; /* Esquinas redondeadas */
+  border-left: 4px solid #00bfa6; /* Borde izquierdo turquesa como indicador */
+}
+
+.seccion h3 {
+  color: #00bfa6; /* Título en color turquesa */
+  font-size: 1.2rem;
+  font-weight: 700;
+  margin-bottom: 15px;
+}
+
+/* ===== LAYOUT DE FILAS DE FORMULARIO ===== */
+/* Grid responsive: crea columnas automáticamente según el espacio disponible */
+.form-row {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); /* Mínimo 200px por columna */
+  gap: 15px; /* Espacio entre columnas */
+  margin-bottom: 15px;
+}
+
+/* ===== GRUPOS DE CAMPOS ===== */
+.form-group {
+  display: flex;
+  flex-direction: column; /* Label arriba, input abajo */
+}
+
+.form-group label {
+  font-weight: 600;
+  color: #333;
+  margin-bottom: 5px;
+  font-size: 0.9rem;
+}
+
+/* ===== ESTILOS DE INPUTS ===== */
+/* Inputs, textareas y selects comparten los mismos estilos base */
+.form-group input,
+.form-group textarea,
+.form-group select {
+  padding: 10px 15px;
+  border: 2px solid #e0e0e0; /* Borde gris claro */
+  border-radius: 8px;
+  font-size: 0.95rem;
+  transition: all 0.3s ease; /* Transición suave */
+  font-family: inherit; /* Hereda la fuente del documento */
+}
+
+/* Estado focus (cuando el usuario hace clic en el campo) */
+.form-group input:focus,
+.form-group textarea:focus,
+.form-group select:focus {
+  outline: none; /* Quita el outline por defecto del navegador */
+  border-color: #00bfa6; /* Borde turquesa */
+  box-shadow: 0 0 0 3px rgba(0, 191, 166, 0.1); /* Sombra turquesa suave */
+}
+
+/* ===== INPUT DE ARCHIVO ===== */
+.input-file {
+  padding: 8px !important;
+  cursor: pointer;
+}
+
+/* Estilos del botón de selección de archivo (solo Chrome/Safari) */
+.input-file::-webkit-file-upload-button {
+  background: #00bfa6; /* Color turquesa */
+  color: white;
+  border: none;
+  padding: 8px 15px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-weight: 600;
+  margin-right: 10px;
+  transition: all 0.3s ease;
+}
+
+.input-file::-webkit-file-upload-button:hover {
+  background: #04b19a; /* Turquesa más oscuro */
+}
+
+/* ===== PIE DEL MODAL ===== */
+.modal-footer {
+  padding: 20px 30px;
+  background: #f8f9fa; /* Fondo gris claro */
+  border-radius: 0 0 20px 20px; /* Esquinas inferiores redondeadas */
+  display: flex;
+  justify-content: flex-end; /* Botones alineados a la derecha */
+  gap: 15px; /* Espacio entre botones */
+  position: sticky; /* Se mantiene visible al hacer scroll */
+  bottom: 0;
+}
+
+/* ===== BOTONES DEL MODAL ===== */
+.btn-cancelar,
+.btn-guardar {
+  padding: 12px 30px;
+  border: none;
+  border-radius: 25px; /* Botones redondeados */
+  font-weight: 700;
+  font-size: 1rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+/* Botón Cancelar - Gris */
+.btn-cancelar {
+  background: #e0e0e0;
+  color: #666;
+}
+
+.btn-cancelar:hover {
+  background: #d0d0d0; /* Gris más oscuro */
+  transform: translateY(-2px); /* Efecto de levantamiento */
+}
+
+/* Botón Guardar - Gradiente turquesa-azul */
+.btn-guardar {
+  background: linear-gradient(135deg, #00bfa6, #33aaeb);
+  color: white;
+  box-shadow: 0 4px 12px rgba(0, 191, 166, 0.3); /* Sombra turquesa */
+}
+
+.btn-guardar:hover {
+  transform: translateY(-2px); /* Efecto de levantamiento */
+  box-shadow: 0 6px 16px rgba(0, 191, 166, 0.4); /* Sombra más pronunciada */
+}
+
+/* ===== MODAL DE EDICIÓN - VARIANTE MÁS COMPACTA ===== */
+.modal-editar {
+  max-width: 700px; /* Más estrecho que el modal de registro clínico */
+}
+
+/* Header con gradiente diferente para distinguirlo */
+.modal-editar .modal-header {
+  background: linear-gradient(135deg, #51C2CB, #33aaeb); /* Turquesa claro + Azul */
+}
+
+/* ===== SCROLLBAR PERSONALIZADO ===== */
+/* Ancho del scrollbar (solo Chrome/Safari) */
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+/* Pista/track del scrollbar */
+.modal-content::-webkit-scrollbar-track {
+  background: #f1f1f1; /* Gris muy claro */
+}
+
+/* Pulgar/thumb del scrollbar */
+.modal-content::-webkit-scrollbar-thumb {
+  background: #00bfa6; /* Color turquesa de la página */
+  border-radius: 10px;
+}
+
+/* Pulgar del scrollbar al hacer hover */
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: #04b19a; /* Turquesa más oscuro */
+}
+
+/* ===== ANIMACIÓN DE DESLIZAMIENTO ===== */
+/* Animación que hace aparecer el modal desde abajo */
+@keyframes slideUp {
+  from {
+    transform: translateY(60px); /* Inicia 60px abajo */
+    opacity: 0; /* Invisible */
+  }
+  to {
+    transform: translateY(0); /* Posición final */
+    opacity: 1; /* Totalmente visible */
+  }
+}
+
+/* ========================================
+   RESPONSIVE - ESTILOS PARA MÓVILES
+   ======================================== */
 @media (max-width: 768px) {
+  /* Modal más ancho y alto en móviles */
+  .modal-content {
+    width: 95%; /* Casi todo el ancho de la pantalla */
+    max-height: 95vh; /* Casi toda la altura */
+  }
+
+  /* Título más pequeño en móviles */
+  .modal-header h2 {
+    font-size: 1.2rem;
+  }
+
+  /* Menos padding en el cuerpo del modal */
+  .modal-body {
+    padding: 20px;
+  }
+
+  /* Una sola columna en formularios para móviles */
+  .form-row {
+    grid-template-columns: 1fr; /* Todos los campos en una columna */
+  }
+
+  /* Menos padding en secciones */
+  .seccion {
+    padding: 15px;
+  }
+
+  /* ===== TABLA RESPONSIVE TIPO CARDS ===== */
+  /* Ocultar encabezados en móviles */
   .custom-table thead {
     display: none;
   }
 
+  /* Convertir cada fila en un bloque (card) */
   .custom-table,
   .custom-table tbody,
   .custom-table tr,
@@ -124,26 +432,27 @@
     width: 100%;
   }
 
+  /* Cada fila se convierte en una tarjeta */
   .custom-table tr {
     margin-bottom: 20px;
     background: rgba(255, 255, 255, 0.95);
-    backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px); /* Efecto de desenfoque del fondo */
     padding: 15px;
     border-radius: 15px;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1); /* Sombra suave */
   }
 
-
-  /* Estilo de los labels */
+  /* Labels antes de cada dato en móviles */
   .custom-table td::before {
     position: absolute;
     left: 15px;
     font-weight: 700;
-    color: #00bfa6;
+    color: #00bfa6; /* Color turquesa */
   }
 
+  /* Botones ocupan casi todo el ancho en móviles */
   .btn-action {
-    width: 48%;
+    width: 48%; /* Dos botones por fila */
     margin-top: 10px;
   }
 }
