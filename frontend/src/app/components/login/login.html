@@ -13,8 +13,16 @@
 
         <div class="mb-3">
             <label for="inputPassword" class="form-label">Contraseña:</label>
-            <input type="password" id="inputPassword" class="form-control" placeholder="Ingrese su contraseña"
-                aria-describedby="passwordHelpBlock" required>
+            <div class="password-container">
+                <!--TYPE renderiza la UI con funcionalidad (controla el estado de visibilidad de la contraseña)-->
+                <input [type]="showPassword ? 'text' : 'password'" id="inputPassword" class="form-control" 
+                    placeholder="Ingrese su contraseña" aria-describedby="passwordHelpBlock" required>
+                    <!--Boton que realiza evento click para invocar al metodo de visualizar contraseña  o no mostar contraseña-->
+                <button type="button" class="btn-toggle-password" (click)="togglePassword()" aria-label="Mostrar contraseña">
+                    <!--Colocamos el icono del fond-Awesome del ojo para el campo contraseña-->
+                    <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                </button>
+            </div>
         </div>
 
         <button type="button" class="btn btn-primary">Iniciar Sesión</button>

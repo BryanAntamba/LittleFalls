@@ -1,0 +1,26 @@
+<section class="login-section">
+    <a routerLink="" class="btn-regresar">
+        <i class="fa-solid fa-arrow-left"></i> Regresar
+    </a>
+    <form class="login-form">
+        <h2>Restablecer contraseña</h2>
+        <p>Ingrese una nueva contraseña.</p>
+        <div class="mb-3">
+            <label for="inputEmail" class="form-label">contraseña:</label>
+            <div class="password-container">
+                <!--TYPE renderiza la UI con funcionalidad (controla el estado de visibilidad de la contraseña)-->
+                <input [type]="showPassword ? 'text' : 'password'" id="inputPassword" class="form-control" 
+                    placeholder="Ingrese su nueva contraseña" aria-describedby="emailHelpBlock" required>
+                    <!--Boton que realiza evento click para invocar al metodo de visualizar contraseña  o no mostar contraseña-->
+                <button type="button" class="btn-toggle-password" (click)="togglePassword()" aria-label="Mostrar contraseña">
+                    <!--Colocamos el icono del fond-Awesome del ojo para el campo contraseña-->
+                    <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                </button>
+            </div>
+        </div>
+        <button type="button" class="btn btn-primary" routerLink="/Login-LittleFalls">Confirmar</button>
+        <div class="login-links">
+    </div>
+    </form>
+</section>
+<app-pie-pagina></app-pie-pagina>
