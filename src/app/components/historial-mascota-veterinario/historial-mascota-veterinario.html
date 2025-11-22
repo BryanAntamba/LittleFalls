@@ -1,60 +1,250 @@
 <app-barra-navegacion-veterinario></app-barra-navegacion-veterinario>
 
 <section class="fondo-historial-mascotas">
-  <h2 class="titulo-historial">Historial de mascotas</h2>
+    <h2 class="titulo-historial">Historial de mascotas</h2>
 
-  <label for="exampleDataList" class="form-label label-historial">
-    Ingrese nombre de la mascota:
-  </label>
+    <label for="exampleDataList" class="form-label label-historial">
+        Ingrese nombre de la mascota:
+    </label>
 
-  <input class="form-control input-historial" list="datalistOptions" id="exampleDataList"
-    placeholder="Escriba para Buscar...">
-  <section class="fondo-lista-usuarios">
-     <table class="custom-table">
-        <thead>
-            <tr>
-                <th class="col-nombre">Nombre</th>
-                <th class="col-apellido">Apellido</th>
-                <th class="col-correo">Correo</th>
-                <th class="col-telefono">Telefono</th>
-                <th class="col-nombreMascota">Nombre de la Mascota</th>
-                <th class="col-edadMascota">Edad mascota</th>
-                <th class="col-generoMascota">Genero de Mascota</th>
-                <th class="col-tipoMascota">Tipo de Mascota</th>
-                <th class="col-descripcion">Descripcion</th>
-            </tr>
-        </thead>
+    <input class="form-control input-historial" [(ngModel)]="terminoBusqueda" id="exampleDataList"
+        placeholder="Escriba para Buscar...">
 
-        <tbody>
-            <tr>
-                <td class="col-nombre">Bryan</td>
-                <td class="col-apellido">Justin</td>
-                <td class="col-correo">bryan123@gmail.com</td>
-                <td class="col-telefono">0995336712</td>
-                <th class="col-nombreMascota">Maxi</th>
-                <th class="col-edadMascota">3</th>
-                <th class="col-generoMascota">Macho</th>
-                <th class="col-tipoMascota">Gato</th>
-                <td class="col-descripcion">Mi mascota es un gato angora de 3 años que esta teniendo problemas al
-                    caminar y
-                    nose que es y necesito su ayuda para que le revicen porfavor.</td>
-            </tr>
+    <section class="fondo-lista-usuarios">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th class="col-nombre">Dueño</th>
+                    <th class="col-nombreMascota">Nombre de la Mascota</th>
+                    <th class="col-generoMascota">Género</th>
+                    <th class="col-acciones">Acciones</th>
+                </tr>
+            </thead>
 
-            <tr>
-                <td class="col-nombre">María</td>
-                <td class="col-apellido">Gómez</td>
-                <td class="col-correo">maria4000@gmail.com</td>
-                <td class="col-telefono">09178126643</td>
-                <th class="col-nombreMascota">Kary</th>
-                <th class="col-edadMascota">5</th>
-                <th class="col-generoMascota">Hembra</th>
-                <th class="col-tipoMascota">Perro</th>
-                <td class="col-descripcion">Buenas noches, necesito su ayuda ya que mi perrito de 5 añitos no quiere
-                    comer
-                    nada y solo pasa acostado y canzado, necesito que me ayuden con mi mascota, les agradeceria mucho.
-                </td>
-            </tr>
-        </tbody>
-    </table>
-  </section>
+            <tbody>
+                @for (mascota of mascotasFiltradas; track $index) {
+                <tr>
+                    <td class="col-nombre">{{ mascota.nombre }} {{ mascota.apellido }}</td>
+                    <th class="col-nombreMascota">{{ mascota.nombreMascota }}</th>
+                    <th class="col-generoMascota">{{ mascota.generoMascota }}</th>
+                    <td class="col-acciones">
+                        <button class="btn-action btn-edit" (click)="verHistorial($index)">
+                            Ver Historial Clínico
+                        </button>
+                    </td>
+                </tr>
+                }
+            </tbody>
+        </table>
+    </section>
 </section>
+
+<!-- ========== MODAL: VER HISTORIAL CLÍNICO ========== -->
+<div class="modal-overlay" *ngIf="mostrarModalHistorial" (click)="cerrarModalHistorial()">
+    <div class="modal-content modal-large" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>
+                <i class="fa-solid fa-book-medical"></i>
+                Historial Clínico - {{ mascotaSeleccionada?.nombreMascota }}
+            </h2>
+            <button class="btn-close" (click)="cerrarModalHistorial()">&times;</button>
+        </div>
+
+        <div class="modal-body">
+            <!-- Información de la mascota -->
+            <div class="info-mascota">
+                <p><strong>Dueño:</strong> {{ mascotaSeleccionada?.nombre }} {{ mascotaSeleccionada?.apellido }}</p>
+                <p><strong>Mascota:</strong> {{ mascotaSeleccionada?.nombreMascota }}</p>
+                <p><strong>Tipo:</strong> {{ mascotaSeleccionada?.tipoMascota }}</p>
+                <p><strong>Género:</strong> {{ mascotaSeleccionada?.generoMascota }}</p>
+                <p><strong>Edad:</strong> {{ mascotaSeleccionada?.edadMascota }} años</p>
+            </div>
+
+            <!-- Registro Clínico -->
+            <div class="registro-card" *ngIf="mascotaSeleccionada?.registroClinico">
+                <div class="registro-header">
+                    <h3>
+                        <i class="fa-solid fa-calendar"></i>
+                        Última Consulta: {{ mascotaSeleccionada.registroClinico.fechaConsulta | date: 'dd/MM/yyyy' }}
+                    </h3>
+                </div>
+
+                <div class="registro-body">
+                    <div class="registro-seccion">
+                        <strong>Motivo de Consulta:</strong> {{ mascotaSeleccionada.registroClinico.motivoConsulta }}
+                    </div>
+                    <div class="registro-seccion">
+                        <strong>Síntomas:</strong> {{ mascotaSeleccionada.registroClinico.sintomas }}
+                    </div>
+
+                    <div class="registro-row">
+                        <div><strong>Peso:</strong> {{ mascotaSeleccionada.registroClinico.peso }} kg</div>
+                        <div><strong>Temperatura:</strong> {{ mascotaSeleccionada.registroClinico.temperatura }}°C</div>
+                        <div><strong>FC:</strong> {{ mascotaSeleccionada.registroClinico.frecuenciaCardiaca }} lpm</div>
+                        <div><strong>FR:</strong> {{ mascotaSeleccionada.registroClinico.frecuenciaRespiratoria }} rpm
+                        </div>
+                        <div><strong>Condición:</strong> {{ obtenerNombreCondicion(mascotaSeleccionada.registroClinico.condicionCorporal) }}
+                        </div>
+                    </div>
+
+                    <div class="registro-seccion">
+                        <strong>Diagnóstico:</strong> {{ mascotaSeleccionada.registroClinico.diagnostico }}
+                    </div>
+                    <div class="registro-seccion">
+                        <strong>Tratamiento:</strong> {{ mascotaSeleccionada.registroClinico.tratamiento }}
+                    </div>
+                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.procedimientos">
+                        <strong>Procedimientos:</strong> {{ mascotaSeleccionada.registroClinico.procedimientos }}
+                    </div>
+                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.proximaCita">
+                        <strong>Próxima Cita:</strong> {{ mascotaSeleccionada.registroClinico.proximaCita | date:
+                        'dd/MM/yyyy' }}
+                    </div>
+
+                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.tipoVacuna">
+                        <strong>Vacuna Aplicada:</strong> {{ mascotaSeleccionada.registroClinico.tipoVacuna }}
+                        <span *ngIf="mascotaSeleccionada.registroClinico.fechaVacuna">
+                            - {{ mascotaSeleccionada.registroClinico.fechaVacuna | date: 'dd/MM/yyyy' }}
+                        </span>
+                    </div>
+                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.proximaDosis">
+                        <strong>Próxima Dosis:</strong> {{ mascotaSeleccionada.registroClinico.proximaDosis | date:
+                        'dd/MM/yyyy' }}
+                    </div>
+                </div>
+
+                <div class="modal-footer">
+                    <button class="btn-action btn-edit" (click)="abrirEditar()">
+                        <i class="fa-solid fa-edit"></i> Editar Registro
+                    </button>
+                </div>
+            </div>
+
+            <div class="sin-registros" *ngIf="!mascotaSeleccionada?.registroClinico">
+                <i class="fa-solid fa-clipboard-question"></i>
+                <p>No hay registro clínico para esta mascota</p>
+            </div>
+        </div>
+    </div>
+</div>
+
+<!-- ========== MODAL: EDITAR REGISTRO CLÍNICO ========== -->
+<div class="modal-overlay" *ngIf="mostrarModalEditarRegistro" (click)="cerrarModalEditarRegistro()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2><i class="fa-solid fa-edit"></i> Editar Registro Clínico</h2>
+            <button class="btn-close" (click)="cerrarModalEditarRegistro()">&times;</button>
+        </div>
+
+        <form class="modal-body">
+            <!-- Información Básica -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-file-medical"></i> Información Básica</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Fecha de Consulta</label>
+                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" required>
+                    </div>
+                    <div class="form-group">
+                        <label>Motivo de Consulta</label>
+                        <input type="text" [(ngModel)]="registroClinico.motivoConsulta" name="motivoConsulta2"
+                            placeholder="¿Por qué vino la mascota?">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Síntomas Observados</label>
+                    <textarea [(ngModel)]="registroClinico.sintomas" name="sintomas2" rows="3"
+                        placeholder="Describe los síntomas..."></textarea>
+                </div>
+            </div>
+
+            <!-- Examen Físico -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-stethoscope"></i> Examen Físico</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Peso (kg)</label>
+                        <input type="number" [(ngModel)]="registroClinico.peso" name="peso2" step="0.1"
+                            placeholder="0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Temperatura (°C)</label>
+                        <input type="number" [(ngModel)]="registroClinico.temperatura" name="temperatura2" step="0.1"
+                            placeholder="0.0">
+                    </div>
+                    <div class="form-group">
+                        <label>Frecuencia Cardíaca (bpm)</label>
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaCardiaca" name="frecuenciaCardiaca2"
+                            placeholder="0">
+                    </div>
+                    <div class="form-group">
+                        <label>Frecuencia Respiratoria (rpm)</label>
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaRespiratoria"
+                            name="frecuenciaRespiratoria2" placeholder="0">
+                    </div>
+                </div>
+                <div class="form-group">
+                    <label>Condición Corporal (1-5)</label>
+                    <select [(ngModel)]="registroClinico.condicionCorporal" name="condicionCorporal2">
+                        <option value="">Seleccione...</option>
+                        <option value="1">1 - Muy delgado</option>
+                        <option value="2">2 - Delgado</option>
+                        <option value="3">3 - Ideal</option>
+                        <option value="4">4 - Sobrepeso</option>
+                        <option value="5">5 - Obeso</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Diagnóstico y Tratamiento -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-notes-medical"></i> Diagnóstico y Tratamiento</h3>
+                <div class="form-group">
+                    <label>Diagnóstico</label>
+                    <textarea [(ngModel)]="registroClinico.diagnostico" name="diagnostico2" rows="3"
+                        placeholder="Diagnóstico del veterinario..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Tratamiento</label>
+                    <textarea [(ngModel)]="registroClinico.tratamiento" name="tratamiento2" rows="3"
+                        placeholder="Medicamentos, dosis, duración..."></textarea>
+                </div>
+                <div class="form-group">
+                    <label>Procedimientos Realizados</label>
+                    <input type="text" [(ngModel)]="registroClinico.procedimientos" name="procedimientos2"
+                        placeholder="Ej: Vacunación, limpieza dental, etc.">
+                </div>
+                <div class="form-group">
+                    <label>Próxima Cita</label>
+                    <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita2">
+                </div>
+            </div>
+
+            <!-- Vacunación -->
+            <div class="seccion">
+                <h3><i class="fa-solid fa-syringe"></i> Vacunación</h3>
+                <div class="form-row">
+                    <div class="form-group">
+                        <label>Tipo de Vacuna</label>
+                        <input type="text" [(ngModel)]="registroClinico.tipoVacuna" name="tipoVacuna2"
+                            placeholder="Ej: Rabia, Parvovirus...">
+                    </div>
+                    <div class="form-group">
+                        <label>Fecha de Vacuna</label>
+                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna2">
+                    </div>
+                    <div class="form-group">
+                        <label>Próxima Dosis</label>
+                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis2">
+                    </div>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="btn-cancelar" (click)="cerrarModalEditarRegistro()">Cancelar</button>
+                <button type="button" class="btn-guardar" (click)="guardarEdicionRegistro()">Actualizar
+                    Registro</button>
+            </div>
+        </form>
+    </div>
+</div>

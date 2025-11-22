@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { BarraNavegacionVeterinario } from '../barra-navegacion-veterinario/barra-navegacion-veterinario';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
+import { CitasService } from '../../services/citas.service';
 
 @Component({
   selector: 'app-gestion-citas-veterinario',
@@ -15,32 +16,10 @@ export class GestionCitasVeterinario {
   mostrarModalEditar = false; // Modal de edición de cita
   indiceEditando = -1; // Índice de la cita que se está editando (-1 = ninguna)
   
-  // Array que almacena todas las citas médicas
-  // En producción, estos datos vendrían de una API/base de datos
-  citas = [
-    {
-      nombre: 'Bryan',
-      apellido: 'Justin',
-      correo: 'bryan123@gmail.com',
-      telefono: '0995336712',
-      nombreMascota: 'Maxi',
-      edadMascota: '3',
-      generoMascota: 'Macho',
-      tipoMascota: 'Gato',
-      descripcion: 'Mi mascota es un gato angora de 3 años que esta teniendo problemas al caminar y nose que es y necesito su ayuda para que le revicen porfavor.'
-    },
-    {
-      nombre: 'María',
-      apellido: 'Gómez',
-      correo: 'maria4000@gmail.com',
-      telefono: '09178126643',
-      nombreMascota: 'Kary',
-      edadMascota: '5',
-      generoMascota: 'Hembra',
-      tipoMascota: 'Perro',
-      descripcion: 'Buenas noches, necesito su ayuda ya que mi perrito de 5 añitos no quiere comer nada y solo pasa acostado y canzado, necesito que me ayuden con mi mascota, les agradeceria mucho.'
-    }
-  ];
+  // Obtener las citas del servicio compartido
+  get citas() {
+    return this.citasService.getCitas();
+  }
 
   // Objeto que almacena todos los datos del registro clínico veterinario
   registroClinico = {
@@ -86,13 +65,22 @@ export class GestionCitasVeterinario {
     edadMascota: '',
     generoMascota: '',
     tipoMascota: '',
-    descripcion: ''
+    descripcion: '',
+    registrosClinicosHistorial: [] as any[]
   };
+
+  // Variable para indicar a qué cita pertenece el registro clínico que se está creando
+  indiceCitaActual = -1;
+
+  // Constructor para inyectar el servicio de citas
+  constructor(private citasService: CitasService) {}
 
   /**
    * Abre el modal de registro clínico
+   * @param indiceCita - Índice de la cita a la que se le agregará el registro clínico
    */
-  abrirModal() {
+  abrirModal(indiceCita: number) {
+    this.indiceCitaActual = indiceCita;
     this.mostrarModal = true;
   }
 
@@ -145,11 +133,42 @@ export class GestionCitasVeterinario {
    * En producción, aquí se haría una petición POST a la API
    */
   guardarRegistro() {
-    console.log('Registro clínico guardado:', this.registroClinico);
-    // TODO: Aquí irá la lógica para enviar los datos al backend
-    // Ejemplo: this.http.post('/api/registros', this.registroClinico).subscribe(...)
-    this.cerrarModal();
-    alert('Registro clínico guardado exitosamente');
+    if (this.indiceCitaActual !== -1) {
+      // Usar el servicio para agregar el registro clínico
+      const nuevoRegistro = this.citasService.agregarRegistroClinico(
+        this.indiceCitaActual, 
+        this.registroClinico
+      );
+      
+      console.log('Registro clínico guardado:', nuevoRegistro);
+      console.log('Cita actualizada:', this.citasService.getCita(this.indiceCitaActual));
+      
+      // Limpiar el formulario
+      this.registroClinico = {
+        fechaConsulta: '',
+        motivoConsulta: '',
+        sintomas: '',
+        peso: '',
+        temperatura: '',
+        frecuenciaCardiaca: '',
+        frecuenciaRespiratoria: '',
+        condicionCorporal: '',
+        diagnostico: '',
+        tratamiento: '',
+        procedimientos: '',
+        proximaCita: '',
+        tipoVacuna: '',
+        fechaVacuna: '',
+        proximaDosis: '',
+        fotoCarnet: null,
+        imagenesExamenes: [],
+        observaciones: '',
+        recomendaciones: ''
+      };
+      
+      this.cerrarModal();
+      alert('Registro clínico guardado exitosamente');
+    }
   }
 
   /**
@@ -159,8 +178,8 @@ export class GestionCitasVeterinario {
   guardarEdicion() {
     // Verificamos que tengamos un índice válido
     if (this.indiceEditando !== -1) {
-      // Actualizamos la cita en el array con los datos editados
-      this.citas[this.indiceEditando] = { ...this.citaEditar };
+      // Actualizamos la cita usando el servicio
+      this.citasService.actualizarCita(this.indiceEditando, { ...this.citaEditar });
       console.log('Cita actualizada:', this.citaEditar);
       // TODO: Aquí irá la lógica para actualizar en el backend
       // Ejemplo: this.http.put(`/api/citas/${id}`, this.citaEditar).subscribe(...)
@@ -176,8 +195,8 @@ export class GestionCitasVeterinario {
   eliminarCita(indice: number) {
     // Confirmación antes de eliminar
     if (confirm('¿Está seguro de eliminar esta cita?')) {
-      // Eliminamos la cita del array
-      this.citas.splice(indice, 1);
+      // Eliminamos usando el servicio
+      this.citasService.eliminarCita(indice);
       alert('Cita eliminada exitosamente');
       // TODO: Aquí irá la lógica para eliminar en el backend
       // Ejemplo: this.http.delete(`/api/citas/${id}`).subscribe(...)
@@ -189,7 +208,7 @@ export class GestionCitasVeterinario {
    * @param indice - Posición de la cita
    */
   marcarRevisado(indice: number) {
-    console.log('Cita marcada como revisada:', this.citas[indice]);
+    console.log('Cita marcada como revisada:', this.citasService.getCita(indice));
     alert('Cita marcada como revisada');
     // TODO: Aquí puedes agregar lógica adicional:
     // - Cambiar un campo 'estado' de la cita

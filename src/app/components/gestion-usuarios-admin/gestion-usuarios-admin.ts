@@ -14,6 +14,10 @@ export class GestionUsuariosAdmin {
   mostrarModalIngresar = false; // Controla la visibilidad del modal de ingreso
   mostrarModalEditar = false; // Controla la visibilidad del modal de edición
   indiceEditando = -1; // Índice del veterinario siendo editado (-1 = ninguno)
+  
+  // ===== VARIABLES DE CONTROL DE VISIBILIDAD DE CONTRASEÑAS =====
+  mostrarPassword = false; // Controla la visibilidad de la contraseña
+  mostrarConfirmPassword = false; // Controla la visibilidad de confirmar contraseña
 
   // ===== ARRAY DE DATOS =====
   // Array que almacena todos los veterinarios registrados
@@ -25,7 +29,6 @@ export class GestionUsuariosAdmin {
       edad: '22',
       correo: 'bryan@gmail.com',
       telefono: '0995336712',
-      especialidad: 'Medicina General',
       cedula: '1234567890'
     },
     {
@@ -34,7 +37,6 @@ export class GestionUsuariosAdmin {
       edad: '30',
       correo: 'maria@gmail.com',
       telefono: '0991234567',
-      especialidad: 'Cirugía Veterinaria',
       cedula: '0987654321'
     }
   ];
@@ -48,8 +50,9 @@ export class GestionUsuariosAdmin {
     edad: '',
     correo: '',
     telefono: '',
-    especialidad: '',
-    cedula: ''
+    cedula: '',
+    password: '',
+    confirmPassword: ''
   };
 
   // ===== OBJETO PARA EDITAR VETERINARIO =====
@@ -61,8 +64,9 @@ export class GestionUsuariosAdmin {
     edad: '',
     correo: '',
     telefono: '',
-    especialidad: '',
-    cedula: ''
+    cedula: '',
+    password: '',
+    confirmPassword: ''
   };
 
   /**
@@ -77,9 +81,13 @@ export class GestionUsuariosAdmin {
       edad: '',
       correo: '',
       telefono: '',
-      especialidad: '',
-      cedula: ''
+      cedula: '',
+      password: '',
+      confirmPassword: ''
     };
+    // Reseteamos la visibilidad de las contraseñas
+    this.mostrarPassword = false;
+    this.mostrarConfirmPassword = false;
     // Mostramos el modal
     this.mostrarModalIngresar = true;
   }
@@ -125,6 +133,18 @@ export class GestionUsuariosAdmin {
       return; // Salimos si falta algún campo
     }
 
+    // Validación de contraseña
+    if (!this.nuevoVeterinario.password || !this.nuevoVeterinario.confirmPassword) {
+      alert('Por favor ingrese la contraseña y su confirmación');
+      return;
+    }
+
+    // Verificar que las contraseñas coincidan
+    if (this.nuevoVeterinario.password !== this.nuevoVeterinario.confirmPassword) {
+      alert('Las contraseñas no coinciden');
+      return;
+    }
+
     // Agregamos el nuevo veterinario al array
     // Usamos spread operator para crear una copia
     this.veterinarios.push({ ...this.nuevoVeterinario });
@@ -145,6 +165,14 @@ export class GestionUsuariosAdmin {
   guardarEdicion() {
     // Verificamos que tengamos un índice válido
     if (this.indiceEditando !== -1) {
+      // Validar que las contraseñas coincidan si se están modificando
+      if (this.veterinarioEditar.password || this.veterinarioEditar.confirmPassword) {
+        if (this.veterinarioEditar.password !== this.veterinarioEditar.confirmPassword) {
+          alert('Las contraseñas no coinciden');
+          return;
+        }
+      }
+      
       // Actualizamos el veterinario en el array con los datos editados
       this.veterinarios[this.indiceEditando] = { ...this.veterinarioEditar };
       
@@ -188,5 +216,19 @@ export class GestionUsuariosAdmin {
     // Podrías agregar un campo 'activo: boolean' al objeto veterinario
     // y cambiar su estado aquí
     // Ejemplo: this.veterinarios[indice].activo = !this.veterinarios[indice].activo;
+  }
+
+  /**
+   * Alterna la visibilidad de la contraseña
+   */
+  togglePasswordVisibility() {
+    this.mostrarPassword = !this.mostrarPassword;
+  }
+
+  /**
+   * Alterna la visibilidad de confirmar contraseña
+   */
+  toggleConfirmPasswordVisibility() {
+    this.mostrarConfirmPassword = !this.mostrarConfirmPassword;
   }
 }

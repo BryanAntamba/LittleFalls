@@ -134,23 +134,38 @@
         </div>
       </div>
 
-      <!-- ===== SECCIÓN: Información Profesional ===== -->
+      <!-- ===== SECCIÓN: Seguridad ===== -->
       <div class="seccion">
-        <h3><i class="fa-solid fa-briefcase-medical"></i> Información Profesional</h3>
-        <div class="form-group">
-          <label>Especialidad</label>
-          <!-- Select con opciones predefinidas de especialidades veterinarias -->
-          <select [(ngModel)]="nuevoVeterinario.especialidad" name="especialidad">
-            <option value="">Seleccione una especialidad</option>
-            <option value="Medicina General">Medicina General</option>
-            <option value="Cirugía Veterinaria">Cirugía Veterinaria</option>
-            <option value="Dermatología">Dermatología</option>
-            <option value="Odontología">Odontología</option>
-            <option value="Cardiología">Cardiología</option>
-            <option value="Oftalmología">Oftalmología</option>
-            <option value="Traumatología">Traumatología</option>
-            <option value="Medicina Interna">Medicina Interna</option>
-          </select>
+        <h3><i class="fa-solid fa-lock"></i> Seguridad</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Contraseña *</label>
+            <div class="password-input-container">
+              <input 
+                [type]="mostrarPassword ? 'text' : 'password'" 
+                [(ngModel)]="nuevoVeterinario.password" 
+                name="password" 
+                placeholder="Ingrese contraseña" 
+                required>
+              <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
+                <i class="fa-solid" [class.fa-eye]="mostrarPassword" [class.fa-eye-slash]="!mostrarPassword"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirmar Contraseña *</label>
+            <div class="password-input-container">
+              <input 
+                [type]="mostrarConfirmPassword ? 'text' : 'password'" 
+                [(ngModel)]="nuevoVeterinario.confirmPassword" 
+                name="confirmPassword" 
+                placeholder="Repita la contraseña" 
+                required>
+              <button type="button" class="btn-toggle-password" (click)="toggleConfirmPasswordVisibility()">
+                <i class="fa-solid" [class.fa-eye]="mostrarConfirmPassword" [class.fa-eye-slash]="!mostrarConfirmPassword"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </form>
@@ -173,6 +188,7 @@
 
 <!-- ========== MODAL EDITAR VETERINARIO ========== -->
 <!-- 
+  *ngIf: Solo se muestra cuando mostrarModalEditar es true
   Modal más compacto para edición rápida
   Usa veterinarioEditar en lugar de nuevoVeterinario
   Pre-carga datos del veterinario seleccionado
@@ -230,22 +246,36 @@
         </div>
       </div>
 
-      <!-- ===== SECCIÓN: Información Profesional ===== -->
+      <!-- ===== SECCIÓN: Seguridad (Opcional) ===== -->
       <div class="seccion">
-        <h3><i class="fa-solid fa-briefcase-medical"></i> Información Profesional</h3>
-        <div class="form-group">
-          <label>Especialidad</label>
-          <select [(ngModel)]="veterinarioEditar.especialidad" name="especialidad">
-            <option value="">Seleccione una especialidad</option>
-            <option value="Medicina General">Medicina General</option>
-            <option value="Cirugía Veterinaria">Cirugía Veterinaria</option>
-            <option value="Dermatología">Dermatología</option>
-            <option value="Odontología">Odontología</option>
-            <option value="Cardiología">Cardiología</option>
-            <option value="Oftalmología">Oftalmología</option>
-            <option value="Traumatología">Traumatología</option>
-            <option value="Medicina Interna">Medicina Interna</option>
-          </select>
+        <h3><i class="fa-solid fa-lock"></i> Cambiar Contraseña (Opcional)</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Nueva Contraseña</label>
+            <div class="password-input-container">
+              <input 
+                [type]="mostrarPassword ? 'text' : 'password'" 
+                [(ngModel)]="veterinarioEditar.password" 
+                name="passwordEdit" 
+                placeholder="Dejar en blanco para no cambiar">
+              <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
+                <i class="fa-solid" [class.fa-eye]="mostrarPassword" [class.fa-eye-slash]="!mostrarPassword"></i>
+              </button>
+            </div>
+          </div>
+          <div class="form-group">
+            <label>Confirmar Nueva Contraseña</label>
+            <div class="password-input-container">
+              <input 
+                [type]="mostrarConfirmPassword ? 'text' : 'password'" 
+                [(ngModel)]="veterinarioEditar.confirmPassword" 
+                name="confirmPasswordEdit" 
+                placeholder="Repetir nueva contraseña">
+              <button type="button" class="btn-toggle-password" (click)="toggleConfirmPasswordVisibility()">
+                <i class="fa-solid" [class.fa-eye]="mostrarConfirmPassword" [class.fa-eye-slash]="!mostrarConfirmPassword"></i>
+              </button>
+            </div>
+          </div>
         </div>
       </div>
     </form>

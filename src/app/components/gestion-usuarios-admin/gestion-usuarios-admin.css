@@ -501,3 +501,43 @@
     margin-top: 10px;
   }
 }
+
+/* ========================================
+   ESTILOS PARA CAMPOS DE CONTRASEÑA
+   ======================================== */
+
+/* ===== CONTENEDOR DE INPUT CON BOTÓN DE VISIBILIDAD ===== */
+.password-input-container {
+  position: relative;
+  display: flex;
+  align-items: center;
+}
+
+.password-input-container input {
+  padding-right: 45px; /* Espacio para el botón del ojo */
+  width: 100%;
+}
+
+/* ===== BOTÓN TOGGLE VISIBILIDAD ===== */
+.btn-toggle-password {
+  position: absolute;
+  right: 10px;
+  background: transparent;
+  border: none;
+  cursor: pointer;
+  color: #666;
+  font-size: 1.1rem;
+  padding: 5px 8px;
+  transition: color 0.3s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-toggle-password:hover {
+  color: #00bfa6; /* Color turquesa al pasar el cursor */
+}
+
+.btn-toggle-password i {
+  pointer-events: none; /* Evita interferencia con el clic */
+}
