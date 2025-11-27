@@ -7,8 +7,8 @@
 
         <div class="mb-3">
             <label for="inputEmail" class="form-label">Correo:</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Ingrese un correo valido"
-                aria-describedby="emailHelpBlock" required>
+            <input type="email" id="inputEmail" class="form-control" [(ngModel)]="correo" name="correo"
+                placeholder="Ingrese un correo válido" aria-describedby="emailHelpBlock" required>
         </div>
 
         <div class="mb-3">
@@ -16,6 +16,7 @@
             <div class="password-container">
                 <!--TYPE renderiza la UI con funcionalidad (controla el estado de visibilidad de la contraseña)-->
                 <input [type]="showPassword ? 'text' : 'password'" id="inputPassword" class="form-control" 
+                    [(ngModel)]="password" name="password"
                     placeholder="Ingrese su contraseña" aria-describedby="passwordHelpBlock" required>
                     <!--Boton que realiza evento click para invocar al metodo de visualizar contraseña  o no mostar contraseña-->
                 <button type="button" class="btn-toggle-password" (click)="togglePassword()" aria-label="Mostrar contraseña">
@@ -25,7 +26,7 @@
             </div>
         </div>
 
-        <button type="button" class="btn btn-primary">Iniciar Sesión</button>
+        <button type="button" class="btn btn-primary" (click)="iniciarSesion()">Iniciar Sesión</button>
         <div class="login-links">
             <a routerLink="/RecuperarPasword" class="forgot-link">¿Olvidaste tu contraseña?</a>
             <a routerLink="/Registro-LittleFalls" class="register-link">Registrarte</a>

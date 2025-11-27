@@ -1,0 +1,66 @@
+<section class="login-section">
+    <a routerLink="/Login-LittleFalls" class="btn-regresar">
+        <i class="fa-solid fa-arrow-left"></i> Volver al Login
+    </a>
+    
+    <form class="login-form">
+        <div class="verification-header">
+            <i class="fa-solid fa-envelope-circle-check" style="font-size: 60px; color: #4CAF50;"></i>
+            <h2>Verifica tu Cuenta</h2>
+            <p class="subtitle">Hemos enviado un código de 6 dígitos a:</p>
+            <p class="email-display">{{ correo }}</p>
+        </div>
+
+        <div class="mb-3">
+            <label for="inputCodigo" class="form-label">Código de Verificación:</label>
+            <input 
+                type="text" 
+                id="inputCodigo" 
+                class="form-control code-input" 
+                [(ngModel)]="codigo" 
+                name="codigo"
+                placeholder="000000"
+                maxlength="6"
+                (keypress)="onlyNumbers($event)"
+                autocomplete="off"
+                required>
+            <small class="form-text">Ingresa el código de 6 dígitos que recibiste por correo</small>
+        </div>
+
+        <button 
+            type="button" 
+            class="btn btn-primary" 
+            (click)="verificarCodigo()"
+            [disabled]="cargando">
+            <span *ngIf="!cargando">
+                <i class="fa-solid fa-check-circle"></i> Verificar Cuenta
+            </span>
+            <span *ngIf="cargando">
+                <i class="fa-solid fa-spinner fa-spin"></i> Verificando...
+            </span>
+        </button>
+
+        <div class="resend-section">
+            <p>¿No recibiste el código?</p>
+            <button 
+                type="button" 
+                class="btn-link" 
+                (click)="reenviarCodigo()"
+                [disabled]="reenviando">
+                <span *ngIf="!reenviando">
+                    <i class="fa-solid fa-rotate"></i> Reenviar código
+                </span>
+                <span *ngIf="reenviando">
+                    <i class="fa-solid fa-spinner fa-spin"></i> Reenviando...
+                </span>
+            </button>
+        </div>
+
+        <div class="info-box">
+            <i class="fa-solid fa-info-circle"></i>
+            <p>El código expira en <strong>15 minutos</strong>. Revisa tu bandeja de entrada y spam.</p>
+        </div>
+    </form>
+</section>
+
+<app-pie-pagina></app-pie-pagina>
