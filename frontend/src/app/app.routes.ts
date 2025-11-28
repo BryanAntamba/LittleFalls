@@ -15,7 +15,8 @@ import { roleGuard } from './guards/role.guard';
 
 
 export const routes: Routes = [
-    { path: '', component: Inicio },
+    {path:'', redirectTo: 'home', pathMatch: 'full'},
+    { path: 'home', component: Inicio },
     { path: 'Login-LittleFalls', component: Login },
     { path: 'Registro-LittleFalls', component: Registro },
     { path: 'Verificar-Codigo', component: VerificarCodigo },
