@@ -6,22 +6,24 @@
 
 <!-- Descripción de la funcionalidad -->
 <p class="table-description">
-  Aquí puedes gestionar todos los veterinarios registrados en la plataforma. Puedes agregar nuevos veterinarios, editar información existente o eliminar incluso cuentas.
+  Aquí puedes gestionar todos los usuarios registrados en la plataforma (Administradores, Veterinarios y Pacientes). Puedes agregar nuevos usuarios, editar información existente o gestionar cuentas.
 </p>
 
 <!-- ===== BOTÓN PARA AGREGAR VETERINARIO ===== -->
 <div class="btn-container">
-  <!-- 
-    Botón con icono de Font Awesome
-    (click): Event binding que ejecuta el método al hacer clic
-  -->
   <button type="button" class="btn-action btn-edit btn-agregar" (click)="abrirModalIngresar()">
-    <i class="fa-solid fa-user-plus"></i> Ingresar Veterinario
+    <i class="fa-solid fa-user-plus"></i> Ingresar Usuario
   </button>
 </div>
 
+<!-- Mensaje de carga -->
+<div *ngIf="cargando" style="text-align: center; padding: 20px; color: #20B2AA;">
+  <i class="fa-solid fa-spinner fa-spin" style="font-size: 24px;"></i>
+  <p>Cargando usuarios...</p>
+</div>
+
 <!-- ===== TABLA DE VETERINARIOS ===== -->
-<table class="custom-table">
+<table class="custom-table" *ngIf="!cargando">
   <!-- Encabezados de la tabla -->
   <thead>
     <tr>
@@ -29,44 +31,76 @@
       <th class="col-apellido">Apellido</th>
       <th class="col-edad">Edad</th>
       <th class="col-correo">Correo Electrónico</th>
+      <th class="col-tipo">Tipo</th>
+      <th class="col-estado">Estado</th>
       <th class="col-acciones">Acciones</th>
     </tr>
   </thead>
 
   <!-- Cuerpo de la tabla con datos dinámicos -->
   <tbody>
-    <!-- 
-      *ngFor: Directiva que itera sobre el array 'veterinarios'
-      let veterinario of veterinarios: Variable temporal para cada elemento
-      let i = index: Captura el índice de cada elemento (0, 1, 2...)
-    -->
-    <tr *ngFor="let veterinario of veterinarios; let i = index">
-      <!-- Interpolación {{ }} muestra los datos de cada veterinario -->
+    <tr *ngFor="let veterinario of veterinarios; let i = index" [style.opacity]="veterinario.activo ? '1' : '0.6'">
       <td class="col-nombre">{{ veterinario.nombre }}</td>
       <td class="col-apellido">{{ veterinario.apellido }}</td>
       <td class="col-edad">{{ veterinario.edad }}</td>
       <td class="col-correo">{{ veterinario.correo }}</td>
       
+      <!-- Tipo de usuario -->
+      <td class="col-tipo">
+        <span *ngIf="veterinario.tipoUsuario === 'admin'" style="background: #007bff; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+          <i class="fa-solid fa-user-shield"></i> Admin
+        </span>
+        <span *ngIf="veterinario.tipoUsuario === 'veterinario'" style="background: #28a745; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+          <i class="fa-solid fa-user-doctor"></i> Veterinario
+        </span>
+        <span *ngIf="veterinario.tipoUsuario === 'paciente'" style="background: #6c757d; color: white; padding: 4px 12px; border-radius: 12px; font-size: 0.85rem; font-weight: 600;">
+          <i class="fa-solid fa-user"></i> Paciente
+        </span>
+      </td>
+      
+      <!-- Estado del usuario -->
+      <td class="col-estado">
+        <span *ngIf="veterinario.activo" style="color: #28a745; font-weight: bold;">
+          <i class="fa-solid fa-check-circle"></i> Activo
+        </span>
+        <span *ngIf="!veterinario.activo" style="color: #dc3545; font-weight: bold;">
+          <i class="fa-solid fa-times-circle"></i> Inactivo
+        </span>
+      </td>
+      
       <!-- Columna con botones de acción -->
       <td class="col-acciones">
-        <!-- Botón EDITAR: Abre modal con datos del veterinario -->
-        <button class="btn-action btn-edit" (click)="abrirModalEditar(veterinario, i)">
+        <!-- Botón EDITAR -->
+        <button class="btn-action btn-edit" (click)="abrirModalEditar(veterinario, i)" [disabled]="cargando">
           <i class="fa-solid fa-pen-to-square"></i> Editar
         </button>
         
-        <!-- Botón DESACTIVAR: Cambia el estado del veterinario -->
-        <button class="btn-action btn-disable" (click)="toggleDesactivar(i)">
-          <i class="fa-solid fa-ban"></i> Desactivar
+        <!-- Botón ACTIVAR/DESACTIVAR -->
+        <button 
+          class="btn-action" 
+          [class.btn-disable]="veterinario.activo"
+          [class.btn-activate]="!veterinario.activo"
+          (click)="toggleDesactivar(i)" 
+          [disabled]="cargando">
+          <i class="fa-solid" [class.fa-ban]="veterinario.activo" [class.fa-check]="!veterinario.activo"></i>
+          {{ veterinario.activo ? 'Desactivar' : 'Activar' }}
         </button>
         
-        <!-- Botón ELIMINAR: Elimina el veterinario del array -->
-        <button class="btn-action btn-delete" (click)="eliminarVeterinario(i)">
+        <!-- Botón ELIMINAR -->
+        <button class="btn-action btn-delete" (click)="eliminarVeterinario(i)" [disabled]="cargando">
           <i class="fa-solid fa-trash"></i> Eliminar
         </button>
       </td>
     </tr>
   </tbody>
 </table>
+
+<!-- Mensaje cuando no hay usuarios -->
+<div *ngIf="!cargando && veterinarios.length === 0" style="text-align: center; padding: 40px; color: #666;">
+  <i class="fa-solid fa-users-slash" style="font-size: 48px; color: #ddd;"></i>
+  <p style="margin-top: 20px; font-size: 18px;">No hay usuarios registrados</p>
+  <p style="color: #999;">Haz clic en "Ingresar Veterinario" para agregar uno nuevo</p>
+</div>
 
 <!-- ========== MODAL INGRESAR VETERINARIO ========== -->
 <!-- 
@@ -81,12 +115,26 @@
   <div class="modal-content" (click)="$event.stopPropagation()">
     <!-- Encabezado del modal con título y botón cerrar -->
     <div class="modal-header">
-      <h2><i class="fa-solid fa-user-doctor"></i> Ingresar Nuevo Veterinario</h2>
+      <h2><i class="fa-solid fa-user-plus"></i> Ingresar Nuevo Usuario</h2>
       <button class="btn-close" (click)="cerrarModalIngresar()">&times;</button>
     </div>
 
     <!-- Formulario del modal -->
     <form class="modal-body">
+      <!-- ===== SECCIÓN: Tipo de Usuario ===== -->
+      <div class="seccion">
+        <h3><i class="fa-solid fa-user-tag"></i> Tipo de Usuario</h3>
+        <div class="form-row">
+          <div class="form-group">
+            <label>Tipo de Usuario *</label>
+            <select [(ngModel)]="nuevoVeterinario.tipoUsuario" name="tipoUsuario" style="width: 100%; padding: 10px; border: 1px solid #ddd; border-radius: 5px;">
+              <option value="veterinario">Veterinario</option>
+              <option value="admin">Administrador</option>
+            </select>
+          </div>
+        </div>
+      </div>
+
       <!-- ===== SECCIÓN: Información Personal ===== -->
       <div class="seccion">
         <h3><i class="fa-solid fa-id-card"></i> Información Personal</h3>
@@ -110,10 +158,6 @@
             <label>Edad</label>
             <input type="number" [(ngModel)]="nuevoVeterinario.edad" name="edad" placeholder="Edad">
           </div>
-          <div class="form-group">
-            <label>Cédula</label>
-            <input type="text" [(ngModel)]="nuevoVeterinario.cedula" name="cedula" placeholder="1234567890">
-          </div>
         </div>
       </div>
 
@@ -125,11 +169,6 @@
             <label>Correo Electrónico *</label>
             <!-- type="email": Validación automática de formato de correo -->
             <input type="email" [(ngModel)]="nuevoVeterinario.correo" name="correo" placeholder="correo@ejemplo.com" required>
-          </div>
-          <div class="form-group">
-            <label>Teléfono</label>
-            <!-- type="tel": Optimizado para entrada de teléfono en móviles -->
-            <input type="tel" [(ngModel)]="nuevoVeterinario.telefono" name="telefono" placeholder="0999999999">
           </div>
         </div>
       </div>
@@ -224,10 +263,6 @@
             <label>Edad</label>
             <input type="number" [(ngModel)]="veterinarioEditar.edad" name="edad" placeholder="Edad">
           </div>
-          <div class="form-group">
-            <label>Cédula</label>
-            <input type="text" [(ngModel)]="veterinarioEditar.cedula" name="cedula" placeholder="1234567890">
-          </div>
         </div>
       </div>
 
@@ -238,10 +273,6 @@
           <div class="form-group">
             <label>Correo Electrónico *</label>
             <input type="email" [(ngModel)]="veterinarioEditar.correo" name="correo" placeholder="correo@ejemplo.com" required>
-          </div>
-          <div class="form-group">
-            <label>Teléfono</label>
-            <input type="tel" [(ngModel)]="veterinarioEditar.telefono" name="telefono" placeholder="0999999999">
           </div>
         </div>
       </div>

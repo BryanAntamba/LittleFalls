@@ -1,7 +1,9 @@
-import { Component } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BarraNavegacionAdmin } from '../barra-navegacion-admin/barra-navegacion-admin';
 import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms'; // Para usar [(ngModel)] en formularios
+import { FormsModule } from '@angular/forms';
+import { UsuariosService } from '../../services/usuarios.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-gestion-usuarios-admin',
@@ -9,86 +11,103 @@ import { FormsModule } from '@angular/forms'; // Para usar [(ngModel)] en formul
   templateUrl: './gestion-usuarios-admin.html',
   styleUrl: './gestion-usuarios-admin.css',
 })
-export class GestionUsuariosAdmin {
+export class GestionUsuariosAdmin implements OnInit {
   // ===== VARIABLES DE CONTROL DE MODALES =====
-  mostrarModalIngresar = false; // Controla la visibilidad del modal de ingreso
-  mostrarModalEditar = false; // Controla la visibilidad del modal de edición
-  indiceEditando = -1; // Índice del veterinario siendo editado (-1 = ninguno)
+  mostrarModalIngresar = false;
+  mostrarModalEditar = false;
+  indiceEditando = -1;
   
   // ===== VARIABLES DE CONTROL DE VISIBILIDAD DE CONTRASEÑAS =====
-  mostrarPassword = false; // Controla la visibilidad de la contraseña
-  mostrarConfirmPassword = false; // Controla la visibilidad de confirmar contraseña
+  mostrarPassword = false;
+  mostrarConfirmPassword = false;
+
+  // ===== VARIABLES DE CARGA =====
+  cargando = false;
 
   // ===== ARRAY DE DATOS =====
-  // Array que almacena todos los veterinarios registrados
-  // En producción, estos datos vendrían de una API/base de datos
-  veterinarios = [
-    {
-      nombre: 'Bryan',
-      apellido: 'Justin',
-      edad: '22',
-      correo: 'bryan@gmail.com',
-      telefono: '0995336712',
-      cedula: '1234567890'
-    },
-    {
-      nombre: 'María',
-      apellido: 'Gómez',
-      edad: '30',
-      correo: 'maria@gmail.com',
-      telefono: '0991234567',
-      cedula: '0987654321'
-    }
-  ];
+  veterinarios: any[] = [];
 
   // ===== OBJETO PARA NUEVO VETERINARIO =====
-  // Objeto temporal que almacena los datos del formulario de ingreso
-  // Se resetea cada vez que se abre el modal
   nuevoVeterinario = {
     nombre: '',
     apellido: '',
     edad: '',
     correo: '',
-    telefono: '',
-    cedula: '',
     password: '',
-    confirmPassword: ''
+    confirmPassword: '',
+    tipoUsuario: 'veterinario'
   };
 
   // ===== OBJETO PARA EDITAR VETERINARIO =====
-  // Objeto temporal que almacena los datos mientras se edita
-  // Se carga con los datos del veterinario seleccionado
   veterinarioEditar = {
+    _id: '',
     nombre: '',
     apellido: '',
     edad: '',
     correo: '',
-    telefono: '',
-    cedula: '',
     password: '',
     confirmPassword: ''
   };
 
+  constructor(
+    private usuariosService: UsuariosService,
+    private alertService: AlertService,
+    private cdr: ChangeDetectorRef
+  ) {}
+
+  /**
+   * Inicialización del componente
+   */
+  ngOnInit() {
+    this.cargarVeterinarios();
+  }
+
+  /**
+   * Cargar todos los usuarios desde el backend
+   */
+  async cargarVeterinarios() {
+    console.log('Componente: Iniciando carga de usuarios...');
+    this.cargando = true;
+    this.veterinarios = [];
+    this.cdr.detectChanges();
+    
+    try {
+      const resultado = await this.usuariosService.obtenerTodos();
+      
+      console.log('Componente: Resultado recibido:', resultado);
+      
+      if (resultado.success && resultado.usuarios) {
+        this.veterinarios = resultado.usuarios;
+        console.log('Componente: Usuarios cargados exitosamente:', this.veterinarios.length);
+      } else {
+        console.error('Componente: Error en resultado:', resultado);
+        this.alertService.error(resultado.mensaje || 'Error al cargar usuarios');
+      }
+    } catch (error: any) {
+      console.error('Componente: Exception capturada:', error);
+      this.alertService.error('Error inesperado: ' + (error.message || 'Unknown error'));
+    } finally {
+      this.cargando = false;
+      this.cdr.detectChanges();
+      console.log('Componente: Carga finalizada. Total usuarios:', this.veterinarios.length);
+    }
+  }
+
   /**
    * Abre el modal para ingresar un nuevo veterinario
-   * Resetea el formulario antes de mostrar el modal
    */
   abrirModalIngresar() {
-    // Limpiamos todos los campos del formulario
     this.nuevoVeterinario = {
       nombre: '',
       apellido: '',
       edad: '',
       correo: '',
-      telefono: '',
-      cedula: '',
       password: '',
-      confirmPassword: ''
+      confirmPassword: '',
+      tipoUsuario: 'veterinario'
     };
-    // Reseteamos la visibilidad de las contraseñas
     this.mostrarPassword = false;
     this.mostrarConfirmPassword = false;
-    // Mostramos el modal
     this.mostrarModalIngresar = true;
   }
 
@@ -100,124 +119,184 @@ export class GestionUsuariosAdmin {
   }
 
   /**
-   * Abre el modal de edición y carga los datos del veterinario seleccionado
-   * @param veterinario - Objeto con los datos del veterinario a editar
-   * @param indice - Posición del veterinario en el array
+   * Abre el modal de edición
    */
   abrirModalEditar(veterinario: any, indice: number) {
-    // Guardamos el índice para saber qué veterinario actualizar
     this.indiceEditando = indice;
-    // Copiamos los datos del veterinario al objeto temporal
-    // Usamos spread operator {...} para evitar referencias directas
-    this.veterinarioEditar = { ...veterinario };
-    // Mostramos el modal
+    this.veterinarioEditar = {
+      _id: veterinario._id,
+      nombre: veterinario.nombre,
+      apellido: veterinario.apellido,
+      edad: veterinario.edad,
+      correo: veterinario.correo,
+      password: '',
+      confirmPassword: ''
+    };
     this.mostrarModalEditar = true;
   }
 
   /**
-   * Cierra el modal de edición y resetea el índice
+   * Cierra el modal de edición
    */
   cerrarModalEditar() {
     this.mostrarModalEditar = false;
-    this.indiceEditando = -1; // Reseteamos el índice
+    this.indiceEditando = -1;
   }
 
   /**
-   * Guarda el nuevo veterinario en el array
-   * Valida que los campos obligatorios estén completos
+   * Guarda el nuevo veterinario
    */
-  guardarNuevoVeterinario() {
-    // Validación básica de campos requeridos
+  async guardarNuevoVeterinario() {
+    // Validaciones básicas en frontend
     if (!this.nuevoVeterinario.nombre || !this.nuevoVeterinario.apellido || !this.nuevoVeterinario.correo) {
-      alert('Por favor complete los campos obligatorios: Nombre, Apellido y Correo');
-      return; // Salimos si falta algún campo
+      this.alertService.error('Por favor complete los campos obligatorios: Nombre, Apellido y Correo');
+      return;
     }
 
-    // Validación de contraseña
     if (!this.nuevoVeterinario.password || !this.nuevoVeterinario.confirmPassword) {
-      alert('Por favor ingrese la contraseña y su confirmación');
+      this.alertService.error('Por favor ingrese la contraseña');
       return;
     }
 
-    // Verificar que las contraseñas coincidan
     if (this.nuevoVeterinario.password !== this.nuevoVeterinario.confirmPassword) {
-      alert('Las contraseñas no coinciden');
+      this.alertService.error('Las contraseñas no coinciden');
       return;
     }
 
-    // Agregamos el nuevo veterinario al array
-    // Usamos spread operator para crear una copia
-    this.veterinarios.push({ ...this.nuevoVeterinario });
-    
-    console.log('Nuevo veterinario agregado:', this.nuevoVeterinario);
-    
-    // TODO: Aquí irá la lógica para guardar en el backend
-    // Ejemplo: this.http.post('/api/veterinarios', this.nuevoVeterinario).subscribe(...)
-    
-    this.cerrarModalIngresar(); // Cerramos el modal
-    alert('Veterinario registrado exitosamente');
+    this.cargando = true;
+    try {
+      const resultado = await this.usuariosService.crear({
+        nombre: this.nuevoVeterinario.nombre.trim(),
+        apellido: this.nuevoVeterinario.apellido.trim(),
+        edad: parseInt(this.nuevoVeterinario.edad),
+        correo: this.nuevoVeterinario.correo.trim(),
+        password: this.nuevoVeterinario.password,
+        tipoUsuario: this.nuevoVeterinario.tipoUsuario
+      });
+
+      if (resultado.success) {
+        this.alertService.success('Veterinario creado exitosamente');
+        this.cerrarModalIngresar();
+        await this.cargarVeterinarios(); // Recargar la lista
+      } else {
+        // Mostrar errores del backend
+        if (resultado.errores && resultado.errores.length > 0) {
+          // Si hay múltiples errores, mostrarlos en lista
+          const mensajeErrores = resultado.errores.join('\n• ');
+          this.alertService.error('Errores de validación:\n• ' + mensajeErrores);
+        } else {
+          this.alertService.error(resultado.mensaje || 'Error al crear veterinario');
+        }
+      }
+    } catch (error) {
+      this.alertService.error('Error de conexión con el servidor');
+    } finally {
+      this.cargando = false;
+    }
   }
 
   /**
    * Guarda los cambios del veterinario editado
-   * Actualiza el array con los nuevos datos
    */
-  guardarEdicion() {
-    // Verificamos que tengamos un índice válido
-    if (this.indiceEditando !== -1) {
-      // Validar que las contraseñas coincidan si se están modificando
-      if (this.veterinarioEditar.password || this.veterinarioEditar.confirmPassword) {
-        if (this.veterinarioEditar.password !== this.veterinarioEditar.confirmPassword) {
-          alert('Las contraseñas no coinciden');
-          return;
+  async guardarEdicion() {
+    if (this.indiceEditando === -1) return;
+
+    // Validar contraseñas si se están modificando
+    if (this.veterinarioEditar.password || this.veterinarioEditar.confirmPassword) {
+      if (this.veterinarioEditar.password !== this.veterinarioEditar.confirmPassword) {
+        this.alertService.error('Las contraseñas no coinciden');
+        return;
+      }
+    }
+
+    this.cargando = true;
+    try {
+      const datosActualizar: any = {
+        nombre: this.veterinarioEditar.nombre.trim(),
+        apellido: this.veterinarioEditar.apellido.trim(),
+        edad: parseInt(this.veterinarioEditar.edad),
+        correo: this.veterinarioEditar.correo.trim()
+      };
+
+      // Solo incluir password si se proporcionó uno nuevo
+      if (this.veterinarioEditar.password) {
+        datosActualizar.password = this.veterinarioEditar.password;
+      }
+
+      const resultado = await this.usuariosService.actualizar(
+        this.veterinarioEditar._id,
+        datosActualizar
+      );
+
+      if (resultado.success) {
+        this.alertService.success('Veterinario actualizado exitosamente');
+        this.cerrarModalEditar();
+        await this.cargarVeterinarios(); // Recargar la lista
+      } else {
+        // Mostrar errores del backend
+        if (resultado.errores && resultado.errores.length > 0) {
+          const mensajeErrores = resultado.errores.join('\n• ');
+          this.alertService.error('Errores de validación:\n• ' + mensajeErrores);
+        } else {
+          this.alertService.error(resultado.mensaje || 'Error al actualizar veterinario');
         }
       }
-      
-      // Actualizamos el veterinario en el array con los datos editados
-      this.veterinarios[this.indiceEditando] = { ...this.veterinarioEditar };
-      
-      console.log('Veterinario actualizado:', this.veterinarioEditar);
-      
-      // TODO: Aquí irá la lógica para actualizar en el backend
-      // Ejemplo: this.http.put(`/api/veterinarios/${id}`, this.veterinarioEditar).subscribe(...)
-      
-      this.cerrarModalEditar(); // Cerramos el modal
-      alert('Veterinario actualizado exitosamente');
+    } catch (error) {
+      this.alertService.error('Error de conexión con el servidor');
+    } finally {
+      this.cargando = false;
     }
   }
 
   /**
-   * Elimina un veterinario del array
-   * Solicita confirmación antes de eliminar
-   * @param indice - Posición del veterinario a eliminar
+   * Elimina un veterinario
    */
-  eliminarVeterinario(indice: number) {
-    // Mostramos un diálogo de confirmación
-    if (confirm('¿Está seguro de eliminar este veterinario?')) {
-      // Eliminamos el veterinario del array usando splice
-      this.veterinarios.splice(indice, 1);
-      alert('Veterinario eliminado exitosamente');
-      
-      // TODO: Aquí irá la lógica para eliminar en el backend
-      // Ejemplo: this.http.delete(`/api/veterinarios/${id}`).subscribe(...)
+  async eliminarVeterinario(indice: number) {
+    const veterinario = this.veterinarios[indice];
+    
+    if (!confirm(`¿Está seguro de eliminar a ${veterinario.nombre} ${veterinario.apellido}?`)) {
+      return;
+    }
+
+    this.cargando = true;
+    try {
+      const resultado = await this.usuariosService.eliminar(veterinario._id);
+
+      if (resultado.success) {
+        this.alertService.success('Veterinario eliminado exitosamente');
+        await this.cargarVeterinarios(); // Recargar la lista
+      } else {
+        this.alertService.error(resultado.mensaje || 'Error al eliminar veterinario');
+      }
+    } catch (error) {
+      this.alertService.error('Error de conexión con el servidor');
+    } finally {
+      this.cargando = false;
     }
   }
 
   /**
    * Desactiva o activa un veterinario
-   * Función preparada para implementar lógica de activación/desactivación
-   * @param indice - Posición del veterinario
    */
-  toggleDesactivar(indice: number) {
-    console.log('Veterinario desactivado/activado:', this.veterinarios[indice]);
-    alert('Estado del veterinario actualizado');
+  async toggleDesactivar(indice: number) {
+    const veterinario = this.veterinarios[indice];
     
-    // TODO: Implementar lógica de activación/desactivación
-    // Podrías agregar un campo 'activo: boolean' al objeto veterinario
-    // y cambiar su estado aquí
-    // Ejemplo: this.veterinarios[indice].activo = !this.veterinarios[indice].activo;
-  }
+    this.cargando = true;
+    try {
+      const resultado = await this.usuariosService.cambiarEstado(veterinario._id);
 
+      if (resultado.success) {
+        this.alertService.success(resultado.mensaje);
+        await this.cargarVeterinarios(); // Recargar la lista
+      } else {
+        this.alertService.error(resultado.mensaje || 'Error al cambiar estado');
+      }
+    } catch (error) {
+      this.alertService.error('Error de conexión con el servidor');
+    } finally {
+      this.cargando = false;
+    }
+  }
   /**
    * Alterna la visibilidad de la contraseña
    */

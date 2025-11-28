@@ -123,6 +123,24 @@
   transform: translateY(-2px); /* Efecto de elevación */
 }
 
+/* Botón Activar - Verde */
+.btn-activate {
+  background-color: #28a745;
+  color: #fff;
+}
+
+.btn-activate:hover {
+  background-color: #218838;
+  transform: translateY(-2px); /* Efecto de elevación */
+}
+
+/* Botones deshabilitados */
+.btn-action:disabled {
+  opacity: 0.5;
+  cursor: not-allowed;
+  transform: none !important;
+}
+
 /* Espacio entre iconos y texto en botones */
 .btn-action i {
   margin-right: 5px;
