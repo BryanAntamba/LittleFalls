@@ -7,34 +7,33 @@
     <p>Seleccione el día, hora, y fecha para programar la atencion de su visita médica.</p>
 
     <div class="dias-container">
-      <!-- Día Lunes -->
       <div class="dia">
         <h3>ESTAMOS DE LUNES A SABADOS PARA TI Y TU MASCOTA</h3>
         <p class="texto-dia">Nuestros horarios de jornada de trabajo son apartir de lunes a sabado de las semanadas
           con el horario disponible de 8:00 AM a 9:00 PM. En dias festivos puede cambiar los horarios.</p>
         <p class="texto-dia-secundario">Selecciona su hora y fecha para su atencion.</p>
-        <select>
-          <option>Seleccionar hora</option>
-          <option>8:30 AM</option>
-          <option>9:00 AM</option>
-          <option>10:00 AM</option>
-          <option>11:00 AM</option>
-          <option>12:00 PM</option>
-          <option>1:00 PM</option>
-          <option>2:00 PM</option>
-          <option>3:00 PM</option>
-          <option>4:00 PM</option>
-          <option>5:00 PM</option>
-          <option>6:00 PM</option>
-          <option>7:00 PM</option>
-          <option>8:00 PM</option>
+        <select [(ngModel)]="horaSeleccionada" name="hora">
+          <option value="">Seleccionar hora</option>
+          <option value="8:30 AM">8:30 AM</option>
+          <option value="9:00 AM">9:00 AM</option>
+          <option value="10:00 AM">10:00 AM</option>
+          <option value="11:00 AM">11:00 AM</option>
+          <option value="12:00 PM">12:00 PM</option>
+          <option value="1:00 PM">1:00 PM</option>
+          <option value="2:00 PM">2:00 PM</option>
+          <option value="3:00 PM">3:00 PM</option>
+          <option value="4:00 PM">4:00 PM</option>
+          <option value="5:00 PM">5:00 PM</option>
+          <option value="6:00 PM">6:00 PM</option>
+          <option value="7:00 PM">7:00 PM</option>
+          <option value="8:00 PM">8:00 PM</option>
         </select>
-        <input type="date" class="fecha-cita" id="fechaLunes">
+        <input type="date" class="fecha-cita" [(ngModel)]="fechaSeleccionada" name="fecha">
       </div>
     </div>
-    <button class="btn-agendar btn-final" routerLink="/FormularioCita">
+    <button class="btn-agendar btn-final" (click)="siguientePaso()">
         Siguiente
-      </button>
+    </button>
   </div>
 </section>
 

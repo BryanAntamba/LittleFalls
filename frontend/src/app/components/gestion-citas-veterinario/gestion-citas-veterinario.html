@@ -32,13 +32,13 @@
             -->
             <tr *ngFor="let cita of citas; let i = index">
                 <!-- Interpolación {{ }} muestra los datos de cada cita -->
-                <td class="col-nombre">{{ cita.nombre }}</td>
-                <td class="col-apellido">{{ cita.apellido }}</td>
-                <td class="col-correo">{{ cita.correo }}</td>
-                <td class="col-telefono">{{ cita.telefono }}</td>
+                <td class="col-nombre">{{ cita.nombrePaciente }}</td>
+                <td class="col-apellido">{{ cita.apellidoPaciente }}</td>
+                <td class="col-correo">{{ cita.correoPaciente }}</td>
+                <td class="col-telefono">{{ cita.telefonoPaciente }}</td>
                 <th class="col-nombreMascota">{{ cita.nombreMascota }}</th>
                 <th class="col-edadMascota">{{ cita.edadMascota }}</th>
-                <th class="col-generoMascota">{{ cita.generoMascota }}</th>
+                <th class="col-generoMascota">{{ cita.sexoMascota }}</th>
                 <th class="col-tipoMascota">{{ cita.tipoMascota }}</th>
                 <td class="col-descripcion">{{ cita.descripcion }}</td>
                 

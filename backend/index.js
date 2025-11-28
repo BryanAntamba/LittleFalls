@@ -39,9 +39,11 @@ mongoose.connect(process.env.MONGODB_URI)
 // Rutas
 const authRoutes = require('./routes/auth');
 const usuariosRoutes = require('./routes/usuarios');
+const citasRoutes = require('./routes/citas');
 
 app.use('/api/auth', authRoutes);
 app.use('/api/usuarios', usuariosRoutes);
+app.use('/api/citas', citasRoutes);
 
 // Ruta raíz
 app.get('/', (req, res) => {

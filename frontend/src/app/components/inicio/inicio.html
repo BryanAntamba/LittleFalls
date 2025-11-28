@@ -5,7 +5,7 @@
     <h1>Little Falls</h1>
     <p>Brindamos cuidado profesional y amoroso a tu mascota.<br>
       ¡Tu mejor amigo en las mejores manos!</p>
-    <a routerLink="/AgendamientoCita" class="btn">Agenda tu cita</a>
+    <a (click)="agendarCita()" class="btn" style="cursor: pointer;">Agenda tu cita</a>
   </div>
 </section>
 
@@ -58,7 +58,7 @@
         para el tratamiento de la enfermedad de tu mascota.
       </p>
       <p class="agenda">
-        Contáctanos y <a routerLink="/AgendamientoCita">agenda tu cita.</a>
+        Contáctanos y <a (click)="agendarCita()" style="cursor: pointer;">agenda tu cita.</a>
       </p>
     </div>
   </div>

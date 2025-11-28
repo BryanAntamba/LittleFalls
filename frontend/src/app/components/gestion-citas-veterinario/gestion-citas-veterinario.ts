@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 import { BarraNavegacionVeterinario } from '../barra-navegacion-veterinario/barra-navegacion-veterinario';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -10,7 +10,7 @@ import { CitasService } from '../../services/citas.service';
   templateUrl: './gestion-citas-veterinario.html',
   styleUrl: './gestion-citas-veterinario.css',
 })
-export class GestionCitasVeterinario {
+export class GestionCitasVeterinario implements OnInit {
   // Variables para controlar la visibilidad de los modales
   mostrarModal = false; // Modal del registro clínico
   mostrarModalEditar = false; // Modal de edición de cita
@@ -71,9 +71,20 @@ export class GestionCitasVeterinario {
 
   // Variable para indicar a qué cita pertenece el registro clínico que se está creando
   indiceCitaActual = -1;
+  cargando = false;
 
   // Constructor para inyectar el servicio de citas
   constructor(private citasService: CitasService) {}
+
+  async ngOnInit() {
+    await this.cargarCitas();
+  }
+
+  async cargarCitas() {
+    this.cargando = true;
+    await this.citasService.cargarCitas();
+    this.cargando = false;
+  }
 
   /**
    * Abre el modal de registro clínico
@@ -196,7 +207,7 @@ export class GestionCitasVeterinario {
     // Confirmación antes de eliminar
     if (confirm('¿Está seguro de eliminar esta cita?')) {
       // Eliminamos usando el servicio
-      this.citasService.eliminarCita(indice);
+      this.citasService.eliminarCitaLocal(indice);
       alert('Cita eliminada exitosamente');
       // TODO: Aquí irá la lógica para eliminar en el backend
       // Ejemplo: this.http.delete(`/api/citas/${id}`).subscribe(...)

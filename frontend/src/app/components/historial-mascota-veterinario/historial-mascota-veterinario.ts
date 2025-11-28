@@ -61,7 +61,7 @@ export class HistorialMascotaVeterinario {
     if (!this.terminoBusqueda) {
       return this.mascotas;
     }
-    return this.mascotas.filter(m => 
+    return this.mascotas.filter((m: any) => 
       m.nombreMascota.toLowerCase().includes(this.terminoBusqueda.toLowerCase())
     );
   }

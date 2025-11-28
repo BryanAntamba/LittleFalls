@@ -27,12 +27,18 @@
         <li class="nav-item"><a class="nav-link" href="#especialidades">Especialidades</a></li>
         <li class="nav-item"><a class="nav-link" href="#equipo">Equipo</a></li>
         <li class="nav-item"><a class="nav-link" href="#contactos">Contactos</a></li>
-        <li class="nav-item"><a class="nav-link" routerLink="/AgendamientoCita">citas</a></li>
+        <li class="nav-item" *ngIf="esPaciente"><a class="nav-link" (click)="irACitas()" style="cursor: pointer;">Citas</a></li>
       </ul>
 
-      <!-- Botón al final -->
-      <form class="d-flex ms-lg-3" role="search">
-        <button class="btn btn-outline-success" type="submit" routerLink="/Login-LittleFalls">Iniciar Sesión</button>
+      <!-- Mostrar nombre y cerrar sesión si es paciente logueado -->
+      <div class="d-flex ms-lg-3" *ngIf="esPaciente">
+        <span class="navbar-text me-3">Hola, {{ usuario?.nombre }}</span>
+        <button class="btn btn-outline-danger" type="button" (click)="cerrarSesion()">Cerrar Sesión</button>
+      </div>
+
+      <!-- Botón iniciar sesión si NO es paciente logueado -->
+      <form class="d-flex ms-lg-3" role="search" *ngIf="!esPaciente">
+        <button class="btn btn-outline-success" type="button" routerLink="/Login-LittleFalls">Iniciar Sesión</button>
       </form>
     </div>
   </div>
