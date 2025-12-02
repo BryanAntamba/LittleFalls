@@ -1,7 +1,9 @@
 const express = require('express');
 const router = express.Router();
 const authController = require('../controllers/authController');
+const passwordRecoveryController = require('../controllers/passwordRecoveryController');
 const { validateLogin, validateRegistro, sanitizeInput } = require('../middlewares/validators/authValidator');
+const { verificarToken } = require('../middlewares/jwtMiddleware');
 
 /**
  * @route   POST /api/auth/login
@@ -54,11 +56,55 @@ router.post('/logout',
 
 /**
  * @route   GET /api/auth/verify
- * @desc    Verificar sesión activa (preparado para JWT)
+ * @desc    Verificar sesión activa (ahora con JWT)
  * @access  Private
  */
 router.get('/verify', 
+    verificarToken,
     authController.verificarSesion
+);
+
+/**
+ * @route   POST /api/auth/refresh
+ * @desc    Refrescar access token
+ * @access  Public (pero requiere refresh token válido)
+ */
+router.post('/refresh',
+    authController.refrescarToken
+);
+
+/**
+ * RUTAS DE RECUPERACIÓN DE CONTRASEÑA
+ */
+
+/**
+ * @route   POST /api/auth/recuperar-password/solicitar
+ * @desc    Solicitar código de recuperación de contraseña
+ * @access  Public
+ */
+router.post('/recuperar-password/solicitar',
+    sanitizeInput,
+    passwordRecoveryController.solicitarRecuperacion
+);
+
+/**
+ * @route   POST /api/auth/recuperar-password/verificar-codigo
+ * @desc    Verificar código de recuperación
+ * @access  Public
+ */
+router.post('/recuperar-password/verificar-codigo',
+    sanitizeInput,
+    passwordRecoveryController.verificarCodigo
+);
+
+/**
+ * @route   POST /api/auth/recuperar-password/restablecer
+ * @desc    Restablecer contraseña con código verificado
+ * @access  Public
+ */
+router.post('/recuperar-password/restablecer',
+    sanitizeInput,
+    passwordRecoveryController.restablecerPassword
 );
 
 module.exports = router;

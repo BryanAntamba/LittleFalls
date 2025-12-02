@@ -1,17 +1,34 @@
 <section class="login-section">
-    <a routerLink="" class="btn-regresar">
-        <i class="fa-solid fa-arrow-left"></i> Regresar
+    <a routerLink="/Login-LittleFalls" class="btn-regresar">
+        <i class="fa-solid fa-arrow-left"></i> Volver al Login
     </a>
-    <form class="login-form">
+    <form class="login-form" (submit)="$event.preventDefault(); solicitarRecuperacion()">
         <h2>Restablecer contraseña</h2>
-        <p>Ingrese su correo electrónico para recibir un enlace de recuperación para restablecer su contraseña.</p>
+        <p>Ingrese su correo electrónico para recibir un código de recuperación.</p>
         <div class="mb-3">
             <label for="inputEmail" class="form-label">Correo:</label>
-            <input type="email" id="inputEmail" class="form-control" placeholder="Ingrese un correo electronico"
-                aria-describedby="emailHelpBlock" required>
+            <input 
+                type="email" 
+                id="inputEmail" 
+                class="form-control" 
+                [(ngModel)]="correo"
+                name="correo"
+                placeholder="Ingrese su correo electrónico"
+                aria-describedby="emailHelpBlock" 
+                required>
         </div>
 
-        <button type="button" class="btn btn-primary" routerLink="/RestablecerPasword">Enviar Correo</button>
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="cargando">
+            <span *ngIf="!cargando">
+                <i class="fa-solid fa-paper-plane"></i> Enviar Código
+            </span>
+            <span *ngIf="cargando">
+                <i class="fa-solid fa-spinner fa-spin"></i> Enviando...
+            </span>
+        </button>
         <div class="login-links">
     </div>
     </form>

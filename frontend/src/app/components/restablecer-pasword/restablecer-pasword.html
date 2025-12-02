@@ -1,24 +1,65 @@
 <section class="login-section">
-    <a routerLink="" class="btn-regresar">
-        <i class="fa-solid fa-arrow-left"></i> Regresar
+    <a routerLink="/Login-LittleFalls" class="btn-regresar">
+        <i class="fa-solid fa-arrow-left"></i> Volver al Login
     </a>
-    <form class="login-form">
-        <h2>Restablecer contraseña</h2>
-        <p>Ingrese una nueva contraseña.</p>
+    <form class="login-form" (submit)="$event.preventDefault(); restablecerPassword()">
+        <h2>Nueva Contraseña</h2>
+        <p>Ingrese su nueva contraseña para completar la recuperación.</p>
+        
         <div class="mb-3">
-            <label for="inputEmail" class="form-label">contraseña:</label>
+            <label for="inputPassword" class="form-label">Nueva Contraseña:</label>
             <div class="password-container">
-                <!--TYPE renderiza la UI con funcionalidad (controla el estado de visibilidad de la contraseña)-->
-                <input [type]="showPassword ? 'text' : 'password'" id="inputPassword" class="form-control" 
-                    placeholder="Ingrese su nueva contraseña" aria-describedby="emailHelpBlock" required>
-                    <!--Boton que realiza evento click para invocar al metodo de visualizar contraseña  o no mostar contraseña-->
-                <button type="button" class="btn-toggle-password" (click)="togglePassword()" aria-label="Mostrar contraseña">
-                    <!--Colocamos el icono del fond-Awesome del ojo para el campo contraseña-->
+                <input 
+                    [type]="showPassword ? 'text' : 'password'" 
+                    id="inputPassword" 
+                    class="form-control" 
+                    [(ngModel)]="nuevaPassword"
+                    name="nuevaPassword"
+                    placeholder="Mínimo 6 caracteres" 
+                    required>
+                <button 
+                    type="button" 
+                    class="btn-toggle-password" 
+                    (click)="togglePassword()" 
+                    aria-label="Mostrar contraseña">
                     <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
                 </button>
             </div>
+            <small class="form-text">Debe contener al menos una letra y un número</small>
         </div>
-        <button type="button" class="btn btn-primary" routerLink="/Login-LittleFalls">Confirmar</button>
+
+        <div class="mb-3">
+            <label for="inputConfirmPassword" class="form-label">Confirmar Contraseña:</label>
+            <div class="password-container">
+                <input 
+                    [type]="showConfirmPassword ? 'text' : 'password'" 
+                    id="inputConfirmPassword" 
+                    class="form-control" 
+                    [(ngModel)]="confirmarPassword"
+                    name="confirmarPassword"
+                    placeholder="Repite la contraseña" 
+                    required>
+                <button 
+                    type="button" 
+                    class="btn-toggle-password" 
+                    (click)="toggleConfirmPassword()" 
+                    aria-label="Mostrar contraseña">
+                    <i [class]="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
+                </button>
+            </div>
+        </div>
+
+        <button 
+            type="submit" 
+            class="btn btn-primary"
+            [disabled]="cargando">
+            <span *ngIf="!cargando">
+                <i class="fa-solid fa-check"></i> Restablecer Contraseña
+            </span>
+            <span *ngIf="cargando">
+                <i class="fa-solid fa-spinner fa-spin"></i> Procesando...
+            </span>
+        </button>
         <div class="login-links">
     </div>
     </form>

@@ -9,7 +9,7 @@ export class AuthService {
 
     constructor(private router: Router) { }
 
-    // Login
+    // Login con JWT
     async login(correo: string, password: string): Promise<any> {
         try {
             const response = await fetch(`${this.apiUrl}/login`, {
@@ -21,7 +21,9 @@ export class AuthService {
             const data = await response.json();
 
             if (data.success) {
-                // Guardar usuario en localStorage
+                // Guardar tokens y usuario en localStorage
+                localStorage.setItem('accessToken', data.accessToken);
+                localStorage.setItem('refreshToken', data.refreshToken);
                 localStorage.setItem('usuario', JSON.stringify(data.usuario));
             }
 
@@ -29,6 +31,81 @@ export class AuthService {
         } catch (error) {
             return { success: false, mensaje: 'Error de conexión' };
         }
+    }
+
+    // Obtener Access Token
+    getAccessToken(): string | null {
+        return localStorage.getItem('accessToken');
+    }
+
+    // Obtener Refresh Token
+    getRefreshToken(): string | null {
+        return localStorage.getItem('refreshToken');
+    }
+
+    // Refrescar Access Token
+    async refreshAccessToken(): Promise<boolean> {
+        try {
+            const refreshToken = this.getRefreshToken();
+            
+            if (!refreshToken) {
+                return false;
+            }
+
+            const response = await fetch(`${this.apiUrl}/refresh`, {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({ refreshToken })
+            });
+
+            const data = await response.json();
+
+            if (data.success) {
+                localStorage.setItem('accessToken', data.accessToken);
+                return true;
+            }
+
+            return false;
+        } catch (error) {
+            console.error('Error al refrescar token:', error);
+            return false;
+        }
+    }
+
+    // Hacer petición autenticada con JWT
+    async fetchWithAuth(url: string, options: RequestInit = {}): Promise<Response> {
+        const accessToken = this.getAccessToken();
+
+        if (!accessToken) {
+            throw new Error('No hay token de autenticación');
+        }
+
+        // Agregar el token al header Authorization
+        const headers = {
+            ...options.headers,
+            'Authorization': `Bearer ${accessToken}`,
+            'Content-Type': 'application/json'
+        };
+
+        const response = await fetch(url, { ...options, headers });
+
+        // Si el token expiró, intentar refrescar
+        if (response.status === 401) {
+            const refreshed = await this.refreshAccessToken();
+            
+            if (refreshed) {
+                // Reintentar la petición con el nuevo token
+                const newToken = this.getAccessToken();
+                headers['Authorization'] = `Bearer ${newToken}`;
+                return fetch(url, { ...options, headers });
+            } else {
+                // Si no se pudo refrescar, cerrar sesión
+                this.logout();
+                throw new Error('Sesión expirada');
+            }
+        }
+
+        return response;
     }
 
     // Registro
@@ -54,7 +131,7 @@ export class AuthService {
 
     // Verificar si está logueado
     isLoggedIn(): boolean {
-        return this.getUsuario() !== null;
+        return this.getAccessToken() !== null && this.getUsuario() !== null;
     }
 
     // Verificar si el usuario tiene un rol específico
@@ -97,6 +174,8 @@ export class AuthService {
     // Cerrar sesión
     logout() {
         localStorage.removeItem('usuario');
+        localStorage.removeItem('accessToken');
+        localStorage.removeItem('refreshToken');
         this.router.navigate(['/Login-LittleFalls']);
     }
 }

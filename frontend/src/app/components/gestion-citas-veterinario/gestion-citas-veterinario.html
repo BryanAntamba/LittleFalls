@@ -5,6 +5,18 @@
 <section class="fondo-lista-usuarios">
     <h2 class="table-title">Lista de citas medicas</h2>
     
+    <!-- Mensaje de carga -->
+    <div *ngIf="cargando" class="loading-container">
+        <i class="fa-solid fa-spinner fa-spin"></i>
+        <p>Cargando citas...</p>
+    </div>
+    
+    <!-- Mensaje si no hay citas -->
+    <div *ngIf="!cargando && citas.length === 0" class="no-citas-container">
+        <i class="fa-solid fa-calendar-xmark"></i>
+        <p>No hay citas registradas</p>
+    </div>
+    
     <!-- Tabla que muestra todas las citas médicas -->
     <table class="custom-table">
         <!-- Encabezados de la tabla -->
@@ -93,7 +105,7 @@
                             Vincula el input con la propiedad del objeto
                             Los cambios se reflejan automáticamente en ambas direcciones
                         -->
-                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" required>
+                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" (change)="validarFecha($event)" required>
                     </div>
                     <div class="form-group">
                         <label>Motivo de Consulta</label>
@@ -113,21 +125,21 @@
                     <div class="form-group">
                         <label>Peso (kg)</label>
                         <!-- step="0.1": Permite decimales con precisión de 0.1 -->
-                        <input type="number" [(ngModel)]="registroClinico.peso" name="peso" step="0.1" placeholder="0.0">
+                        <input type="number" [(ngModel)]="registroClinico.peso" name="peso" step="0.1" placeholder="0.0" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Temperatura (°C)</label>
-                        <input type="number" [(ngModel)]="registroClinico.temperatura" name="temperatura" step="0.1" placeholder="38.5">
+                        <input type="number" [(ngModel)]="registroClinico.temperatura" name="temperatura" step="0.1" placeholder="38.5" min="0" (keypress)="validarNumero($event)">
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Frecuencia Cardíaca (lat/min)</label>
-                        <input type="number" [(ngModel)]="registroClinico.frecuenciaCardiaca" name="frecuenciaCardiaca" placeholder="120">
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaCardiaca" name="frecuenciaCardiaca" placeholder="120" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Frecuencia Respiratoria</label>
-                        <input type="number" [(ngModel)]="registroClinico.frecuenciaRespiratoria" name="frecuenciaRespiratoria" placeholder="30">
+                        <input type="number" [(ngModel)]="registroClinico.frecuenciaRespiratoria" name="frecuenciaRespiratoria" placeholder="30" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Condición Corporal (1-5)</label>
@@ -161,7 +173,7 @@
                     </div>
                     <div class="form-group">
                         <label>Próxima Cita</label>
-                        <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita">
+                        <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita" (change)="validarFecha($event)">
                     </div>
                 </div>
             </div>
@@ -176,11 +188,11 @@
                     </div>
                     <div class="form-group">
                         <label>Fecha de Aplicación</label>
-                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna">
+                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna" (change)="validarFecha($event)">
                     </div>
                     <div class="form-group">
                         <label>Próxima Dosis</label>
-                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis">
+                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis" (change)="validarFecha($event)">
                     </div>
                 </div>
             </div>
@@ -214,27 +226,21 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Nombre</label>
-                        <!-- 
-                            citaEditar: Objeto temporal que contiene los datos a editar
-                            Al guardar, estos datos se copian de vuelta al array 'citas'
-                        -->
-                        <input type="text" [(ngModel)]="citaEditar.nombre" name="nombre" placeholder="Nombre del dueño" required>
+                        <input type="text" [(ngModel)]="citaEditar.nombrePaciente" name="nombrePaciente" placeholder="Nombre del dueño" required>
                     </div>
                     <div class="form-group">
                         <label>Apellido</label>
-                        <input type="text" [(ngModel)]="citaEditar.apellido" name="apellido" placeholder="Apellido del dueño" required>
+                        <input type="text" [(ngModel)]="citaEditar.apellidoPaciente" name="apellidoPaciente" placeholder="Apellido del dueño" required>
                     </div>
                 </div>
                 <div class="form-row">
                     <div class="form-group">
                         <label>Correo Electrónico</label>
-                        <!-- type="email": Validación automática de formato de correo -->
-                        <input type="email" [(ngModel)]="citaEditar.correo" name="correo" placeholder="correo@ejemplo.com" required>
+                        <input type="email" [(ngModel)]="citaEditar.correoPaciente" name="correoPaciente" placeholder="correo@ejemplo.com" required>
                     </div>
                     <div class="form-group">
                         <label>Teléfono</label>
-                        <!-- type="tel": Optimizado para entrada de teléfono en móviles -->
-                        <input type="tel" [(ngModel)]="citaEditar.telefono" name="telefono" placeholder="0999999999" required>
+                        <input type="tel" [(ngModel)]="citaEditar.telefonoPaciente" name="telefonoPaciente" placeholder="0999999999" required>
                     </div>
                 </div>
             </div>
@@ -255,11 +261,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Género</label>
-                        <!-- 
-                            Select con opciones predefinidas
-                            El valor seleccionado se vincula automáticamente con citaEditar.generoMascota
-                        -->
-                        <select [(ngModel)]="citaEditar.generoMascota" name="generoMascota" required>
+                        <select [(ngModel)]="citaEditar.sexoMascota" name="sexoMascota" required>
                             <option value="">Seleccione</option>
                             <option value="Macho">Macho</option>
                             <option value="Hembra">Hembra</option>

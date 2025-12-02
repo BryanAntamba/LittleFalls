@@ -88,9 +88,14 @@ export class CitasService {
     private citasData: any[] = [];
 
     async cargarCitas(): Promise<void> {
+        console.log('Servicio - Cargando citas desde API...');
         const resultado = await this.obtenerTodasCitas();
+        console.log('Servicio - Resultado de API:', resultado);
         if (resultado.success) {
             this.citasData = resultado.citas;
+            console.log('Servicio - Citas almacenadas:', this.citasData.length);
+        } else {
+            console.error('Servicio - Error al cargar citas:', resultado);
         }
     }
 
@@ -118,9 +123,15 @@ export class CitasService {
         }
     }
 
-    actualizarRegistroClinico(indice: number, registro: any) {
-        if (this.citasData[indice]) {
-            this.citasData[indice] = { ...this.citasData[indice], ...registro };
+    actualizarRegistroClinico(indice: number, registro: any, indiceRegistro?: number) {
+        if (this.citasData[indice] && this.citasData[indice].registrosClinicosHistorial) {
+            const idx = indiceRegistro !== undefined 
+                ? indiceRegistro 
+                : this.citasData[indice].registrosClinicosHistorial.length - 1;
+            
+            if (idx >= 0 && idx < this.citasData[indice].registrosClinicosHistorial.length) {
+                this.citasData[indice].registrosClinicosHistorial[idx] = registro;
+            }
         }
     }
 

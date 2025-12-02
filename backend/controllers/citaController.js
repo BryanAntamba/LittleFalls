@@ -94,6 +94,57 @@ class CitaController {
         }
     }
 
+    async actualizarCita(req, res, next) {
+        try {
+            const { citaId } = req.params;
+            const datos = req.body;
+
+            const resultado = await citaService.actualizarCitaCompleta(citaId, datos);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async guardarRegistroClinico(req, res, next) {
+        try {
+            const { citaId } = req.params;
+            const registroClinico = req.body;
+
+            const resultado = await citaService.guardarRegistroClinico(citaId, registroClinico);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async actualizarRegistroClinico(req, res, next) {
+        try {
+            const { citaId } = req.params;
+            const registroClinico = req.body;
+
+            const resultado = await citaService.actualizarRegistroClinico(citaId, registroClinico);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async eliminarCita(req, res, next) {
         try {
             const { citaId } = req.params;

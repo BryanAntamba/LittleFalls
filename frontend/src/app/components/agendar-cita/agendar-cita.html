@@ -28,7 +28,7 @@
           <option value="7:00 PM">7:00 PM</option>
           <option value="8:00 PM">8:00 PM</option>
         </select>
-        <input type="date" class="fecha-cita" [(ngModel)]="fechaSeleccionada" name="fecha">
+        <input type="date" class="fecha-cita" [(ngModel)]="fechaSeleccionada" name="fecha" (change)="validarFecha($event)">
       </div>
     </div>
     <button class="btn-agendar btn-final" (click)="siguientePaso()">

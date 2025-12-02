@@ -1,4 +1,5 @@
 import { Injectable } from '@angular/core';
+import { AuthService } from './auth.service';
 
 @Injectable({
     providedIn: 'root'
@@ -6,25 +7,16 @@ import { Injectable } from '@angular/core';
 export class UsuariosService {
     private apiUrl = 'http://localhost:3000/api/usuarios';
 
-    constructor() { }
+    constructor(private authService: AuthService) { }
 
-    // Obtener todos los usuarios
+    // Obtener todos los usuarios (con JWT)
     async obtenerTodos(): Promise<any> {
         try {
             console.log('UsuariosService: Llamando a', this.apiUrl);
             
-            const controller = new AbortController();
-            const timeoutId = setTimeout(() => controller.abort(), 5000);
-            
-            const response = await fetch(this.apiUrl, {
-                signal: controller.signal,
-                headers: {
-                    'Content-Type': 'application/json'
-                },
-                cache: 'no-cache'
+            const response = await this.authService.fetchWithAuth(this.apiUrl, {
+                method: 'GET'
             });
-            
-            clearTimeout(timeoutId);
             
             console.log('UsuariosService: Response status:', response.status);
             
@@ -34,31 +26,27 @@ export class UsuariosService {
             return data;
         } catch (error: any) {
             console.error('UsuariosService: Error:', error);
-            
-            if (error.name === 'AbortError') {
-                return { success: false, mensaje: 'Timeout: El servidor no responde' };
-            }
-            
             return { success: false, mensaje: 'Error de conexión: ' + error.message };
         }
     }
 
-    // Obtener usuarios por tipo (veterinario, admin, paciente)
+    // Obtener usuarios por tipo (con JWT)
     async obtenerPorTipo(tipo: string): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/tipo/${tipo}`);
+            const response = await this.authService.fetchWithAuth(`${this.apiUrl}/tipo/${tipo}`, {
+                method: 'GET'
+            });
             return await response.json();
         } catch (error) {
             return { success: false, mensaje: 'Error de conexión' };
         }
     }
 
-    // Crear nuevo usuario
+    // Crear nuevo usuario (con JWT)
     async crear(datos: any): Promise<any> {
         try {
-            const response = await fetch(this.apiUrl, {
+            const response = await this.authService.fetchWithAuth(this.apiUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
             return await response.json();
@@ -67,12 +55,11 @@ export class UsuariosService {
         }
     }
 
-    // Actualizar usuario
+    // Actualizar usuario (con JWT)
     async actualizar(id: string, datos: any): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/${id}`, {
+            const response = await this.authService.fetchWithAuth(`${this.apiUrl}/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
                 body: JSON.stringify(datos)
             });
             return await response.json();
@@ -81,10 +68,10 @@ export class UsuariosService {
         }
     }
 
-    // Cambiar estado (activar/desactivar)
+    // Cambiar estado (con JWT)
     async cambiarEstado(id: string): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/${id}/estado`, {
+            const response = await this.authService.fetchWithAuth(`${this.apiUrl}/${id}/estado`, {
                 method: 'PATCH'
             });
             return await response.json();
@@ -93,10 +80,10 @@ export class UsuariosService {
         }
     }
 
-    // Eliminar usuario
+    // Eliminar usuario (con JWT)
     async eliminar(id: string): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/${id}`, {
+            const response = await this.authService.fetchWithAuth(`${this.apiUrl}/${id}`, {
                 method: 'DELETE'
             });
             return await response.json();

@@ -9,6 +9,39 @@
   min-height: 100vh; /* Altura mínima de toda la pantalla */
 }
 
+/* ===== MENSAJES DE ESTADO ===== */
+.loading-container,
+.no-citas-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #666;
+}
+
+.loading-container i,
+.no-citas-container i {
+  font-size: 4rem;
+  color: #00bfa6;
+  margin-bottom: 20px;
+}
+
+.loading-container p,
+.no-citas-container p {
+  font-size: 1.2rem;
+  font-weight: 500;
+}
+
+.fa-spin {
+  animation: fa-spin 1s infinite linear;
+}
+
+@keyframes fa-spin {
+  0% { transform: rotate(0deg); }
+  100% { transform: rotate(360deg); }
+}
+
 /* ===== TÍTULO DE LA TABLA ===== */
 .table-title {
   text-align: center;

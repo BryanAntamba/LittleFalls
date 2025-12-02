@@ -1,6 +1,7 @@
 const Usuario = require('../models/Usuario');
 const bcrypt = require('bcrypt');
 const emailService = require('./emailService');
+const jwtService = require('./jwtService');
 
 /**
  * Servicio de autenticación - Lógica de negocio
@@ -11,7 +12,7 @@ class AuthService {
    * Iniciar sesión
    * @param {string} correo 
    * @param {string} password 
-   * @returns {Object} { success, mensaje, usuario }
+   * @returns {Object} { success, mensaje, usuario, accessToken, refreshToken }
    */
   async login(correo, password) {
     try {
@@ -57,7 +58,17 @@ class AuthService {
         };
       }
 
-      // Login exitoso - retornar datos seguros (sin password)
+      // Datos del usuario para el token
+      const usuarioData = {
+        id: usuario._id,
+        correo: usuario.correo,
+        tipoUsuario: usuario.tipoUsuario
+      };
+
+      // Generar tokens JWT
+      const { accessToken, refreshToken } = jwtService.generarTokens(usuarioData);
+
+      // Login exitoso - retornar datos seguros con tokens
       return { 
         success: true,
         mensaje: 'Login exitoso',
@@ -68,7 +79,9 @@ class AuthService {
           correo: usuario.correo,
           tipoUsuario: usuario.tipoUsuario,
           fechaRegistro: usuario.fechaRegistro
-        }
+        },
+        accessToken,
+        refreshToken
       };
 
     } catch (error) {

@@ -1,5 +1,77 @@
 const mongoose = require('mongoose');
 
+// Esquema para el registro clínico
+const registroClinicoSchema = new mongoose.Schema({
+    fechaConsulta: {
+        type: Date,
+        required: false
+    },
+    motivoConsulta: {
+        type: String,
+        required: false
+    },
+    sintomas: {
+        type: String,
+        required: false
+    },
+    peso: {
+        type: Number,
+        required: false
+    },
+    temperatura: {
+        type: Number,
+        required: false
+    },
+    frecuenciaCardiaca: {
+        type: Number,
+        required: false
+    },
+    frecuenciaRespiratoria: {
+        type: Number,
+        required: false
+    },
+    condicionCorporal: {
+        type: String,
+        required: false
+    },
+    diagnostico: {
+        type: String,
+        required: false
+    },
+    tratamiento: {
+        type: String,
+        required: false
+    },
+    procedimientos: {
+        type: String,
+        required: false
+    },
+    proximaCita: {
+        type: Date,
+        required: false
+    },
+    tipoVacuna: {
+        type: String,
+        required: false
+    },
+    fechaVacuna: {
+        type: Date,
+        required: false
+    },
+    proximaDosis: {
+        type: Date,
+        required: false
+    },
+    observaciones: {
+        type: String,
+        required: false
+    },
+    recomendaciones: {
+        type: String,
+        required: false
+    }
+}, { _id: false });
+
 const citaSchema = new mongoose.Schema({
     // Información del paciente
     pacienteId: {
@@ -71,6 +143,32 @@ const citaSchema = new mongoose.Schema({
         type: mongoose.Schema.Types.ObjectId,
         ref: 'Usuario',
         required: false
+    },
+    
+    // Información médica (solo para veterinarios)
+    diagnostico: {
+        type: String,
+        required: false
+    },
+    tratamiento: {
+        type: String,
+        required: false
+    },
+    notasVeterinario: {
+        type: String,
+        required: false
+    },
+    
+    // Registro clínico antiguo (mantener para compatibilidad)
+    registroClinico: {
+        type: registroClinicoSchema,
+        required: false
+    },
+    
+    // Historial de registros clínicos (array de múltiples consultas)
+    registrosClinicosHistorial: {
+        type: [registroClinicoSchema],
+        default: []
     },
     
     // Fechas de control

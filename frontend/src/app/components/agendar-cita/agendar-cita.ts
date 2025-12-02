@@ -32,4 +32,19 @@ export class AgendarCita {
     
     this.router.navigate(['/FormularioCita']);
   }
+
+  /**
+   * Valida que la fecha seleccionada no sea domingo
+   */
+  validarFecha(event: any) {
+    const fecha = new Date(event.target.value + 'T00:00:00');
+    const dia = fecha.getDay();
+    
+    // 0 = Domingo
+    if (dia === 0) {
+      this.alertService.error('No se pueden agendar citas los domingos. Por favor seleccione otro día.');
+      event.target.value = '';
+      this.fechaSeleccionada = '';
+    }
+  }
 }

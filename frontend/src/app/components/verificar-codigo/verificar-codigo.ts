@@ -16,6 +16,7 @@ export class VerificarCodigo implements OnInit {
   codigo: string = '';
   cargando: boolean = false;
   reenviando: boolean = false;
+  tipoVerificacion: string = 'registro'; // 'registro' o 'recuperacion'
 
   constructor(
     private router: Router,
@@ -24,9 +25,10 @@ export class VerificarCodigo implements OnInit {
   ) {}
 
   ngOnInit() {
-    // Obtener el correo de los parámetros de la ruta
+    // Obtener el correo y tipo de los parámetros de la ruta
     this.route.queryParams.subscribe(params => {
       this.correo = params['correo'] || '';
+      this.tipoVerificacion = params['tipo'] || 'registro';
     });
   }
 
@@ -45,7 +47,12 @@ export class VerificarCodigo implements OnInit {
     this.cargando = true;
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/verificar-codigo', {
+      // Usar endpoint diferente según el tipo de verificación
+      const endpoint = this.tipoVerificacion === 'recuperacion' 
+        ? 'http://localhost:3000/api/auth/recuperar-password/verificar-codigo'
+        : 'http://localhost:3000/api/auth/verificar-codigo';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({
@@ -58,8 +65,20 @@ export class VerificarCodigo implements OnInit {
       this.cargando = false;
 
       if (resultado.success) {
-        alert('¡Cuenta verificada exitosamente! Ya puedes iniciar sesión');
-        this.router.navigate(['/Login-LittleFalls']);
+        if (this.tipoVerificacion === 'recuperacion') {
+          // Para recuperación, ir a restablecer contraseña
+          alert('Código verificado. Ahora puedes establecer tu nueva contraseña.');
+          this.router.navigate(['/RestablecerPasword'], { 
+            queryParams: { 
+              correo: this.correo,
+              codigo: this.codigo.trim()
+            } 
+          });
+        } else {
+          // Para registro, ir a login
+          alert('¡Cuenta verificada exitosamente! Ya puedes iniciar sesión');
+          this.router.navigate(['/Login-LittleFalls']);
+        }
       } else {
         if (resultado.codigoExpirado) {
           const reenviar = confirm(
@@ -87,7 +106,12 @@ export class VerificarCodigo implements OnInit {
     this.reenviando = true;
 
     try {
-      const response = await fetch('http://localhost:3000/api/auth/reenviar-codigo', {
+      // Usar endpoint diferente según el tipo
+      const endpoint = this.tipoVerificacion === 'recuperacion'
+        ? 'http://localhost:3000/api/auth/recuperar-password/solicitar'
+        : 'http://localhost:3000/api/auth/reenviar-codigo';
+
+      const response = await fetch(endpoint, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ correo: this.correo })

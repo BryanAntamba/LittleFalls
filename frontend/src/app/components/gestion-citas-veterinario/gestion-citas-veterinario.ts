@@ -1,4 +1,4 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, ChangeDetectorRef } from '@angular/core';
 import { BarraNavegacionVeterinario } from '../barra-navegacion-veterinario/barra-navegacion-veterinario';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
@@ -16,10 +16,8 @@ export class GestionCitasVeterinario implements OnInit {
   mostrarModalEditar = false; // Modal de edición de cita
   indiceEditando = -1; // Índice de la cita que se está editando (-1 = ninguna)
   
-  // Obtener las citas del servicio compartido
-  get citas() {
-    return this.citasService.getCitas();
-  }
+  // Array de citas cargadas
+  citas: any[] = [];
 
   // Objeto que almacena todos los datos del registro clínico veterinario
   registroClinico = {
@@ -56,17 +54,17 @@ export class GestionCitasVeterinario implements OnInit {
   };
 
   // Objeto temporal que almacena los datos de la cita mientras se edita
-  citaEditar = {
-    nombre: '',
-    apellido: '',
-    correo: '',
-    telefono: '',
+  citaEditar: any = {
+    _id: '',
+    nombrePaciente: '',
+    apellidoPaciente: '',
+    correoPaciente: '',
+    telefonoPaciente: '',
     nombreMascota: '',
-    edadMascota: '',
-    generoMascota: '',
+    edadMascota: 0,
+    sexoMascota: '',
     tipoMascota: '',
-    descripcion: '',
-    registrosClinicosHistorial: [] as any[]
+    descripcion: ''
   };
 
   // Variable para indicar a qué cita pertenece el registro clínico que se está creando
@@ -74,7 +72,10 @@ export class GestionCitasVeterinario implements OnInit {
   cargando = false;
 
   // Constructor para inyectar el servicio de citas
-  constructor(private citasService: CitasService) {}
+  constructor(
+    private citasService: CitasService,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   async ngOnInit() {
     await this.cargarCitas();
@@ -82,8 +83,17 @@ export class GestionCitasVeterinario implements OnInit {
 
   async cargarCitas() {
     this.cargando = true;
-    await this.citasService.cargarCitas();
-    this.cargando = false;
+    this.cdr.detectChanges();
+    
+    try {
+      await this.citasService.cargarCitas();
+      this.citas = this.citasService.getCitas();
+    } catch (error) {
+      console.error('Error al cargar citas:', error);
+    } finally {
+      this.cargando = false;
+      this.cdr.detectChanges();
+    }
   }
 
   /**
@@ -110,8 +120,20 @@ export class GestionCitasVeterinario implements OnInit {
   abrirModalEditar(cita: any, indice: number) {
     // Guardamos el índice para saber qué cita actualizar después
     this.indiceEditando = indice;
-    // Copiamos los datos de la cita al objeto temporal (spread operator para evitar referencia)
-    this.citaEditar = { ...cita };
+    // Copiamos los datos de la cita al objeto temporal
+    this.citaEditar = {
+      _id: cita._id || '',
+      nombrePaciente: cita.nombrePaciente || '',
+      apellidoPaciente: cita.apellidoPaciente || '',
+      correoPaciente: cita.correoPaciente || '',
+      telefonoPaciente: cita.telefonoPaciente || '',
+      nombreMascota: cita.nombreMascota || '',
+      edadMascota: cita.edadMascota || 0,
+      sexoMascota: cita.sexoMascota || '',
+      tipoMascota: cita.tipoMascota || '',
+      descripcion: cita.descripcion || ''
+    };
+    console.log('Datos cargados en modal:', this.citaEditar);
     // Mostramos el modal
     this.mostrarModalEditar = true;
   }
@@ -143,42 +165,76 @@ export class GestionCitasVeterinario implements OnInit {
    * Guarda el registro clínico
    * En producción, aquí se haría una petición POST a la API
    */
-  guardarRegistro() {
+  async guardarRegistro() {
     if (this.indiceCitaActual !== -1) {
-      // Usar el servicio para agregar el registro clínico
-      const nuevoRegistro = this.citasService.agregarRegistroClinico(
-        this.indiceCitaActual, 
-        this.registroClinico
-      );
-      
-      console.log('Registro clínico guardado:', nuevoRegistro);
-      console.log('Cita actualizada:', this.citasService.getCita(this.indiceCitaActual));
-      
-      // Limpiar el formulario
-      this.registroClinico = {
-        fechaConsulta: '',
-        motivoConsulta: '',
-        sintomas: '',
-        peso: '',
-        temperatura: '',
-        frecuenciaCardiaca: '',
-        frecuenciaRespiratoria: '',
-        condicionCorporal: '',
-        diagnostico: '',
-        tratamiento: '',
-        procedimientos: '',
-        proximaCita: '',
-        tipoVacuna: '',
-        fechaVacuna: '',
-        proximaDosis: '',
-        fotoCarnet: null,
-        imagenesExamenes: [],
-        observaciones: '',
-        recomendaciones: ''
-      };
-      
-      this.cerrarModal();
-      alert('Registro clínico guardado exitosamente');
+      try {
+        const cita = this.citas[this.indiceCitaActual];
+        
+        console.log('Guardando registro para cita:', cita._id);
+        console.log('Datos del registro:', this.registroClinico);
+        
+        // Enviar al backend
+        const response = await fetch(`http://localhost:3000/api/citas/${cita._id}/registro-clinico`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.registroClinico)
+        });
+
+        const resultado = await response.json();
+        console.log('Respuesta del servidor:', resultado);
+
+        if (resultado.success || response.ok) {
+          // Actualizar localmente
+          this.citasService.agregarRegistroClinico(
+            this.indiceCitaActual, 
+            this.registroClinico
+          );
+          
+          // Actualizar la cita en el array local con los datos del backend
+          this.citas[this.indiceCitaActual] = resultado.cita;
+          console.log('Cita actualizada localmente:', this.citas[this.indiceCitaActual]);
+          console.log('Registros en la cita:', this.citas[this.indiceCitaActual].registrosClinicosHistorial);
+          
+          // Limpiar el formulario
+          this.registroClinico = {
+            fechaConsulta: '',
+            motivoConsulta: '',
+            sintomas: '',
+            peso: '',
+            temperatura: '',
+            frecuenciaCardiaca: '',
+            frecuenciaRespiratoria: '',
+            condicionCorporal: '',
+            diagnostico: '',
+            tratamiento: '',
+            procedimientos: '',
+            proximaCita: '',
+            tipoVacuna: '',
+            fechaVacuna: '',
+            proximaDosis: '',
+            fotoCarnet: null,
+            imagenesExamenes: [],
+            observaciones: '',
+            recomendaciones: ''
+          };
+          
+          // Cerrar modal primero
+          this.cerrarModal();
+          
+          // Forzar detección de cambios
+          this.cdr.detectChanges();
+          
+          // Mostrar mensaje después con un pequeño delay
+          setTimeout(() => {
+            alert('Registro clínico guardado exitosamente');
+          }, 100);
+        } else {
+          alert('Error al guardar registro clínico: ' + (resultado.mensaje || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('Error al guardar registro clínico:', error);
+        alert('Error de conexión con el servidor');
+      }
     }
   }
 
@@ -186,16 +242,40 @@ export class GestionCitasVeterinario implements OnInit {
    * Guarda los cambios de la cita editada
    * Actualiza el array de citas con los nuevos datos
    */
-  guardarEdicion() {
+  async guardarEdicion() {
     // Verificamos que tengamos un índice válido
-    if (this.indiceEditando !== -1) {
-      // Actualizamos la cita usando el servicio
-      this.citasService.actualizarCita(this.indiceEditando, { ...this.citaEditar });
-      console.log('Cita actualizada:', this.citaEditar);
-      // TODO: Aquí irá la lógica para actualizar en el backend
-      // Ejemplo: this.http.put(`/api/citas/${id}`, this.citaEditar).subscribe(...)
-      this.cerrarModalEditar();
-      alert('Cita actualizada exitosamente');
+    if (this.indiceEditando !== -1 && this.citaEditar._id) {
+      try {
+        // Actualizar en el backend
+        const response = await fetch(`http://localhost:3000/api/citas/${this.citaEditar._id}`, {
+          method: 'PUT',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify(this.citaEditar)
+        });
+
+        const resultado = await response.json();
+
+        if (resultado.success || response.ok) {
+          // Actualizar en el array local
+          this.citas[this.indiceEditando] = { ...this.citas[this.indiceEditando], ...this.citaEditar };
+          
+          // Cerrar modal primero
+          this.cerrarModalEditar();
+          
+          // Forzar detección de cambios
+          this.cdr.detectChanges();
+          
+          // Mostrar mensaje después
+          setTimeout(() => {
+            alert('Cita actualizada exitosamente');
+          }, 100);
+        } else {
+          alert('Error al actualizar la cita: ' + (resultado.mensaje || 'Error desconocido'));
+        }
+      } catch (error) {
+        console.error('Error al actualizar cita:', error);
+        alert('Error de conexión con el servidor');
+      }
     }
   }
 
@@ -208,6 +288,7 @@ export class GestionCitasVeterinario implements OnInit {
     if (confirm('¿Está seguro de eliminar esta cita?')) {
       // Eliminamos usando el servicio
       this.citasService.eliminarCitaLocal(indice);
+      this.citas = this.citasService.getCitas();
       alert('Cita eliminada exitosamente');
       // TODO: Aquí irá la lógica para eliminar en el backend
       // Ejemplo: this.http.delete(`/api/citas/${id}`).subscribe(...)
@@ -225,5 +306,44 @@ export class GestionCitasVeterinario implements OnInit {
     // - Cambiar un campo 'estado' de la cita
     // - Enviar notificación al dueño
     // - Actualizar en el backend
+  }
+
+  /**
+   * Valida que solo se puedan ingresar números y el punto decimal
+   * @param event - Evento del teclado
+   */
+  validarNumero(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Permite números (48-57), punto decimal (46), y teclas especiales (8=backspace, 9=tab, etc.)
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Valida que la fecha seleccionada no sea domingo
+   */
+  validarFecha(event: any) {
+    const fecha = new Date(event.target.value + 'T00:00:00');
+    const dia = fecha.getDay();
+    
+    // 0 = Domingo
+    if (dia === 0) {
+      alert('No se pueden seleccionar fechas los domingos. Por favor seleccione otro día.');
+      event.target.value = '';
+      // Limpiar el campo correspondiente del modelo
+      const fieldName = event.target.name;
+      if (fieldName === 'fechaConsulta') {
+        this.registroClinico.fechaConsulta = '';
+      } else if (fieldName === 'proximaCita') {
+        this.registroClinico.proximaCita = '';
+      } else if (fieldName === 'fechaVacuna') {
+        this.registroClinico.fechaVacuna = '';
+      } else if (fieldName === 'proximaDosis') {
+        this.registroClinico.proximaDosis = '';
+      }
+    }
   }
 }

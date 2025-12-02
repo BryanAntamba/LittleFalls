@@ -5,14 +5,16 @@
     
     <form class="login-form">
         <div class="verification-header">
-            <i class="fa-solid fa-envelope-circle-check" style="font-size: 60px; color: #4CAF50;"></i>
-            <h2>Verifica tu Cuenta</h2>
+            <i class="fa-solid fa-envelope-circle-check" 
+               [style.color]="tipoVerificacion === 'recuperacion' ? '#FF6B6B' : '#4CAF50'"
+               style="font-size: 60px;"></i>
+            <h2>{{ tipoVerificacion === 'recuperacion' ? 'Verificar Código' : 'Verifica tu Cuenta' }}</h2>
             <p class="subtitle">Hemos enviado un código de 6 dígitos a:</p>
             <p class="email-display">{{ correo }}</p>
         </div>
 
         <div class="mb-3">
-            <label for="inputCodigo" class="form-label">Código de Verificación:</label>
+            <label for="inputCodigo" class="form-label">Código de {{ tipoVerificacion === 'recuperacion' ? 'Recuperación' : 'Verificación' }}:</label>
             <input 
                 type="text" 
                 id="inputCodigo" 
@@ -33,7 +35,7 @@
             (click)="verificarCodigo()"
             [disabled]="cargando">
             <span *ngIf="!cargando">
-                <i class="fa-solid fa-check-circle"></i> Verificar Cuenta
+                <i class="fa-solid fa-check-circle"></i> {{ tipoVerificacion === 'recuperacion' ? 'Verificar Código' : 'Verificar Cuenta' }}
             </span>
             <span *ngIf="cargando">
                 <i class="fa-solid fa-spinner fa-spin"></i> Verificando...

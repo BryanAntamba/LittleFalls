@@ -24,9 +24,9 @@
             <tbody>
                 @for (mascota of mascotasFiltradas; track $index) {
                 <tr>
-                    <td class="col-nombre">{{ mascota.nombre }} {{ mascota.apellido }}</td>
+                    <td class="col-nombre">{{ mascota.nombrePaciente }} {{ mascota.apellidoPaciente }}</td>
                     <th class="col-nombreMascota">{{ mascota.nombreMascota }}</th>
-                    <th class="col-generoMascota">{{ mascota.generoMascota }}</th>
+                    <th class="col-generoMascota">{{ mascota.sexoMascota }}</th>
                     <td class="col-acciones">
                         <button class="btn-action btn-edit" (click)="verHistorial($index)">
                             Ver Historial Clínico
@@ -53,76 +53,87 @@
         <div class="modal-body">
             <!-- Información de la mascota -->
             <div class="info-mascota">
-                <p><strong>Dueño:</strong> {{ mascotaSeleccionada?.nombre }} {{ mascotaSeleccionada?.apellido }}</p>
+                <p><strong>Dueño:</strong> {{ mascotaSeleccionada?.nombrePaciente }} {{ mascotaSeleccionada?.apellidoPaciente }}</p>
                 <p><strong>Mascota:</strong> {{ mascotaSeleccionada?.nombreMascota }}</p>
                 <p><strong>Tipo:</strong> {{ mascotaSeleccionada?.tipoMascota }}</p>
-                <p><strong>Género:</strong> {{ mascotaSeleccionada?.generoMascota }}</p>
+                <p><strong>Género:</strong> {{ mascotaSeleccionada?.sexoMascota }}</p>
                 <p><strong>Edad:</strong> {{ mascotaSeleccionada?.edadMascota }} años</p>
             </div>
 
-            <!-- Registro Clínico -->
-            <div class="registro-card" *ngIf="mascotaSeleccionada?.registroClinico">
-                <div class="registro-header">
-                    <h3>
-                        <i class="fa-solid fa-calendar"></i>
-                        Última Consulta: {{ mascotaSeleccionada.registroClinico.fechaConsulta | date: 'dd/MM/yyyy' }}
-                    </h3>
-                </div>
+            <!-- Historial de Registros Clínicos (Múltiples) -->
+            <div *ngIf="mascotaSeleccionada?.registrosClinicosHistorial && mascotaSeleccionada.registrosClinicosHistorial.length > 0">
+                <h3 style="margin-top: 20px; margin-bottom: 15px; color: #17a2b8;">
+                    <i class="fa-solid fa-history"></i> Historial de Consultas ({{ mascotaSeleccionada.registrosClinicosHistorial.length }})
+                </h3>
 
-                <div class="registro-body">
-                    <div class="registro-seccion">
-                        <strong>Motivo de Consulta:</strong> {{ mascotaSeleccionada.registroClinico.motivoConsulta }}
-                    </div>
-                    <div class="registro-seccion">
-                        <strong>Síntomas:</strong> {{ mascotaSeleccionada.registroClinico.sintomas }}
+                <!-- Iterar sobre cada registro clínico -->
+                @for (registro of obtenerRegistrosOrdenados(); track $index) {
+                <div class="registro-card" style="margin-bottom: 15px;">
+                    <div class="registro-header">
+                        <h3>
+                            <i class="fa-solid fa-calendar"></i>
+                            Consulta: {{ registro.fechaConsulta | date: 'dd/MM/yyyy' }}
+                            @if ($index === 0) {
+                                <span style="background: #28a745; color: white; padding: 2px 8px; border-radius: 4px; font-size: 12px; margin-left: 10px;">Más Reciente</span>
+                            }
+                        </h3>
                     </div>
 
-                    <div class="registro-row">
-                        <div><strong>Peso:</strong> {{ mascotaSeleccionada.registroClinico.peso }} kg</div>
-                        <div><strong>Temperatura:</strong> {{ mascotaSeleccionada.registroClinico.temperatura }}°C</div>
-                        <div><strong>FC:</strong> {{ mascotaSeleccionada.registroClinico.frecuenciaCardiaca }} lpm</div>
-                        <div><strong>FR:</strong> {{ mascotaSeleccionada.registroClinico.frecuenciaRespiratoria }} rpm
+                    <div class="registro-body">
+                        <div class="registro-seccion">
+                            <strong>Motivo de Consulta:</strong> {{ registro.motivoConsulta }}
                         </div>
-                        <div><strong>Condición:</strong> {{ obtenerNombreCondicion(mascotaSeleccionada.registroClinico.condicionCorporal) }}
+                        <div class="registro-seccion">
+                            <strong>Síntomas:</strong> {{ registro.sintomas }}
+                        </div>
+
+                        <div class="registro-row">
+                            <div><strong>Peso:</strong> {{ registro.peso }} kg</div>
+                            <div><strong>Temperatura:</strong> {{ registro.temperatura }}°C</div>
+                            <div><strong>FC:</strong> {{ registro.frecuenciaCardiaca }} lpm</div>
+                            <div><strong>FR:</strong> {{ registro.frecuenciaRespiratoria }} rpm</div>
+                            <div><strong>Condición:</strong> {{ obtenerNombreCondicion(registro.condicionCorporal) }}</div>
+                        </div>
+
+                        <div class="registro-seccion">
+                            <strong>Diagnóstico:</strong> {{ registro.diagnostico }}
+                        </div>
+                        <div class="registro-seccion">
+                            <strong>Tratamiento:</strong> {{ registro.tratamiento }}
+                        </div>
+                        <div class="registro-seccion" *ngIf="registro.procedimientos">
+                            <strong>Procedimientos:</strong> {{ registro.procedimientos }}
+                        </div>
+                        <div class="registro-seccion" *ngIf="registro.proximaCita">
+                            <strong>Próxima Cita:</strong> {{ registro.proximaCita | date: 'dd/MM/yyyy' }}
+                        </div>
+
+                        <div class="registro-seccion" *ngIf="registro.tipoVacuna">
+                            <strong>Vacuna Aplicada:</strong> {{ registro.tipoVacuna }}
+                            <span *ngIf="registro.fechaVacuna">
+                                - {{ registro.fechaVacuna | date: 'dd/MM/yyyy' }}
+                            </span>
+                        </div>
+                        <div class="registro-seccion" *ngIf="registro.proximaDosis">
+                            <strong>Próxima Dosis:</strong> {{ registro.proximaDosis | date: 'dd/MM/yyyy' }}
                         </div>
                     </div>
 
-                    <div class="registro-seccion">
-                        <strong>Diagnóstico:</strong> {{ mascotaSeleccionada.registroClinico.diagnostico }}
+                    <!-- Solo permitir editar el último registro -->
+                    @if ($index === 0) {
+                    <div class="modal-footer">
+                        <button class="btn-action btn-edit" (click)="abrirEditarRegistro($index)">
+                            <i class="fa-solid fa-edit"></i> Editar Registro
+                        </button>
                     </div>
-                    <div class="registro-seccion">
-                        <strong>Tratamiento:</strong> {{ mascotaSeleccionada.registroClinico.tratamiento }}
-                    </div>
-                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.procedimientos">
-                        <strong>Procedimientos:</strong> {{ mascotaSeleccionada.registroClinico.procedimientos }}
-                    </div>
-                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.proximaCita">
-                        <strong>Próxima Cita:</strong> {{ mascotaSeleccionada.registroClinico.proximaCita | date:
-                        'dd/MM/yyyy' }}
-                    </div>
-
-                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.tipoVacuna">
-                        <strong>Vacuna Aplicada:</strong> {{ mascotaSeleccionada.registroClinico.tipoVacuna }}
-                        <span *ngIf="mascotaSeleccionada.registroClinico.fechaVacuna">
-                            - {{ mascotaSeleccionada.registroClinico.fechaVacuna | date: 'dd/MM/yyyy' }}
-                        </span>
-                    </div>
-                    <div class="registro-seccion" *ngIf="mascotaSeleccionada.registroClinico.proximaDosis">
-                        <strong>Próxima Dosis:</strong> {{ mascotaSeleccionada.registroClinico.proximaDosis | date:
-                        'dd/MM/yyyy' }}
-                    </div>
+                    }
                 </div>
-
-                <div class="modal-footer">
-                    <button class="btn-action btn-edit" (click)="abrirEditar()">
-                        <i class="fa-solid fa-edit"></i> Editar Registro
-                    </button>
-                </div>
+                }
             </div>
 
-            <div class="sin-registros" *ngIf="!mascotaSeleccionada?.registroClinico">
+            <div class="sin-registros" *ngIf="!mascotaSeleccionada?.registrosClinicosHistorial || mascotaSeleccionada.registrosClinicosHistorial.length === 0">
                 <i class="fa-solid fa-clipboard-question"></i>
-                <p>No hay registro clínico para esta mascota</p>
+                <p>No hay registros clínicos para esta mascota</p>
             </div>
         </div>
     </div>
@@ -143,7 +154,7 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Fecha de Consulta</label>
-                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" required>
+                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" (change)="validarFechaDomingo($event, 'fechaConsulta')" required>
                     </div>
                     <div class="form-group">
                         <label>Motivo de Consulta</label>
@@ -216,7 +227,7 @@
                 </div>
                 <div class="form-group">
                     <label>Próxima Cita</label>
-                    <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita2">
+                    <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita2" (change)="validarFechaDomingo($event, 'proximaCita')">
                 </div>
             </div>
 

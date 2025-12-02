@@ -19,6 +19,16 @@ class CitaService {
                 pacienteId
             } = datos;
 
+            // Validar campos numéricos
+            const erroresValidacion = this.validarCamposNumericos(datos);
+            if (erroresValidacion.length > 0) {
+                return {
+                    success: false,
+                    mensaje: 'Errores de validación',
+                    errores: erroresValidacion
+                };
+            }
+
             const nuevaCita = new Cita({
                 pacienteId: pacienteId || null,
                 nombrePaciente,
@@ -172,6 +182,212 @@ class CitaService {
             return {
                 success: false,
                 mensaje: 'Error al asignar veterinario',
+                error: error.message
+            };
+        }
+    }
+
+    async actualizarCitaCompleta(citaId, datos) {
+        try {
+            const cita = await Cita.findById(citaId);
+            
+            if (!cita) {
+                return {
+                    success: false,
+                    mensaje: 'Cita no encontrada'
+                };
+            }
+
+            // Validar campos numéricos si están presentes
+            const erroresValidacion = this.validarCamposNumericos(datos);
+            if (erroresValidacion.length > 0) {
+                return {
+                    success: false,
+                    mensaje: 'Errores de validación',
+                    errores: erroresValidacion
+                };
+            }
+
+            // Actualizar campos permitidos
+            if (datos.nombrePaciente !== undefined) cita.nombrePaciente = datos.nombrePaciente;
+            if (datos.apellidoPaciente !== undefined) cita.apellidoPaciente = datos.apellidoPaciente;
+            if (datos.correoPaciente !== undefined) cita.correoPaciente = datos.correoPaciente;
+            if (datos.telefonoPaciente !== undefined) cita.telefonoPaciente = datos.telefonoPaciente;
+            if (datos.nombreMascota !== undefined) cita.nombreMascota = datos.nombreMascota;
+            if (datos.edadMascota !== undefined) cita.edadMascota = datos.edadMascota;
+            if (datos.tipoMascota !== undefined) cita.tipoMascota = datos.tipoMascota;
+            if (datos.sexoMascota !== undefined) cita.sexoMascota = datos.sexoMascota;
+            if (datos.fecha !== undefined) cita.fecha = datos.fecha;
+            if (datos.hora !== undefined) cita.hora = datos.hora;
+            if (datos.descripcion !== undefined) cita.descripcion = datos.descripcion;
+            if (datos.estado !== undefined) cita.estado = datos.estado;
+            if (datos.veterinarioId !== undefined) cita.veterinarioId = datos.veterinarioId;
+            if (datos.diagnostico !== undefined) cita.diagnostico = datos.diagnostico;
+            if (datos.tratamiento !== undefined) cita.tratamiento = datos.tratamiento;
+            if (datos.notasVeterinario !== undefined) cita.notasVeterinario = datos.notasVeterinario;
+
+            await cita.save();
+
+            return {
+                success: true,
+                mensaje: 'Cita actualizada exitosamente',
+                cita
+            };
+        } catch (error) {
+            console.error('Error en actualizarCitaCompleta:', error);
+            return {
+                success: false,
+                mensaje: 'Error al actualizar cita',
+                error: error.message
+            };
+        }
+    }
+
+    /**
+     * Valida que los campos numéricos contengan solo números
+     * @param {Object} datos - Datos a validar
+     * @returns {Array} - Array de errores encontrados
+     */
+    validarCamposNumericos(datos) {
+        const errores = [];
+        const camposNumericos = {
+            'edadMascota': 'Edad de la mascota',
+            'peso': 'Peso',
+            'temperatura': 'Temperatura',
+            'frecuenciaCardiaca': 'Frecuencia cardíaca',
+            'frecuenciaRespiratoria': 'Frecuencia respiratoria'
+        };
+
+        for (const [campo, nombre] of Object.entries(camposNumericos)) {
+            if (datos[campo] !== undefined && datos[campo] !== null && datos[campo] !== '') {
+                const valor = datos[campo];
+                // Verificar que sea un número válido
+                if (isNaN(valor) || typeof valor === 'string' && !/^-?\d+(\.\d+)?$/.test(valor.trim())) {
+                    errores.push(`${nombre} debe ser un número válido`);
+                }
+                // Validar que sea positivo para ciertos campos
+                if (!isNaN(valor) && parseFloat(valor) < 0) {
+                    errores.push(`${nombre} no puede ser negativo`);
+                }
+            }
+        }
+
+        return errores;
+    }
+
+    async guardarRegistroClinico(citaId, registroClinico) {
+        try {
+            const cita = await Cita.findById(citaId);
+            
+            if (!cita) {
+                return {
+                    success: false,
+                    mensaje: 'Cita no encontrada'
+                };
+            }
+
+            // Validar campos numéricos del registro clínico
+            const erroresValidacion = this.validarCamposNumericos(registroClinico);
+            if (erroresValidacion.length > 0) {
+                return {
+                    success: false,
+                    mensaje: 'Errores de validación',
+                    errores: erroresValidacion
+                };
+            }
+
+            // Inicializar el array si no existe
+            if (!cita.registrosClinicosHistorial) {
+                cita.registrosClinicosHistorial = [];
+            }
+
+            // Agregar el nuevo registro clínico al array
+            cita.registrosClinicosHistorial.push(registroClinico);
+            
+            // También actualizar los campos principales con el último registro
+            if (registroClinico.diagnostico) cita.diagnostico = registroClinico.diagnostico;
+            if (registroClinico.tratamiento) cita.tratamiento = registroClinico.tratamiento;
+            
+            await cita.save();
+
+            // Recargar la cita desde la BD para obtener los valores actualizados
+            const citaActualizada = await Cita.findById(citaId).lean();
+
+            return {
+                success: true,
+                mensaje: 'Registro clínico guardado exitosamente',
+                cita: citaActualizada
+            };
+        } catch (error) {
+            console.error('Error en guardarRegistroClinico:', error);
+            return {
+                success: false,
+                mensaje: 'Error al guardar registro clínico',
+                error: error.message
+            };
+        }
+    }
+
+    async actualizarRegistroClinico(citaId, registroClinico) {
+        try {
+            const cita = await Cita.findById(citaId);
+            
+            if (!cita) {
+                return {
+                    success: false,
+                    mensaje: 'Cita no encontrada'
+                };
+            }
+
+            // Validar campos numéricos
+            const erroresValidacion = this.validarCamposNumericos(registroClinico);
+            if (erroresValidacion.length > 0) {
+                return {
+                    success: false,
+                    mensaje: 'Errores de validación',
+                    errores: erroresValidacion
+                };
+            }
+
+            // Si hay un índice de registro, actualizar ese registro específico
+            // Si no, actualizar el último registro del array
+            if (!cita.registrosClinicosHistorial || cita.registrosClinicosHistorial.length === 0) {
+                return {
+                    success: false,
+                    mensaje: 'No hay registros clínicos para actualizar'
+                };
+            }
+
+            const indice = registroClinico.indiceRegistro !== undefined 
+                ? registroClinico.indiceRegistro 
+                : cita.registrosClinicosHistorial.length - 1;
+
+            // Actualizar el registro específico
+            cita.registrosClinicosHistorial[indice] = {
+                ...cita.registrosClinicosHistorial[indice],
+                ...registroClinico
+            };
+            
+            // También actualizar los campos principales con el último registro
+            const ultimoRegistro = cita.registrosClinicosHistorial[cita.registrosClinicosHistorial.length - 1];
+            if (ultimoRegistro.diagnostico) cita.diagnostico = ultimoRegistro.diagnostico;
+            if (ultimoRegistro.tratamiento) cita.tratamiento = ultimoRegistro.tratamiento;
+            
+            await cita.save();
+
+            // Recargar la cita desde la BD para obtener los valores actualizados
+            const citaActualizada = await Cita.findById(citaId).lean();
+
+            return {
+                success: true,
+                mensaje: 'Registro clínico actualizado exitosamente',
+                cita: citaActualizada
+            };
+        } catch (error) {
+            console.error('Error en actualizarRegistroClinico:', error);
+            return {
+                success: false,
+                mensaje: 'Error al actualizar registro clínico',
                 error: error.message
             };
         }

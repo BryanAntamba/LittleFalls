@@ -12,6 +12,8 @@ import { RecuperacionPasword } from './components/recuperacion-pasword/recuperac
 import { RestablecerPasword } from './components/restablecer-pasword/restablecer-pasword';
 import { authGuard } from './guards/auth.guard';
 import { roleGuard } from './guards/role.guard';
+import { verifyCodeGuard } from './guards/verify-code.guard';
+import { resetPasswordGuard } from './guards/reset-password.guard';
 
 
 export const routes: Routes = [
@@ -19,9 +21,10 @@ export const routes: Routes = [
     { path: 'home', component: Inicio },
     { path: 'Login-LittleFalls', component: Login },
     { path: 'Registro-LittleFalls', component: Registro },
-    { path: 'Verificar-Codigo', component: VerificarCodigo },
-    { path: 'RecuperarPasword', component: RecuperacionPasword },
-    { path: 'RestablecerPasword', component: RestablecerPasword },
+    { path: 'Verificar-Codigo', component: VerificarCodigo, canActivate: [verifyCodeGuard] },
+    { path: 'VerificarCodigoRecuperacion', component: VerificarCodigo, canActivate: [verifyCodeGuard] },
+    { path: 'RecuperacionPasword', component: RecuperacionPasword },
+    { path: 'RestablecerPasword', component: RestablecerPasword, canActivate: [resetPasswordGuard] },
     { path: 'GestionUsuarios-Admin', component: GestionUsuariosAdmin, canActivate: [authGuard, roleGuard], data: { roles: ['admin'] } },
     { path: 'GestionCitas-Veterinario', component: GestionCitasVeterinario, canActivate: [authGuard, roleGuard], data: { roles: ['veterinario'] } },
     { path: 'historialMascota-Veterinario', component: HistorialMascotaVeterinario, canActivate: [authGuard, roleGuard], data: { roles: ['veterinario'] } },
