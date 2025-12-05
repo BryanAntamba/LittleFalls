@@ -48,15 +48,21 @@ const validarCreacionUsuario = (req, res, next) => {
         errores.push('El correo electrónico es obligatorio');
     } else if (!validator.isEmail(correo)) {
         errores.push('El correo electrónico no es válido');
+    } else {
+        // Validar dominios permitidos
+        const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+        const correoLower = correo.toLowerCase();
+        const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
+        if (!dominioValido) {
+            errores.push('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+        }
     }
 
-    // Validar contraseña
+    // Validar formato de contraseña: solo letras y números, mínimo 8 caracteres
     if (!password || password.trim() === '') {
         errores.push('La contraseña es obligatoria');
-    } else if (password.length < 6) {
-        errores.push('La contraseña debe tener al menos 6 caracteres');
-    } else if (password.length > 100) {
-        errores.push('La contraseña no puede tener más de 100 caracteres');
+    } else if (!/^[a-zA-Z0-9]{8,}$/.test(password)) {
+        errores.push('La contraseña debe contener solo letras y números, mínimo 8 caracteres');
     }
 
     // Validar tipo de usuario
@@ -130,15 +136,21 @@ const validarActualizacionUsuario = (req, res, next) => {
             errores.push('El correo electrónico no puede estar vacío');
         } else if (!validator.isEmail(correo)) {
             errores.push('El correo electrónico no es válido');
+        } else {
+            // Validar dominios permitidos
+            const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+            const correoLower = correo.toLowerCase();
+            const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
+            if (!dominioValido) {
+                errores.push('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+            }
         }
     }
 
-    // Validar contraseña (si se proporciona)
+    // Validar formato de contraseña: solo letras y números, mínimo 8 caracteres (si se proporciona)
     if (password !== undefined && password !== '') {
-        if (password.length < 6) {
-            errores.push('La contraseña debe tener al menos 6 caracteres');
-        } else if (password.length > 100) {
-            errores.push('La contraseña no puede tener más de 100 caracteres');
+        if (!/^[a-zA-Z0-9]{8,}$/.test(password)) {
+            errores.push('La contraseña debe contener solo letras y números, mínimo 8 caracteres');
         }
     }
 

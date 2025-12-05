@@ -336,12 +336,12 @@ class AuthService {
    * @returns {boolean}
    */
   _validarSeguridadPassword(password) {
-    // Al menos 6 caracteres, una letra y un número
+    // Solo letras y números, mínimo 8 caracteres
+    const formatoValido = /^[a-zA-Z0-9]{8,}$/.test(password);
     const tieneLetra = /[a-zA-Z]/.test(password);
     const tieneNumero = /[0-9]/.test(password);
-    const longitudValida = password.length >= 6 && password.length <= 100;
     
-    return tieneLetra && tieneNumero && longitudValida;
+    return formatoValido && tieneLetra && tieneNumero;
   }
 
   /**

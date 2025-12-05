@@ -5,32 +5,32 @@
     
     <div class="mb-3">
       <label for="nombre" class="form-label">Nombre: *</label>
-      <input type="text" class="form-control" [(ngModel)]="cita.nombrePaciente" name="nombre" placeholder="Ingrese su nombre" required>
+      <input type="text" class="form-control" [(ngModel)]="cita.nombrePaciente" name="nombre" placeholder="Ingrese su nombre (solo letras)" required (input)="filtrarSoloLetras($event, 'nombre')">
     </div>
     
     <div class="mb-3">
       <label for="apellido" class="form-label">Apellido: *</label>
-      <input type="text" class="form-control" [(ngModel)]="cita.apellidoPaciente" name="apellido" placeholder="Ingrese su apellido" required>
+      <input type="text" class="form-control" [(ngModel)]="cita.apellidoPaciente" name="apellido" placeholder="Ingrese su apellido (solo letras)" required (input)="filtrarSoloLetras($event, 'apellido')">
     </div>
 
     <div class="mb-3">
       <label for="correo" class="form-label">Correo Electrónico: *</label>
-      <input type="email" class="form-control" [(ngModel)]="cita.correoPaciente" name="correo" placeholder="Ingrese su correo electrónico" required>
+      <input type="email" class="form-control" [(ngModel)]="cita.correoPaciente" name="correo" placeholder="usuario@gmail.com o usuario@hotmail.com" required>
     </div>
 
     <div class="mb-3">
       <label for="telefono" class="form-label">Teléfono: *</label>
-      <input type="tel" class="form-control" [(ngModel)]="cita.telefonoPaciente" name="telefono" placeholder="Ingrese su número de teléfono" required>
+      <input type="tel" class="form-control" [(ngModel)]="cita.telefonoPaciente" name="telefono" placeholder="10 dígitos (ej: 0999999999)" required (input)="filtrarTelefono($event)" maxlength="10">
     </div>
     
     <div class="mb-3">
       <label for="nombreMascota" class="form-label">Nombre de la mascota: *</label>
-      <input type="text" class="form-control" [(ngModel)]="cita.nombreMascota" name="nombreMascota" placeholder="Ingrese el nombre de su mascota" required>
+      <input type="text" class="form-control" [(ngModel)]="cita.nombreMascota" name="nombreMascota" placeholder="Ingrese el nombre (solo letras)" required (input)="filtrarSoloLetras($event, 'nombreMascota')">
     </div>
 
     <div class="mb-3">
       <label for="edad" class="form-label">Edad de la mascota: *</label>
-      <input type="number" class="form-control" [(ngModel)]="cita.edadMascota" name="edad" placeholder="Ingrese la edad de su mascota" required>
+      <input type="number" class="form-control" [(ngModel)]="cita.edadMascota" name="edad" placeholder="Máximo 20 años" required min="1" max="20">
     </div>
     
     <div class="mb-3">
@@ -56,7 +56,7 @@
     
     <div class="mb-3">
       <label for="descripcion" class="form-label">Descripción: *</label>
-      <textarea class="form-control" [(ngModel)]="cita.descripcion" name="descripcion" rows="3" placeholder="Describa el motivo de su cita médica" required></textarea>
+      <textarea class="form-control" [(ngModel)]="cita.descripcion" name="descripcion" rows="3" placeholder="Describa el motivo (letras y números permitidos)" required (input)="filtrarDescripcion($event)"></textarea>
     </div>
 
     <button type="submit" class="btn btn-primary" [disabled]="cargando">

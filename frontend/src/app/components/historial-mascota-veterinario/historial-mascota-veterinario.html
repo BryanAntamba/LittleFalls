@@ -154,18 +154,18 @@
                 <div class="form-row">
                     <div class="form-group">
                         <label>Fecha de Consulta</label>
-                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" (change)="validarFechaDomingo($event, 'fechaConsulta')" required>
+                        <input type="date" [(ngModel)]="registroClinico.fechaConsulta" name="fechaConsulta" [min]="fechaMinima" (change)="validarFechaDomingo($event, 'fechaConsulta')" required>
                     </div>
                     <div class="form-group">
                         <label>Motivo de Consulta</label>
                         <input type="text" [(ngModel)]="registroClinico.motivoConsulta" name="motivoConsulta2"
-                            placeholder="¿Por qué vino la mascota?">
+                            placeholder="¿Por qué vino la mascota?" (input)="filtrarTexto($event)">
                     </div>
                 </div>
                 <div class="form-group">
                     <label>Síntomas Observados</label>
                     <textarea [(ngModel)]="registroClinico.sintomas" name="sintomas2" rows="3"
-                        placeholder="Describe los síntomas..."></textarea>
+                        placeholder="Describe los síntomas..." (input)="filtrarTexto($event)"></textarea>
                 </div>
             </div>
 
@@ -176,22 +176,22 @@
                     <div class="form-group">
                         <label>Peso (kg)</label>
                         <input type="number" [(ngModel)]="registroClinico.peso" name="peso2" step="0.1"
-                            placeholder="0.0">
+                            placeholder="0.0" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Temperatura (°C)</label>
                         <input type="number" [(ngModel)]="registroClinico.temperatura" name="temperatura2" step="0.1"
-                            placeholder="0.0">
+                            placeholder="0.0" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Frecuencia Cardíaca (bpm)</label>
                         <input type="number" [(ngModel)]="registroClinico.frecuenciaCardiaca" name="frecuenciaCardiaca2"
-                            placeholder="0">
+                            placeholder="0" min="0" (keypress)="validarNumero($event)">
                     </div>
                     <div class="form-group">
                         <label>Frecuencia Respiratoria (rpm)</label>
                         <input type="number" [(ngModel)]="registroClinico.frecuenciaRespiratoria"
-                            name="frecuenciaRespiratoria2" placeholder="0">
+                            name="frecuenciaRespiratoria2" placeholder="0" min="0" (keypress)="validarNumero($event)">
                     </div>
                 </div>
                 <div class="form-group">
@@ -213,21 +213,21 @@
                 <div class="form-group">
                     <label>Diagnóstico</label>
                     <textarea [(ngModel)]="registroClinico.diagnostico" name="diagnostico2" rows="3"
-                        placeholder="Diagnóstico del veterinario..."></textarea>
+                        placeholder="Diagnóstico del veterinario..." (input)="filtrarTexto($event)"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Tratamiento</label>
                     <textarea [(ngModel)]="registroClinico.tratamiento" name="tratamiento2" rows="3"
-                        placeholder="Medicamentos, dosis, duración..."></textarea>
+                        placeholder="Medicamentos, dosis, duración..." (input)="filtrarTexto($event)"></textarea>
                 </div>
                 <div class="form-group">
                     <label>Procedimientos Realizados</label>
                     <input type="text" [(ngModel)]="registroClinico.procedimientos" name="procedimientos2"
-                        placeholder="Ej: Vacunación, limpieza dental, etc.">
+                        placeholder="Ej: Vacunación, limpieza dental, etc." (input)="filtrarTexto($event)">
                 </div>
                 <div class="form-group">
                     <label>Próxima Cita</label>
-                    <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita2" (change)="validarFechaDomingo($event, 'proximaCita')">
+                    <input type="date" [(ngModel)]="registroClinico.proximaCita" name="proximaCita2" [min]="fechaMinima" (change)="validarFechaDomingo($event, 'proximaCita')">
                 </div>
             </div>
 
@@ -238,15 +238,15 @@
                     <div class="form-group">
                         <label>Tipo de Vacuna</label>
                         <input type="text" [(ngModel)]="registroClinico.tipoVacuna" name="tipoVacuna2"
-                            placeholder="Ej: Rabia, Parvovirus...">
+                            placeholder="Ej: Rabia, Parvovirus..." (input)="filtrarTexto($event)">
                     </div>
                     <div class="form-group">
                         <label>Fecha de Vacuna</label>
-                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna2">
+                        <input type="date" [(ngModel)]="registroClinico.fechaVacuna" name="fechaVacuna2" [min]="fechaMinima">
                     </div>
                     <div class="form-group">
                         <label>Próxima Dosis</label>
-                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis2">
+                        <input type="date" [(ngModel)]="registroClinico.proximaDosis" name="proximaDosis2" [min]="fechaMinima">
                     </div>
                 </div>
             </div>

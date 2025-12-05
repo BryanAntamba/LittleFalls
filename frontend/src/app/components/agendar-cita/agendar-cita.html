@@ -8,8 +8,8 @@
 
     <div class="dias-container">
       <div class="dia">
-        <h3>ESTAMOS DE LUNES A SABADOS PARA TI Y TU MASCOTA</h3>
-        <p class="texto-dia">Nuestros horarios de jornada de trabajo son apartir de lunes a sabado de las semanadas
+        <h3>ESTAMOS DE LUNES A DOMINGO PARA TI Y TU MASCOTA</h3>
+        <p class="texto-dia">Nuestros horarios de jornada de trabajo son apartir de lunes a domingo de las semana
           con el horario disponible de 8:00 AM a 9:00 PM. En dias festivos puede cambiar los horarios.</p>
         <p class="texto-dia-secundario">Selecciona su hora y fecha para su atencion.</p>
         <select [(ngModel)]="horaSeleccionada" name="hora">
@@ -28,7 +28,7 @@
           <option value="7:00 PM">7:00 PM</option>
           <option value="8:00 PM">8:00 PM</option>
         </select>
-        <input type="date" class="fecha-cita" [(ngModel)]="fechaSeleccionada" name="fecha" (change)="validarFecha($event)">
+        <input type="date" class="fecha-cita" [(ngModel)]="fechaSeleccionada" name="fecha" [min]="fechaMinima" (change)="validarFecha($event)">
       </div>
     </div>
     <button class="btn-agendar btn-final" (click)="siguientePaso()">

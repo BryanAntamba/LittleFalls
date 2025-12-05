@@ -15,11 +15,16 @@ import { AlertService } from '../../services/alert.service';
 export class AgendarCita {
   horaSeleccionada = '';
   fechaSeleccionada = '';
+  fechaMinima = '';
 
   constructor(
     private router: Router,
     private alertService: AlertService
-  ) {}
+  ) {
+    // Establecer fecha mínima como hoy
+    const hoy = new Date();
+    this.fechaMinima = hoy.toISOString().split('T')[0];
+  }
 
   siguientePaso() {
     if (!this.horaSeleccionada || !this.fechaSeleccionada) {
@@ -34,15 +39,16 @@ export class AgendarCita {
   }
 
   /**
-   * Valida que la fecha seleccionada no sea domingo
+   * Valida que la fecha seleccionada no sea una fecha pasada
    */
   validarFecha(event: any) {
-    const fecha = new Date(event.target.value + 'T00:00:00');
-    const dia = fecha.getDay();
+    const fechaSeleccionada = new Date(event.target.value + 'T00:00:00');
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
     
-    // 0 = Domingo
-    if (dia === 0) {
-      this.alertService.error('No se pueden agendar citas los domingos. Por favor seleccione otro día.');
+    // Verificar si es una fecha pasada
+    if (fechaSeleccionada < hoy) {
+      this.alertService.error('No se pueden agendar citas en fechas pasadas. Por favor seleccione una fecha futura.');
       event.target.value = '';
       this.fechaSeleccionada = '';
     }

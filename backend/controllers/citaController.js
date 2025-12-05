@@ -65,6 +65,23 @@ class CitaController {
             const { citaId } = req.params;
             const { estado } = req.body;
 
+            // Validar que el estado sea proporcionado
+            if (!estado) {
+                return res.status(400).json({
+                    success: false,
+                    mensaje: 'El estado es requerido'
+                });
+            }
+
+            // Validar que el estado sea uno de los valores permitidos
+            const estadosPermitidos = ['pendiente', 'confirmada', 'cancelada', 'completada'];
+            if (!estadosPermitidos.includes(estado)) {
+                return res.status(400).json({
+                    success: false,
+                    mensaje: 'Estado inválido. Debe ser: pendiente, confirmada, cancelada o completada'
+                });
+            }
+
             const resultado = await citaService.actualizarEstadoCita(citaId, estado);
 
             if (!resultado.success) {
@@ -81,6 +98,14 @@ class CitaController {
         try {
             const { citaId } = req.params;
             const { veterinarioId } = req.body;
+
+            // Validar que el veterinarioId sea proporcionado
+            if (!veterinarioId) {
+                return res.status(400).json({
+                    success: false,
+                    mensaje: 'El ID del veterinario es requerido'
+                });
+            }
 
             const resultado = await citaService.asignarVeterinario(citaId, veterinarioId);
 

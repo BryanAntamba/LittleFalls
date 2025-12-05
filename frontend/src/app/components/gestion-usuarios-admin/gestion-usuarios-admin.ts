@@ -153,8 +153,48 @@ export class GestionUsuariosAdmin implements OnInit {
       return;
     }
 
+    // Validar formato de correo
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(this.nuevoVeterinario.correo)) {
+      this.alertService.error('El formato del correo no es válido');
+      return;
+    }
+
+    // Validar dominios permitidos
+    const correoLower = this.nuevoVeterinario.correo.toLowerCase();
+    const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+    const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
+    if (!dominioValido) {
+      this.alertService.error('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+      return;
+    }
+
+    // Validar nombre solo letras
+    const letrasPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!letrasPattern.test(this.nuevoVeterinario.nombre)) {
+      this.alertService.error('El nombre solo puede contener letras');
+      return;
+    }
+    if (!letrasPattern.test(this.nuevoVeterinario.apellido)) {
+      this.alertService.error('El apellido solo puede contener letras');
+      return;
+    }
+
+    // Validar edad solo números
+    if (this.nuevoVeterinario.edad && !/^\d+$/.test(this.nuevoVeterinario.edad)) {
+      this.alertService.error('La edad solo puede contener números');
+      return;
+    }
+
     if (!this.nuevoVeterinario.password || !this.nuevoVeterinario.confirmPassword) {
       this.alertService.error('Por favor ingrese la contraseña');
+      return;
+    }
+
+    // Validar contraseña solo letras y números
+    const passwordPattern = /^[a-zA-Z0-9]+$/;
+    if (!passwordPattern.test(this.nuevoVeterinario.password)) {
+      this.alertService.error('La contraseña solo puede contener letras y números');
       return;
     }
 
@@ -201,8 +241,48 @@ export class GestionUsuariosAdmin implements OnInit {
   async guardarEdicion() {
     if (this.indiceEditando === -1) return;
 
+    // Validar formato de correo
+    const emailPattern = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailPattern.test(this.veterinarioEditar.correo)) {
+      this.alertService.error('El formato del correo no es válido');
+      return;
+    }
+
+    // Validar dominios permitidos
+    const correoLower = this.veterinarioEditar.correo.toLowerCase();
+    const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+    const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
+    if (!dominioValido) {
+      this.alertService.error('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+      return;
+    }
+
+    // Validar nombre solo letras
+    const letrasPattern = /^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/;
+    if (!letrasPattern.test(this.veterinarioEditar.nombre)) {
+      this.alertService.error('El nombre solo puede contener letras');
+      return;
+    }
+    if (!letrasPattern.test(this.veterinarioEditar.apellido)) {
+      this.alertService.error('El apellido solo puede contener letras');
+      return;
+    }
+
+    // Validar edad solo números
+    if (this.veterinarioEditar.edad && !/^\d+$/.test(this.veterinarioEditar.edad)) {
+      this.alertService.error('La edad solo puede contener números');
+      return;
+    }
+
     // Validar contraseñas si se están modificando
     if (this.veterinarioEditar.password || this.veterinarioEditar.confirmPassword) {
+      // Validar contraseña solo letras y números
+      const passwordPattern = /^[a-zA-Z0-9]+$/;
+      if (this.veterinarioEditar.password && !passwordPattern.test(this.veterinarioEditar.password)) {
+        this.alertService.error('La contraseña solo puede contener letras y números');
+        return;
+      }
+      
       if (this.veterinarioEditar.password !== this.veterinarioEditar.confirmPassword) {
         this.alertService.error('Las contraseñas no coinciden');
         return;

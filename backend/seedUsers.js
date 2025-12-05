@@ -29,9 +29,9 @@ const crearUsuariosIniciales = async () => {
             }
         }
 
-        // Hashear contraseñas
+        // Hashear contraseñas (mínimo 8 caracteres: solo letras y números)
         const passwordAdmin = await bcrypt.hash('admin123', 10);
-        const passwordVeterinario = await bcrypt.hash('veterinario123', 10);
+        const passwordVeterinario = await bcrypt.hash('vet12345', 10);
 
         // Crear usuario Administrador
         const admin = new Usuario({
@@ -66,7 +66,7 @@ const crearUsuariosIniciales = async () => {
         await veterinario.save();
         console.log('✅ Usuario Veterinario creado:');
         console.log('   Correo: veterinario@littlefalls.com');
-        console.log('   Contraseña: veterinario123');
+        console.log('   Contraseña: vet12345');
 
         console.log('\n🎉 Usuarios creados exitosamente!');
         console.log('\nPuedes iniciar sesión con:');
@@ -77,7 +77,7 @@ const crearUsuariosIniciales = async () => {
         console.log('├─────────────────────────────────────────────┤');
         console.log('│ VETERINARIO                                 │');
         console.log('│ Correo: veterinario@littlefalls.com        │');
-        console.log('│ Contraseña: veterinario123                 │');
+        console.log('│ Contraseña: vet12345                       │');
         console.log('└─────────────────────────────────────────────┘');
 
     } catch (error) {

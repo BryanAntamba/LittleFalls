@@ -21,12 +21,12 @@ class PasswordRecoveryController {
         });
       }
 
-      // Validar formato de correo
-      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      // Validar que el correo sea solo @gmail.com o @hotmail.com
+      const emailRegex = /^[^\s@]+@(gmail\.com|hotmail\.com)$/i;
       if (!emailRegex.test(correo)) {
         return res.status(400).json({
           success: false,
-          mensaje: 'Formato de correo inválido'
+          mensaje: 'Solo se permite recuperación para correos de Gmail o Hotmail'
         });
       }
 
@@ -105,11 +105,12 @@ class PasswordRecoveryController {
         });
       }
 
-      // Validar longitud de contraseña
-      if (nuevaPassword.length < 6) {
+      // Validar formato de contraseña: solo letras y números, mínimo 8 caracteres
+      const passwordRegex = /^[a-zA-Z0-9]{8,}$/;
+      if (!passwordRegex.test(nuevaPassword)) {
         return res.status(400).json({
           success: false,
-          mensaje: 'La contraseña debe tener al menos 6 caracteres'
+          mensaje: 'La contraseña debe contener solo letras y números, mínimo 8 caracteres'
         });
       }
 

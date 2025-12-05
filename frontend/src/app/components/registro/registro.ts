@@ -59,6 +59,15 @@ export class Registro {
     // La validación se hará solo al hacer click en Registrarse
   }
 
+  // Filtrar password: solo permite letras y números
+  filterPassword(event: any) {
+    const input = event.target;
+    const value = input.value;
+    const filtrado = value.replace(/[^A-Za-z0-9]/g, '');
+    input.value = filtrado;
+    this.password = filtrado;
+  }
+
   async registrarse() {
     // Limpiar errores previos solo al hacer click en Registrarse
     this.clearAllErrors();
@@ -112,11 +121,15 @@ export class Registro {
       hasError = true;
     } else {
       const correoTrimmed = this.correo.trim().toLowerCase();
-      if (!correoTrimmed.endsWith('@gmail.com')) {
-        this.errorCorreo = 'El correo debe tener el formato usuario@gmail.com';
+      // Validar dominios permitidos
+      const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+      const dominioValido = dominiosPermitidos.some(dominio => correoTrimmed.endsWith(dominio));
+      
+      if (!dominioValido) {
+        this.errorCorreo = 'El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com';
         hasError = true;
-      } else if (!/^[A-Za-z0-9._\-]+@gmail\.com$/.test(correoTrimmed)) {
-        this.errorCorreo = 'Por favor ingresa un correo válido (ej: usuario@gmail.com)';
+      } else if (!/^[A-Za-z0-9._\-]+@(gmail|veterinario|littlefalls)\.com$/.test(correoTrimmed)) {
+        this.errorCorreo = 'Por favor ingresa un correo válido';
         hasError = true;
       }
     }
@@ -125,14 +138,11 @@ export class Registro {
     if (!this.password || this.password.trim() === '') {
       this.errorPassword = 'Por favor completa la contraseña';
       hasError = true;
-    } else if (this.password.length < 6) {
-      this.errorPassword = 'La contraseña debe tener al menos 6 caracteres';
-      hasError = true;
-    } else if (!/[A-Za-z]/.test(this.password) || !/[0-9]/.test(this.password)) {
-      this.errorPassword = 'La contraseña debe contener al menos una letra y un número';
+    } else if (this.password.length < 8) {
+      this.errorPassword = 'La contraseña debe tener al menos 8 caracteres';
       hasError = true;
     } else if (!passwordAllowedRegex.test(this.password)) {
-      this.errorPassword = 'La contraseña no debe contener símbolos ni caracteres especiales';
+      this.errorPassword = 'La contraseña solo puede contener letras y números';
       hasError = true;
     }
 

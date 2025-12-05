@@ -29,6 +29,7 @@ export class HistorialMascotaVeterinario implements OnInit {
 
   // Término de búsqueda
   terminoBusqueda = '';
+  fechaMinima = '';
 
   // Objeto para nuevo registro o edición
   registroClinico = {
@@ -58,7 +59,11 @@ export class HistorialMascotaVeterinario implements OnInit {
     private citasService: CitasService,
     private cdr: ChangeDetectorRef,
     private alertService: AlertService
-  ) {}
+  ) {
+    // Establecer fecha mínima como hoy
+    const hoy = new Date();
+    this.fechaMinima = hoy.toISOString().split('T')[0];
+  }
 
   async ngOnInit() {
     console.log('Historial - Cargando citas...');
@@ -191,6 +196,26 @@ export class HistorialMascotaVeterinario implements OnInit {
    */
   async guardarEdicionRegistro() {
     if (this.indiceMascotaSeleccionada !== -1) {
+      // Validar que los campos de texto contengan al menos una letra
+      const camposTexto = [
+        { valor: this.registroClinico.motivoConsulta, nombre: 'Motivo de consulta' },
+        { valor: this.registroClinico.sintomas, nombre: 'Síntomas' },
+        { valor: this.registroClinico.diagnostico, nombre: 'Diagnóstico' },
+        { valor: this.registroClinico.tratamiento, nombre: 'Tratamiento' },
+        { valor: this.registroClinico.procedimientos, nombre: 'Procedimientos' },
+        { valor: this.registroClinico.tipoVacuna, nombre: 'Tipo de vacuna' }
+      ];
+
+      for (const campo of camposTexto) {
+        if (campo.valor && campo.valor.trim() !== '') {
+          // Verificar que contenga al menos una letra
+          if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(campo.valor)) {
+            this.alertService.error(`El campo "${campo.nombre}" debe contener al menos una letra`);
+            return;
+          }
+        }
+      }
+
       try {
         const cita = this.citasService.getCita(this.indiceMascotaSeleccionada);
         
@@ -307,12 +332,16 @@ export class HistorialMascotaVeterinario implements OnInit {
   }
 
   /**
-   * Valida que la fecha seleccionada no sea domingo
+   * Valida que la fecha seleccionada no sea una fecha pasada
    */
   validarFechaDomingo(event: any, campo: string) {
-    const fecha = new Date(event.target.value + 'T00:00:00');
-    if (fecha.getDay() === 0) { // 0 = Domingo
-      this.alertService.error('No se permiten citas los domingos. Por favor seleccione otro día.');
+    const fechaSeleccionada = new Date(event.target.value + 'T00:00:00');
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
+    
+    // Verificar si es una fecha pasada
+    if (fechaSeleccionada < hoy) {
+      this.alertService.error('No se pueden seleccionar fechas pasadas. Por favor seleccione una fecha actual o futura.');
       // Limpiar el campo
       if (campo === 'fechaConsulta') {
         this.registroClinico.fechaConsulta = '';
@@ -325,6 +354,40 @@ export class HistorialMascotaVeterinario implements OnInit {
       }
       event.target.value = '';
     }
+  }
+
+  /**
+   * Valida que solo se puedan ingresar números y el punto decimal
+   * @param event - Evento del teclado
+   */
+  validarNumero(event: KeyboardEvent) {
+    const charCode = event.which ? event.which : event.keyCode;
+    // Permite números (48-57), punto decimal (46), y teclas especiales (8=backspace, 9=tab, etc.)
+    if (charCode > 31 && (charCode < 48 || charCode > 57) && charCode !== 46) {
+      event.preventDefault();
+      return false;
+    }
+    return true;
+  }
+
+  /**
+   * Filtra caracteres especiales permitiendo solo letras, números, espacios, acentos, comas y puntos
+   * @param event - Evento del input
+   */
+  filtrarTexto(event: any) {
+    const input = event.target;
+    const value = input.value;
+    // Permite letras, números, espacios, puntos, comas y acentos (sin guiones ni paréntesis)
+    const filtrado = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,]/g, '');
+    input.value = filtrado;
+    // Actualizar el modelo según el campo
+    const name = event.target.name;
+    if (name.includes('motivoConsulta')) this.registroClinico.motivoConsulta = filtrado;
+    else if (name.includes('sintomas')) this.registroClinico.sintomas = filtrado;
+    else if (name.includes('diagnostico')) this.registroClinico.diagnostico = filtrado;
+    else if (name.includes('tratamiento')) this.registroClinico.tratamiento = filtrado;
+    else if (name.includes('procedimientos')) this.registroClinico.procedimientos = filtrado;
+    else if (name.includes('tipoVacuna')) this.registroClinico.tipoVacuna = filtrado;
   }
 }
 

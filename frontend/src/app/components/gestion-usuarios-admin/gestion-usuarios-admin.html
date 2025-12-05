@@ -168,7 +168,7 @@
           <div class="form-group">
             <label>Correo Electrónico *</label>
             <!-- type="email": Validación automática de formato de correo -->
-            <input type="email" [(ngModel)]="nuevoVeterinario.correo" name="correo" placeholder="correo@ejemplo.com" required>
+            <input type="email" [(ngModel)]="nuevoVeterinario.correo" name="correo" placeholder="usuario@gmail.com, usuario@veterinario.com o usuario@littlefalls.com" required>
           </div>
         </div>
       </div>
@@ -184,7 +184,7 @@
                 [type]="mostrarPassword ? 'text' : 'password'" 
                 [(ngModel)]="nuevoVeterinario.password" 
                 name="password" 
-                placeholder="Ingrese contraseña" 
+                placeholder="Solo letras y números" 
                 required>
               <button type="button" class="btn-toggle-password" (click)="togglePasswordVisibility()">
                 <i class="fa-solid" [class.fa-eye]="mostrarPassword" [class.fa-eye-slash]="!mostrarPassword"></i>
@@ -198,6 +198,8 @@
                 [type]="mostrarConfirmPassword ? 'text' : 'password'" 
                 [(ngModel)]="nuevoVeterinario.confirmPassword" 
                 name="confirmPassword" 
+                placeholder="Repita la contraseña (solo letras y números)" 
+                required>
                 placeholder="Repita la contraseña" 
                 required>
               <button type="button" class="btn-toggle-password" (click)="toggleConfirmPasswordVisibility()">
@@ -272,7 +274,7 @@
         <div class="form-row">
           <div class="form-group">
             <label>Correo Electrónico *</label>
-            <input type="email" [(ngModel)]="veterinarioEditar.correo" name="correo" placeholder="correo@ejemplo.com" required>
+            <input type="email" [(ngModel)]="veterinarioEditar.correo" name="correo" placeholder="usuario@gmail.com, usuario@veterinario.com o usuario@littlefalls.com" required>
           </div>
         </div>
       </div>

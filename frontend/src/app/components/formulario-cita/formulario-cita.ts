@@ -45,6 +45,42 @@ export class FormularioCita {
     if (horaCita) this.cita.hora = horaCita;
   }
 
+  /**
+   * Filtra para permitir solo letras en campos de nombre
+   */
+  filtrarSoloLetras(event: any, campo: string) {
+    const input = event.target;
+    const value = input.value;
+    const filtrado = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    input.value = filtrado;
+    
+    if (campo === 'nombre') this.cita.nombrePaciente = filtrado;
+    else if (campo === 'apellido') this.cita.apellidoPaciente = filtrado;
+    else if (campo === 'nombreMascota') this.cita.nombreMascota = filtrado;
+  }
+
+  /**
+   * Filtra para permitir solo números en teléfono (máximo 10)
+   */
+  filtrarTelefono(event: any) {
+    const input = event.target;
+    const value = input.value;
+    const filtrado = value.replace(/[^0-9]/g, '').substring(0, 10);
+    input.value = filtrado;
+    this.cita.telefonoPaciente = filtrado;
+  }
+
+  /**
+   * Filtra descripción permitiendo letras, números, espacios, comas y puntos
+   */
+  filtrarDescripcion(event: any) {
+    const input = event.target;
+    const value = input.value;
+    const filtrado = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,]/g, '');
+    input.value = filtrado;
+    this.cita.descripcion = filtrado;
+  }
+
   async agendarCita() {
     if (!this.validarFormulario()) {
       return;
@@ -114,33 +150,78 @@ export class FormularioCita {
   }
 
   validarFormulario(): boolean {
-    if (!this.cita.nombrePaciente || !this.cita.apellidoPaciente) {
-      this.alertService.error('Por favor ingrese su nombre y apellido');
+    // Validar nombre - solo letras
+    if (!this.cita.nombrePaciente || this.cita.nombrePaciente.trim() === '') {
+      this.alertService.error('Por favor ingrese su nombre');
+      return false;
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(this.cita.nombrePaciente)) {
+      this.alertService.error('El nombre solo puede contener letras');
       return false;
     }
 
-    if (!this.cita.correoPaciente) {
+    // Validar apellido - solo letras
+    if (!this.cita.apellidoPaciente || this.cita.apellidoPaciente.trim() === '') {
+      this.alertService.error('Por favor ingrese su apellido');
+      return false;
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(this.cita.apellidoPaciente)) {
+      this.alertService.error('El apellido solo puede contener letras');
+      return false;
+    }
+
+    // Validar correo - solo @gmail.com o @hotmail.com
+    if (!this.cita.correoPaciente || this.cita.correoPaciente.trim() === '') {
       this.alertService.error('Por favor ingrese su correo electrónico');
       return false;
     }
+    const correoLower = this.cita.correoPaciente.toLowerCase();
+    if (!correoLower.endsWith('@gmail.com') && !correoLower.endsWith('@hotmail.com')) {
+      this.alertService.error('El correo debe terminar en @gmail.com o @hotmail.com');
+      return false;
+    }
+    if (!/^[A-Za-z0-9._\-]+@(gmail|hotmail)\.com$/.test(correoLower)) {
+      this.alertService.error('Formato de correo inválido');
+      return false;
+    }
 
-    if (!this.cita.telefonoPaciente) {
+    // Validar teléfono - exactamente 10 dígitos
+    if (!this.cita.telefonoPaciente || this.cita.telefonoPaciente.trim() === '') {
       this.alertService.error('Por favor ingrese su teléfono');
       return false;
     }
-
-    if (!this.cita.nombreMascota) {
-      this.alertService.error('Por favor ingrese el nombre de su mascota');
+    if (!/^\d{10}$/.test(this.cita.telefonoPaciente)) {
+      this.alertService.error('El teléfono debe tener exactamente 10 dígitos');
       return false;
     }
 
+    // Validar nombre mascota - solo letras
+    if (!this.cita.nombreMascota || this.cita.nombreMascota.trim() === '') {
+      this.alertService.error('Por favor ingrese el nombre de su mascota');
+      return false;
+    }
+    if (!/^[a-zA-ZáéíóúÁÉÍÓÚñÑ\s]+$/.test(this.cita.nombreMascota)) {
+      this.alertService.error('El nombre de la mascota solo puede contener letras');
+      return false;
+    }
+
+    // Validar edad mascota - máximo 20 años
     if (!this.cita.edadMascota || this.cita.edadMascota <= 0) {
       this.alertService.error('Por favor ingrese una edad válida para su mascota');
       return false;
     }
+    if (this.cita.edadMascota > 20) {
+      this.alertService.error('La edad de la mascota no puede superar los 20 años');
+      return false;
+    }
 
-    if (!this.cita.descripcion) {
+    // Validar descripción - debe contener al menos una letra
+    if (!this.cita.descripcion || this.cita.descripcion.trim() === '') {
       this.alertService.error('Por favor describa el motivo de la cita');
+      return false;
+    }
+    if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(this.cita.descripcion)) {
+      this.alertService.error('La descripción debe contener al menos una letra');
       return false;
     }
 

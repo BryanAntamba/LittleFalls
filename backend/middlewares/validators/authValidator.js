@@ -20,10 +20,8 @@ const validateLogin = (req, res, next) => {
         errors.push('El formato del correo no es válido');
     }
 
-    // Validar longitud de contraseña
-    if (password && password.length < 6) {
-        errors.push('La contraseña debe tener al menos 6 caracteres');
-    }
+    // En login NO validamos formato de contraseña, solo que exista
+    // La validación se hace en el servidor comparando con la BD
 
     if (errors.length > 0) {
         return res.status(400).json({
@@ -84,22 +82,20 @@ const validateRegistro = (req, res, next) => {
     // Validar formato de correo
     if (correo && !validator.isEmail(correo)) {
         errors.push('El formato del correo no es válido');
+    } else if (correo) {
+        // Validar dominios permitidos
+        const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+        const correoLower = correo.toLowerCase();
+        const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
+        if (!dominioValido) {
+            errors.push('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+        }
     }
 
-    // Validar contraseña
+    // Validar formato de contraseña: solo letras y números, mínimo 8 caracteres
     if (password) {
-        if (password.length < 6) {
-            errors.push('La contraseña debe tener al menos 6 caracteres');
-        }
-        if (password.length > 100) {
-            errors.push('La contraseña no debe exceder 100 caracteres');
-        }
-        // Validar que tenga al menos una letra y un número
-        if (!/[a-zA-Z]/.test(password)) {
-            errors.push('La contraseña debe contener al menos una letra');
-        }
-        if (!/[0-9]/.test(password)) {
-            errors.push('La contraseña debe contener al menos un número');
+        if (!/^[a-zA-Z0-9]{8,}$/.test(password)) {
+            errors.push('La contraseña debe contener solo letras y números, mínimo 8 caracteres');
         }
     }
 

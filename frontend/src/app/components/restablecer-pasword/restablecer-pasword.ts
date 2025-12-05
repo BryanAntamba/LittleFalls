@@ -81,8 +81,8 @@ export class RestablecerPasword implements OnInit {
       return;
     }
 
-    if (this.nuevaPassword.length < 6) {
-      this.errorNueva = 'La contraseña debe tener al menos 6 caracteres';
+    if (this.nuevaPassword.length < 8) {
+      this.errorNueva = 'La contraseña debe tener al menos 8 caracteres';
       this.mostrarErrores = true;
       this.cdr.markForCheck();
       return;

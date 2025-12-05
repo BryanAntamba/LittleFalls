@@ -17,6 +17,15 @@ class PasswordRecoveryService {
     try {
       const correoNormalizado = correo.toLowerCase().trim();
 
+      // Validar que el correo sea solo @gmail.com o @hotmail.com
+      const emailRegex = /^[^\s@]+@(gmail\.com|hotmail\.com)$/i;
+      if (!emailRegex.test(correoNormalizado)) {
+        return {
+          success: false,
+          mensaje: 'Solo se permite recuperación para correos de Gmail o Hotmail'
+        };
+      }
+
       // Buscar usuario por correo
       const usuario = await Usuario.findOne({ correo: correoNormalizado });
 
@@ -184,7 +193,7 @@ class PasswordRecoveryService {
       if (!this._validarSeguridadPassword(nuevaPassword)) {
         return {
           success: false,
-          mensaje: 'La contraseña debe tener al menos 6 caracteres, una letra y un número'
+          mensaje: 'La contraseña debe contener solo letras y números, mínimo 8 caracteres'
         };
       }
 
@@ -250,11 +259,12 @@ class PasswordRecoveryService {
    * @returns {boolean}
    */
   _validarSeguridadPassword(password) {
+    // Solo letras y números, mínimo 8 caracteres
+    const formatoValido = /^[a-zA-Z0-9]{8,}$/.test(password);
     const tieneLetra = /[a-zA-Z]/.test(password);
     const tieneNumero = /[0-9]/.test(password);
-    const longitudValida = password.length >= 6 && password.length <= 100;
     
-    return tieneLetra && tieneNumero && longitudValida;
+    return formatoValido && tieneLetra && tieneNumero;
   }
 
   /**

@@ -2,6 +2,7 @@ const express = require('express');
 const router = express.Router();
 const citaController = require('../controllers/citaController');
 const { verificarToken, verificarRol } = require('../middlewares/jwtMiddleware');
+const { validarCreacionCita, validarActualizacionCita } = require('../middlewares/validators/citaValidator');
 
 // TODAS las rutas de citas requieren autenticación
 router.use(verificarToken);
@@ -9,6 +10,7 @@ router.use(verificarToken);
 // Crear nueva cita (pacientes y admin)
 router.post('/', 
     verificarRol('paciente', 'admin'),
+    validarCreacionCita,
     citaController.crearCita.bind(citaController)
 );
 
@@ -56,6 +58,7 @@ router.put('/:citaId/registro-clinico',
 // Actualizar cita completa (admin y veterinario)
 router.put('/:citaId', 
     verificarRol('veterinario', 'admin'),
+    validarActualizacionCita,
     citaController.actualizarCita.bind(citaController)
 );
 

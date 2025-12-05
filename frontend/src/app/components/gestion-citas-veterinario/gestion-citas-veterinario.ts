@@ -71,13 +71,18 @@ export class GestionCitasVeterinario implements OnInit {
   // Variable para indicar a qué cita pertenece el registro clínico que se está creando
   indiceCitaActual = -1;
   cargando = false;
+  fechaMinima = '';
 
   // Constructor para inyectar el servicio de citas
   constructor(
     private citasService: CitasService,
     private cdr: ChangeDetectorRef,
     private alertService: AlertService
-  ) {}
+  ) {
+    // Establecer fecha mínima como hoy
+    const hoy = new Date();
+    this.fechaMinima = hoy.toISOString().split('T')[0];
+  }
 
   async ngOnInit() {
     await this.cargarCitas();
@@ -169,6 +174,26 @@ export class GestionCitasVeterinario implements OnInit {
    */
   async guardarRegistro() {
     if (this.indiceCitaActual !== -1) {
+      // Validar que los campos de texto contengan al menos una letra
+      const camposTexto = [
+        { valor: this.registroClinico.motivoConsulta, nombre: 'Motivo de consulta' },
+        { valor: this.registroClinico.sintomas, nombre: 'Síntomas' },
+        { valor: this.registroClinico.diagnostico, nombre: 'Diagnóstico' },
+        { valor: this.registroClinico.tratamiento, nombre: 'Tratamiento' },
+        { valor: this.registroClinico.procedimientos, nombre: 'Procedimientos' },
+        { valor: this.registroClinico.tipoVacuna, nombre: 'Tipo de vacuna' }
+      ];
+
+      for (const campo of camposTexto) {
+        if (campo.valor && campo.valor.trim() !== '') {
+          // Verificar que contenga al menos una letra
+          if (!/[a-zA-ZáéíóúÁÉÍÓÚñÑ]/.test(campo.valor)) {
+            this.alertService.error(`El campo "${campo.nombre}" debe contener al menos una letra`);
+            return;
+          }
+        }
+      }
+
       try {
         const cita = this.citas[this.indiceCitaActual];
         
@@ -333,15 +358,67 @@ export class GestionCitasVeterinario implements OnInit {
   }
 
   /**
-   * Valida que la fecha seleccionada no sea domingo
+   * Filtra caracteres especiales permitiendo solo letras, números, espacios, acentos, comas y puntos
+   * @param event - Evento del input
+   */
+  filtrarTexto(event: any) {
+    const input = event.target;
+    const value = input.value;
+    // Permite letras, números, espacios, puntos, comas y acentos (sin guiones ni paréntesis)
+    const filtrado = value.replace(/[^a-zA-Z0-9áéíóúÁÉÍÓÚñÑ\s.,]/g, '');
+    input.value = filtrado;
+    // Actualizar el modelo según el campo
+    const name = event.target.name;
+    if (name.includes('motivoConsulta')) this.registroClinico.motivoConsulta = filtrado;
+    else if (name.includes('sintomas')) this.registroClinico.sintomas = filtrado;
+    else if (name.includes('diagnostico')) this.registroClinico.diagnostico = filtrado;
+    else if (name.includes('tratamiento')) this.registroClinico.tratamiento = filtrado;
+    else if (name.includes('procedimientos')) this.registroClinico.procedimientos = filtrado;
+    else if (name.includes('tipoVacuna')) this.registroClinico.tipoVacuna = filtrado;
+  }
+
+  /**
+   * Filtra para permitir solo letras en campos de nombre
+   * @param event - Evento del input
+   */
+  filtrarSoloLetras(event: any) {
+    const input = event.target;
+    const value = input.value;
+    // Solo letras, espacios y acentos
+    const filtrado = value.replace(/[^a-zA-ZáéíóúÁÉÍÓÚñÑ\s]/g, '');
+    input.value = filtrado;
+    // Actualizar modelo
+    const name = event.target.name;
+    if (name === 'nombrePaciente') this.citaEditar.nombrePaciente = filtrado;
+    else if (name === 'apellidoPaciente') this.citaEditar.apellidoPaciente = filtrado;
+    else if (name === 'nombreMascota') this.citaEditar.nombreMascota = filtrado;
+  }
+
+  /**
+   * Filtra para permitir solo números en teléfono
+   * @param event - Evento del input
+   */
+  filtrarSoloNumeros(event: any) {
+    const input = event.target;
+    const value = input.value;
+    const filtrado = value.replace(/[^0-9]/g, '');
+    input.value = filtrado;
+    if (event.target.name === 'telefonoPaciente') {
+      this.citaEditar.telefonoPaciente = filtrado;
+    }
+  }
+
+  /**
+   * Valida que la fecha seleccionada no sea una fecha pasada
    */
   validarFecha(event: any) {
-    const fecha = new Date(event.target.value + 'T00:00:00');
-    const dia = fecha.getDay();
+    const fechaSeleccionada = new Date(event.target.value + 'T00:00:00');
+    const hoy = new Date();
+    hoy.setHours(0, 0, 0, 0);
     
-    // 0 = Domingo
-    if (dia === 0) {
-      this.alertService.error('No se pueden seleccionar fechas los domingos. Por favor seleccione otro día.');
+    // Verificar si es una fecha pasada
+    if (fechaSeleccionada < hoy) {
+      this.alertService.error('No se pueden seleccionar fechas pasadas. Por favor seleccione una fecha actual o futura.');
       event.target.value = '';
       // Limpiar el campo correspondiente del modelo
       const fieldName = event.target.name;
