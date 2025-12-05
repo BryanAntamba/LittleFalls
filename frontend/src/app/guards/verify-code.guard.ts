@@ -27,7 +27,6 @@ export const verifyCodeGuard = (route: ActivatedRouteSnapshot) => {
     // Validar formato básico de correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-        alert('Correo inválido');
         router.navigate(['/Login-LittleFalls']);
         return false;
     }

@@ -13,7 +13,6 @@ export const resetPasswordGuard = (route: ActivatedRouteSnapshot) => {
     const codigo = route.queryParams['codigo'];
 
     if (!correo || !codigo) {
-        alert('Sesión inválida. Por favor solicita un nuevo código de recuperación.');
         router.navigate(['/RecuperacionPasword']);
         return false;
     }
@@ -21,14 +20,12 @@ export const resetPasswordGuard = (route: ActivatedRouteSnapshot) => {
     // Validar formato de correo
     const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
     if (!emailRegex.test(correo)) {
-        alert('Correo inválido');
         router.navigate(['/RecuperacionPasword']);
         return false;
     }
 
     // Validar formato de código (6 dígitos)
     if (!/^\d{6}$/.test(codigo)) {
-        alert('Código inválido. Por favor solicita un nuevo código.');
         router.navigate(['/RecuperacionPasword']);
         return false;
     }

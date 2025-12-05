@@ -7,22 +7,26 @@
         <div class="mb-3">
             <label for="inputNombre" class="form-label">Nombre:</label>
             <input type="text" id="inputNombre" class="form-control" [(ngModel)]="nombre" name="nombre"
-                placeholder="Ingrese su nombre" required>
+                placeholder="Ingrese su nombre" required (input)="filterNombre($event)">
+            <div class="invalid-feedback field-error" *ngIf="errorNombre">{{ errorNombre }}</div>
         </div>
         <div class="mb-3">
             <label for="inputApellido" class="form-label">Apellido:</label>
             <input type="text" id="inputApellido" class="form-control" [(ngModel)]="apellido" name="apellido"
-                placeholder="Ingrese su apellido" required>
+                placeholder="Ingrese su apellido" required (input)="filterApellido($event)">
+            <div class="invalid-feedback field-error" *ngIf="errorApellido">{{ errorApellido }}</div>
         </div>
         <div class="mb-3">
             <label for="inputEdad" class="form-label">Edad:</label>
             <input type="number" id="inputEdad" class="form-control" [(ngModel)]="edad" name="edad"
                 placeholder="Ingrese su edad" required>
+            <div class="invalid-feedback field-error" *ngIf="errorEdad">{{ errorEdad }}</div>
         </div>
         <div class="mb-3">
             <label for="inputEmail" class="form-label">Correo:</label>
             <input type="email" id="inputEmail" class="form-control" [(ngModel)]="correo" name="correo"
-                placeholder="Ingrese su correo electronico" required>
+                placeholder="Ingrese su correo (ej: usuario@gmail.com)" required (input)="filterCorreo($event)">
+            <div class="invalid-feedback field-error" *ngIf="errorCorreo">{{ errorCorreo }}</div>
         </div>
         <div class="mb-3">
             <label for="inputPassword" class="form-label">Contraseña:</label>
@@ -35,8 +39,11 @@
                     <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
                 </button>
             </div>
+            <div class="invalid-feedback field-error" *ngIf="errorPassword">{{ errorPassword }}</div>
         </div>
         <button type="button" class="btn btn-primary" (click)="registrarse()">Registrarse</button>
+        <div *ngIf="errorGeneral" class="general-error">{{ errorGeneral }}</div>
+        <div *ngIf="successMessage" class="general-success">{{ successMessage }}</div>
         <div class="login-links">
         </div>
     </form>

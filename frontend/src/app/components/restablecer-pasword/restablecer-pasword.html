@@ -19,12 +19,14 @@
                     required>
                 <button 
                     type="button" 
-                    class="btn-toggle-password" 
-                    (click)="togglePassword()" 
+                    class="btn-toggle-password"
+                    tabindex="-1"
+                    (click)="togglePassword($event)" 
                     aria-label="Mostrar contraseña">
                     <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
                 </button>
             </div>
+            <div class="field-error" *ngIf="mostrarErrores && errorNueva">{{ errorNueva }}</div>
             <small class="form-text">Debe contener al menos una letra y un número</small>
         </div>
 
@@ -41,12 +43,14 @@
                     required>
                 <button 
                     type="button" 
-                    class="btn-toggle-password" 
-                    (click)="toggleConfirmPassword()" 
+                    class="btn-toggle-password"
+                    tabindex="-1"
+                    (click)="toggleConfirmPassword($event)" 
                     aria-label="Mostrar contraseña">
                     <i [class]="showConfirmPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
                 </button>
             </div>
+            <div class="field-error" *ngIf="mostrarErrores && errorConfirm">{{ errorConfirm }}</div>
         </div>
 
         <button 
@@ -60,6 +64,8 @@
                 <i class="fa-solid fa-spinner fa-spin"></i> Procesando...
             </span>
         </button>
+        <div *ngIf="mostrarErrores && errorGeneral" class="general-error">{{ errorGeneral }}</div>
+        <div *ngIf="successMessage" class="general-success">{{ successMessage }}</div>
         <div class="login-links">
     </div>
     </form>

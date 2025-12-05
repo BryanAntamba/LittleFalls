@@ -3,6 +3,7 @@ import { Router, RouterModule, ActivatedRoute } from '@angular/router';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { AuthService } from '../../services/auth.service';
+import { AlertService } from '../../services/alert.service';
 import { PiePagina } from '../pie-pagina/pie-pagina';
 
 @Component({
@@ -21,7 +22,8 @@ export class VerificarCodigo implements OnInit {
   constructor(
     private router: Router,
     private route: ActivatedRoute,
-    private authService: AuthService
+    private authService: AuthService,
+    private alertService: AlertService
   ) {}
 
   ngOnInit() {
@@ -34,13 +36,13 @@ export class VerificarCodigo implements OnInit {
 
   async verificarCodigo() {
     if (!this.codigo || this.codigo.trim().length !== 6) {
-      alert('Por favor ingresa el código de 6 dígitos');
+      this.alertService.error('Por favor ingresa el código de 6 dígitos');
       return;
     }
 
     // Validar que solo contenga números
     if (!/^\d{6}$/.test(this.codigo.trim())) {
-      alert('El código debe contener solo 6 números');
+      this.alertService.error('El código debe contener solo 6 números');
       return;
     }
 
@@ -67,7 +69,7 @@ export class VerificarCodigo implements OnInit {
       if (resultado.success) {
         if (this.tipoVerificacion === 'recuperacion') {
           // Para recuperación, ir a restablecer contraseña
-          alert('Código verificado. Ahora puedes establecer tu nueva contraseña.');
+          this.alertService.success('Código verificado. Ahora puedes establecer tu nueva contraseña.');
           this.router.navigate(['/RestablecerPasword'], { 
             queryParams: { 
               correo: this.correo,
@@ -76,7 +78,7 @@ export class VerificarCodigo implements OnInit {
           });
         } else {
           // Para registro, ir a login
-          alert('¡Cuenta verificada exitosamente! Ya puedes iniciar sesión');
+          this.alertService.success('¡Cuenta verificada exitosamente! Ya puedes iniciar sesión');
           this.router.navigate(['/Login-LittleFalls']);
         }
       } else {
@@ -88,18 +90,18 @@ export class VerificarCodigo implements OnInit {
             this.reenviarCodigo();
           }
         } else {
-          alert(resultado.mensaje || 'Error al verificar el código');
+          this.alertService.error(resultado.mensaje || 'Error al verificar el código');
         }
       }
     } catch (error) {
       this.cargando = false;
-      alert('Error de conexión con el servidor. Por favor intenta de nuevo.');
+      this.alertService.error('Error de conexión con el servidor. Por favor intenta de nuevo.');
     }
   }
 
   async reenviarCodigo() {
     if (!this.correo) {
-      alert('Correo no disponible');
+      this.alertService.error('Correo no disponible');
       return;
     }
 
@@ -121,14 +123,14 @@ export class VerificarCodigo implements OnInit {
       this.reenviando = false;
 
       if (resultado.success) {
-        alert('✅ ' + resultado.mensaje);
+        this.alertService.success(resultado.mensaje);
         this.codigo = ''; // Limpiar el campo
       } else {
-        alert(resultado.mensaje || 'Error al reenviar el código');
+        this.alertService.error(resultado.mensaje || 'Error al reenviar el código');
       }
     } catch (error) {
       this.reenviando = false;
-      alert('Error de conexión con el servidor. Por favor intenta de nuevo.');
+      this.alertService.error('Error de conexión con el servidor. Por favor intenta de nuevo.');
     }
   }
 

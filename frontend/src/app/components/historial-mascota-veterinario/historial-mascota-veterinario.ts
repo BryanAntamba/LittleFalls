@@ -3,6 +3,7 @@ import { BarraNavegacionVeterinario } from '../barra-navegacion-veterinario/barr
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CitasService } from '../../services/citas.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-historial-mascota-veterinario',
@@ -55,7 +56,8 @@ export class HistorialMascotaVeterinario implements OnInit {
   // Constructor para inyectar el servicio
   constructor(
     private citasService: CitasService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private alertService: AlertService
   ) {}
 
   async ngOnInit() {
@@ -203,9 +205,13 @@ export class HistorialMascotaVeterinario implements OnInit {
         };
         
         // Enviar al backend
+        const token = localStorage.getItem('accessToken');
         const response = await fetch(`http://localhost:3000/api/citas/${cita._id}/registro-clinico`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
           body: JSON.stringify(datosActualizacion)
         });
 
@@ -236,14 +242,14 @@ export class HistorialMascotaVeterinario implements OnInit {
           
           // Mostrar mensaje después
           setTimeout(() => {
-            alert('Registro clínico actualizado exitosamente');
+            this.alertService.success('Registro clínico actualizado exitosamente');
           }, 200);
         } else {
-          alert('Error al actualizar registro: ' + (resultado.mensaje || 'Error desconocido'));
+          this.alertService.error('Error al actualizar registro: ' + (resultado.mensaje || 'Error desconocido'));
         }
       } catch (error) {
         console.error('Error al actualizar registro clínico:', error);
-        alert('Error de conexión con el servidor');
+        this.alertService.error('Error de conexión con el servidor');
       }
     }
   }
@@ -306,7 +312,7 @@ export class HistorialMascotaVeterinario implements OnInit {
   validarFechaDomingo(event: any, campo: string) {
     const fecha = new Date(event.target.value + 'T00:00:00');
     if (fecha.getDay() === 0) { // 0 = Domingo
-      alert('No se permiten citas los domingos. Por favor seleccione otro día.');
+      this.alertService.error('No se permiten citas los domingos. Por favor seleccione otro día.');
       // Limpiar el campo
       if (campo === 'fechaConsulta') {
         this.registroClinico.fechaConsulta = '';

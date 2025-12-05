@@ -13,9 +13,10 @@
                 class="form-control" 
                 [(ngModel)]="correo"
                 name="correo"
-                placeholder="Ingrese su correo electrónico"
+                placeholder="Ingrese su correo (ej: usuario@gmail.com)"
                 aria-describedby="emailHelpBlock" 
-                required>
+                required (input)="filterCorreo($event)">
+            <div class="field-error" *ngIf="errorCorreo">{{ errorCorreo }}</div>
         </div>
 
         <button 
@@ -29,6 +30,8 @@
                 <i class="fa-solid fa-spinner fa-spin"></i> Enviando...
             </span>
         </button>
+        <div *ngIf="errorGeneral" class="general-error">{{ errorGeneral }}</div>
+        <div *ngIf="successMessage" class="general-success">{{ successMessage }}</div>
         <div class="login-links">
     </div>
     </form>

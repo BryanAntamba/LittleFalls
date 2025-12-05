@@ -230,3 +230,25 @@
     font-size: 1.8rem;
   }
 }
+/* ===== MENSAJES DE ERROR Y VALIDACIÓN ===== */
+.field-error {
+  display: block;
+  color: #dc3545;
+  font-size: 0.875rem;
+  margin-top: 6px;
+}
+
+.general-error {
+  color: #dc3545;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 15px;
+  white-space: pre-wrap;
+}
+
+.general-success {
+  color: #28a745;
+  text-align: center;
+  font-weight: 600;
+  margin-top: 15px;
+}

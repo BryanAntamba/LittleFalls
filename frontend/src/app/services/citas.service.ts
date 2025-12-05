@@ -8,11 +8,19 @@ export class CitasService {
 
     constructor() { }
 
+    private getHeaders(): HeadersInit {
+        const token = localStorage.getItem('accessToken');
+        return {
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+        };
+    }
+
     async crearCita(datos: any): Promise<any> {
         try {
             const response = await fetch(this.apiUrl, {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: this.getHeaders(),
                 body: JSON.stringify(datos)
             });
             return await response.json();
@@ -23,7 +31,9 @@ export class CitasService {
 
     async obtenerTodasCitas(): Promise<any> {
         try {
-            const response = await fetch(this.apiUrl);
+            const response = await fetch(this.apiUrl, {
+                headers: this.getHeaders()
+            });
             return await response.json();
         } catch (error) {
             return { success: false, mensaje: 'Error de conexión' };
@@ -32,7 +42,9 @@ export class CitasService {
 
     async obtenerCitasPorPaciente(pacienteId: string): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/paciente/${pacienteId}`);
+            const response = await fetch(`${this.apiUrl}/paciente/${pacienteId}`, {
+                headers: this.getHeaders()
+            });
             return await response.json();
         } catch (error) {
             return { success: false, mensaje: 'Error de conexión' };
@@ -41,7 +53,9 @@ export class CitasService {
 
     async obtenerCitasPorVeterinario(veterinarioId: string): Promise<any> {
         try {
-            const response = await fetch(`${this.apiUrl}/veterinario/${veterinarioId}`);
+            const response = await fetch(`${this.apiUrl}/veterinario/${veterinarioId}`, {
+                headers: this.getHeaders()
+            });
             return await response.json();
         } catch (error) {
             return { success: false, mensaje: 'Error de conexión' };
@@ -52,7 +66,7 @@ export class CitasService {
         try {
             const response = await fetch(`${this.apiUrl}/${citaId}/estado`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: this.getHeaders(),
                 body: JSON.stringify({ estado })
             });
             return await response.json();
@@ -65,7 +79,7 @@ export class CitasService {
         try {
             const response = await fetch(`${this.apiUrl}/${citaId}/asignar`, {
                 method: 'PATCH',
-                headers: { 'Content-Type': 'application/json' },
+                headers: this.getHeaders(),
                 body: JSON.stringify({ veterinarioId })
             });
             return await response.json();
@@ -77,7 +91,8 @@ export class CitasService {
     async eliminarCita(citaId: string): Promise<any> {
         try {
             const response = await fetch(`${this.apiUrl}/${citaId}`, {
-                method: 'DELETE'
+                method: 'DELETE',
+                headers: this.getHeaders()
             });
             return await response.json();
         } catch (error) {

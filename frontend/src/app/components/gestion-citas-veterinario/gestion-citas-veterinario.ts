@@ -3,6 +3,7 @@ import { BarraNavegacionVeterinario } from '../barra-navegacion-veterinario/barr
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { CitasService } from '../../services/citas.service';
+import { AlertService } from '../../services/alert.service';
 
 @Component({
   selector: 'app-gestion-citas-veterinario',
@@ -74,7 +75,8 @@ export class GestionCitasVeterinario implements OnInit {
   // Constructor para inyectar el servicio de citas
   constructor(
     private citasService: CitasService,
-    private cdr: ChangeDetectorRef
+    private cdr: ChangeDetectorRef,
+    private alertService: AlertService
   ) {}
 
   async ngOnInit() {
@@ -174,9 +176,13 @@ export class GestionCitasVeterinario implements OnInit {
         console.log('Datos del registro:', this.registroClinico);
         
         // Enviar al backend
+        const token = localStorage.getItem('accessToken');
         const response = await fetch(`http://localhost:3000/api/citas/${cita._id}/registro-clinico`, {
           method: 'POST',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
           body: JSON.stringify(this.registroClinico)
         });
 
@@ -226,14 +232,14 @@ export class GestionCitasVeterinario implements OnInit {
           
           // Mostrar mensaje después con un pequeño delay
           setTimeout(() => {
-            alert('Registro clínico guardado exitosamente');
+            this.alertService.success('Registro clínico guardado exitosamente');
           }, 100);
         } else {
-          alert('Error al guardar registro clínico: ' + (resultado.mensaje || 'Error desconocido'));
+          this.alertService.error('Error al guardar registro clínico: ' + (resultado.mensaje || 'Error desconocido'));
         }
       } catch (error) {
         console.error('Error al guardar registro clínico:', error);
-        alert('Error de conexión con el servidor');
+        this.alertService.error('Error de conexión con el servidor');
       }
     }
   }
@@ -247,9 +253,13 @@ export class GestionCitasVeterinario implements OnInit {
     if (this.indiceEditando !== -1 && this.citaEditar._id) {
       try {
         // Actualizar en el backend
+        const token = localStorage.getItem('accessToken');
         const response = await fetch(`http://localhost:3000/api/citas/${this.citaEditar._id}`, {
           method: 'PUT',
-          headers: { 'Content-Type': 'application/json' },
+          headers: { 
+            'Content-Type': 'application/json',
+            'Authorization': token ? `Bearer ${token}` : ''
+          },
           body: JSON.stringify(this.citaEditar)
         });
 
@@ -267,14 +277,14 @@ export class GestionCitasVeterinario implements OnInit {
           
           // Mostrar mensaje después
           setTimeout(() => {
-            alert('Cita actualizada exitosamente');
+            this.alertService.success('Cita actualizada exitosamente');
           }, 100);
         } else {
-          alert('Error al actualizar la cita: ' + (resultado.mensaje || 'Error desconocido'));
+          this.alertService.error('Error al actualizar la cita: ' + (resultado.mensaje || 'Error desconocido'));
         }
       } catch (error) {
         console.error('Error al actualizar cita:', error);
-        alert('Error de conexión con el servidor');
+        this.alertService.error('Error de conexión con el servidor');
       }
     }
   }
@@ -289,7 +299,7 @@ export class GestionCitasVeterinario implements OnInit {
       // Eliminamos usando el servicio
       this.citasService.eliminarCitaLocal(indice);
       this.citas = this.citasService.getCitas();
-      alert('Cita eliminada exitosamente');
+      this.alertService.success('Cita eliminada exitosamente');
       // TODO: Aquí irá la lógica para eliminar en el backend
       // Ejemplo: this.http.delete(`/api/citas/${id}`).subscribe(...)
     }
@@ -301,7 +311,7 @@ export class GestionCitasVeterinario implements OnInit {
    */
   marcarRevisado(indice: number) {
     console.log('Cita marcada como revisada:', this.citasService.getCita(indice));
-    alert('Cita marcada como revisada');
+    this.alertService.success('Cita marcada como revisada');
     // TODO: Aquí puedes agregar lógica adicional:
     // - Cambiar un campo 'estado' de la cita
     // - Enviar notificación al dueño
@@ -331,7 +341,7 @@ export class GestionCitasVeterinario implements OnInit {
     
     // 0 = Domingo
     if (dia === 0) {
-      alert('No se pueden seleccionar fechas los domingos. Por favor seleccione otro día.');
+      this.alertService.error('No se pueden seleccionar fechas los domingos. Por favor seleccione otro día.');
       event.target.value = '';
       // Limpiar el campo correspondiente del modelo
       const fieldName = event.target.name;

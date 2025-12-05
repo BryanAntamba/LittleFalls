@@ -8,25 +8,27 @@
         <div class="mb-3">
             <label for="inputEmail" class="form-label">Correo:</label>
             <input type="email" id="inputEmail" class="form-control" [(ngModel)]="correo" name="correo"
-                placeholder="Ingrese un correo válido" aria-describedby="emailHelpBlock" required>
+                placeholder="Ingrese un correo" aria-describedby="emailHelpBlock" required>
+            <div class="field-error" *ngIf="mostrarErrores && errorCorreo">{{ errorCorreo }}</div>
         </div>
 
         <div class="mb-3">
             <label for="inputPassword" class="form-label">Contraseña:</label>
             <div class="password-container">
-                <!--TYPE renderiza la UI con funcionalidad (controla el estado de visibilidad de la contraseña)-->
                 <input [type]="showPassword ? 'text' : 'password'" id="inputPassword" class="form-control" 
                     [(ngModel)]="password" name="password"
-                    placeholder="Ingrese su contraseña" aria-describedby="passwordHelpBlock" required>
-                    <!--Boton que realiza evento click para invocar al metodo de visualizar contraseña  o no mostar contraseña-->
-                <button type="button" class="btn-toggle-password" (click)="togglePassword()" aria-label="Mostrar contraseña">
-                    <!--Colocamos el icono del fond-Awesome del ojo para el campo contraseña-->
+                    placeholder="Ingrese su contraseña" aria-describedby="passwordHelpBlock" required
+                    (input)="filterPassword($event)">
+                <div class="field-error" *ngIf="mostrarErrores && errorPassword">{{ errorPassword }}</div>
+                <button type="button" class="btn-toggle-password" (click)="togglePassword($event)" tabindex="-1" aria-label="Mostrar contraseña">
                     <i [class]="showPassword ? 'fa-solid fa-eye-slash' : 'fa-solid fa-eye'"></i>
                 </button>
             </div>
         </div>
 
         <button type="button" class="btn btn-primary" (click)="iniciarSesion()">Iniciar Sesión</button>
+        <div class="general-error" *ngIf="mostrarErrores && errorGeneral">{{ errorGeneral }}</div>
+        <div class="general-success" *ngIf="successMessage">{{ successMessage }}</div>
         <div class="login-links">
             <a routerLink="/RecuperacionPasword" class="forgot-link">¿Olvidaste tu contraseña?</a>
             <a routerLink="/Registro-LittleFalls" class="register-link">Registrarte</a>
