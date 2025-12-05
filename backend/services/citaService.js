@@ -29,6 +29,20 @@ class CitaService {
                 };
             }
 
+            // Verificar si ya existe una cita en la misma fecha y hora
+            const citaExistente = await Cita.findOne({
+                fecha: fecha,
+                hora: hora,
+                estado: { $ne: 'cancelada' }  // No contar las citas canceladas
+            });
+
+            if (citaExistente) {
+                return {
+                    success: false,
+                    mensaje: 'Ese día y hora ya no están disponibles para agendar una cita. Por favor, intente con otra hora o día.'
+                };
+            }
+
             const nuevaCita = new Cita({
                 pacienteId: pacienteId || null,
                 nombrePaciente,
@@ -57,6 +71,46 @@ class CitaService {
             return {
                 success: false,
                 mensaje: 'Error al agendar cita',
+                error: error.message
+            };
+        }
+    }
+
+    async verificarDisponibilidad(fecha, hora) {
+        try {
+            // Crear objeto Date para comparación exacta
+            const fechaBusqueda = new Date(fecha);
+            
+            // Buscar citas en el mismo día
+            const inicioDia = new Date(fechaBusqueda);
+            inicioDia.setHours(0, 0, 0, 0);
+            
+            const finDia = new Date(fechaBusqueda);
+            finDia.setHours(23, 59, 59, 999);
+            
+            const citaExistente = await Cita.findOne({
+                fecha: {
+                    $gte: inicioDia,
+                    $lte: finDia
+                },
+                hora: hora,
+                estado: { $ne: 'cancelada' }
+            });
+
+            console.log('Verificando disponibilidad:');
+            console.log('- Fecha:', fecha);
+            console.log('- Hora:', hora);
+            console.log('- Cita existente:', citaExistente ? 'SÍ (NO DISPONIBLE)' : 'NO (DISPONIBLE)');
+
+            return {
+                success: true,
+                disponible: !citaExistente
+            };
+        } catch (error) {
+            console.error('Error en verificarDisponibilidad:', error);
+            return {
+                success: false,
+                mensaje: 'Error al verificar disponibilidad',
                 error: error.message
             };
         }
@@ -304,6 +358,9 @@ class CitaService {
             // Agregar el nuevo registro clínico al array
             cita.registrosClinicosHistorial.push(registroClinico);
             
+            // Marcar que tiene registro clínico
+            cita.tieneRegistroClinico = true;
+            
             // También actualizar los campos principales con el último registro
             if (registroClinico.diagnostico) cita.diagnostico = registroClinico.diagnostico;
             if (registroClinico.tratamiento) cita.tratamiento = registroClinico.tratamiento;
@@ -413,6 +470,117 @@ class CitaService {
             return {
                 success: false,
                 mensaje: 'Error al eliminar cita',
+                error: error.message
+            };
+        }
+    }
+
+    async marcarComoRevisada(citaId, veterinarioId) {
+        try {
+            const cita = await Cita.findById(citaId);
+            
+            if (!cita) {
+                return {
+                    success: false,
+                    mensaje: 'Cita no encontrada'
+                };
+            }
+
+            // Verificar que tenga registro clínico
+            if (!cita.tieneRegistroClinico) {
+                return {
+                    success: false,
+                    mensaje: 'Debe guardar el registro clínico antes de marcar como revisada'
+                };
+            }
+
+            // Marcar como revisada y completada
+            cita.revisada = true;
+            cita.estado = 'completada';
+            
+            // Asignar veterinario si no lo tiene
+            if (!cita.veterinarioId && veterinarioId) {
+                cita.veterinarioId = veterinarioId;
+            }
+            
+            await cita.save();
+
+            return {
+                success: true,
+                mensaje: 'Cita marcada como revisada y movida al historial',
+                cita
+            };
+        } catch (error) {
+            console.error('Error en marcarComoRevisada:', error);
+            return {
+                success: false,
+                mensaje: 'Error al marcar cita como revisada',
+                error: error.message
+            };
+        }
+    }
+
+    async obtenerCitasActivas(veterinarioId) {
+        try {
+            const citas = await Cita.find({ 
+                $and: [
+                    // Excluir las citas ya revisadas
+                    { 
+                        $or: [
+                            { revisada: { $ne: true } },  // No revisadas
+                            { revisada: { $exists: false } }  // Sin campo revisada
+                        ]
+                    },
+                    // Incluir citas sin veterinario O del veterinario actual
+                    {
+                        $or: [
+                            { veterinarioId: null },
+                            { veterinarioId: { $exists: false } },
+                            { veterinarioId: undefined },
+                            { veterinarioId: veterinarioId }
+                        ]
+                    }
+                ]
+            })
+                .populate('pacienteId', 'nombre apellido correo telefono')
+                .sort({ fecha: 1, hora: 1 })
+                .lean()
+                .exec();
+
+            return {
+                success: true,
+                citas
+            };
+        } catch (error) {
+            console.error('Error en obtenerCitasActivas:', error);
+            return {
+                success: false,
+                mensaje: 'Error al obtener citas activas',
+                error: error.message
+            };
+        }
+    }
+
+    async obtenerHistorialCitas(veterinarioId) {
+        try {
+            const citas = await Cita.find({ 
+                veterinarioId,
+                revisada: true  // Solo citas revisadas
+            })
+                .populate('pacienteId', 'nombre apellido correo telefono')
+                .sort({ fechaActualizacion: -1 })
+                .lean()
+                .exec();
+
+            return {
+                success: true,
+                citas
+            };
+        } catch (error) {
+            console.error('Error en obtenerHistorialCitas:', error);
+            return {
+                success: false,
+                mensaje: 'Error al obtener historial',
                 error: error.message
             };
         }

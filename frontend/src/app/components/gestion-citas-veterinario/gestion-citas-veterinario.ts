@@ -93,10 +93,37 @@ export class GestionCitasVeterinario implements OnInit {
     this.cdr.detectChanges();
     
     try {
-      await this.citasService.cargarCitas();
-      this.citas = this.citasService.getCitas();
+      // Obtener el ID del veterinario del localStorage
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      const veterinarioId = usuario._id || usuario.id;
+      
+      if (!veterinarioId) {
+        console.error('No se encontró el ID del veterinario');
+        this.citas = [];
+        return;
+      }
+
+      // Cargar solo las citas activas (no revisadas)
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:3000/api/citas/veterinario/${veterinarioId}/activas`, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
+      });
+
+      const resultado = await response.json();
+      
+      if (resultado.success) {
+        this.citas = resultado.citas || [];
+        console.log('Citas activas cargadas:', this.citas.length);
+      } else {
+        console.error('Error al cargar citas:', resultado);
+        this.citas = [];
+      }
     } catch (error) {
       console.error('Error al cargar citas:', error);
+      this.citas = [];
     } finally {
       this.cargando = false;
       this.cdr.detectChanges();
@@ -223,6 +250,8 @@ export class GestionCitasVeterinario implements OnInit {
           
           // Actualizar la cita en el array local con los datos del backend
           this.citas[this.indiceCitaActual] = resultado.cita;
+          // Asegurarse de que tieneRegistroClinico esté marcado
+          this.citas[this.indiceCitaActual].tieneRegistroClinico = true;
           console.log('Cita actualizada localmente:', this.citas[this.indiceCitaActual]);
           console.log('Registros en la cita:', this.citas[this.indiceCitaActual].registrosClinicosHistorial);
           
@@ -318,9 +347,14 @@ export class GestionCitasVeterinario implements OnInit {
    * Elimina una cita del array
    * @param indice - Posición de la cita a eliminar
    */
-  eliminarCita(indice: number) {
+  async eliminarCita(indice: number) {
     // Confirmación antes de eliminar
-    if (confirm('¿Está seguro de eliminar esta cita?')) {
+    const confirmado = await this.alertService.confirm(
+      'Esta acción no se puede deshacer.',
+      '¿Está seguro de eliminar esta cita?'
+    );
+    
+    if (confirmado) {
       // Eliminamos usando el servicio
       this.citasService.eliminarCitaLocal(indice);
       this.citas = this.citasService.getCitas();
@@ -331,16 +365,53 @@ export class GestionCitasVeterinario implements OnInit {
   }
 
   /**
-   * Marca una cita como revisada
+   * Marca una cita como revisada y la mueve al historial
    * @param indice - Posición de la cita
    */
-  marcarRevisado(indice: number) {
-    console.log('Cita marcada como revisada:', this.citasService.getCita(indice));
-    this.alertService.success('Cita marcada como revisada');
-    // TODO: Aquí puedes agregar lógica adicional:
-    // - Cambiar un campo 'estado' de la cita
-    // - Enviar notificación al dueño
-    // - Actualizar en el backend
+  async marcarRevisado(indice: number) {
+    const cita = this.citas[indice];
+    
+    // Validar que tenga registro clínico
+    if (!cita.tieneRegistroClinico) {
+      this.alertService.error('Debe guardar el registro clínico antes de marcar como revisada');
+      return;
+    }
+
+    // Confirmar acción con alerta personalizada
+    const confirmado = await this.alertService.confirm(
+      'La cita se moverá al historial y no aparecerá más en la lista de citas pendientes.',
+      '¿Marcar esta cita como revisada?'
+    );
+    
+    if (!confirmado) {
+      return;
+    }
+
+    try {
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:3000/api/citas/${cita._id}/revisada`, {
+        method: 'PATCH',
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
+      });
+
+      const resultado = await response.json();
+
+      if (resultado.success || response.ok) {
+        // Eliminar la cita del array actual (ya que se mueve al historial)
+        this.citas.splice(indice, 1);
+        this.cdr.detectChanges();
+        
+        this.alertService.success('Cita marcada como revisada y movida al historial');
+      } else {
+        this.alertService.error(resultado.mensaje || 'Error al marcar cita como revisada');
+      }
+    } catch (error) {
+      console.error('Error al marcar cita como revisada:', error);
+      this.alertService.error('Error de conexión con el servidor');
+    }
   }
 
   /**

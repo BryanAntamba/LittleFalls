@@ -16,6 +16,29 @@ class CitaController {
         }
     }
 
+    async verificarDisponibilidad(req, res, next) {
+        try {
+            const { fecha, hora } = req.body;
+
+            if (!fecha || !hora) {
+                return res.status(400).json({
+                    success: false,
+                    mensaje: 'Fecha y hora son requeridos'
+                });
+            }
+
+            const resultado = await citaService.verificarDisponibilidad(fecha, hora);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
     async obtenerTodasCitas(req, res, next) {
         try {
             const resultado = await citaService.obtenerTodasCitas();
@@ -174,6 +197,54 @@ class CitaController {
         try {
             const { citaId } = req.params;
             const resultado = await citaService.eliminarCita(citaId);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async marcarComoRevisada(req, res, next) {
+        try {
+            const { citaId } = req.params;
+            // Obtener el veterinarioId del usuario autenticado
+            const veterinarioId = req.usuario?.id || req.usuario?._id;
+            
+            const resultado = await citaService.marcarComoRevisada(citaId, veterinarioId);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async obtenerCitasActivas(req, res, next) {
+        try {
+            const { veterinarioId } = req.params;
+            const resultado = await citaService.obtenerCitasActivas(veterinarioId);
+
+            if (!resultado.success) {
+                return res.status(400).json(resultado);
+            }
+
+            res.json(resultado);
+        } catch (error) {
+            next(error);
+        }
+    }
+
+    async obtenerHistorialCitas(req, res, next) {
+        try {
+            const { veterinarioId } = req.params;
+            const resultado = await citaService.obtenerHistorialCitas(veterinarioId);
 
             if (!resultado.success) {
                 return res.status(400).json(resultado);

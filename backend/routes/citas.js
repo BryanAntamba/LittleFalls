@@ -4,7 +4,12 @@ const citaController = require('../controllers/citaController');
 const { verificarToken, verificarRol } = require('../middlewares/jwtMiddleware');
 const { validarCreacionCita, validarActualizacionCita } = require('../middlewares/validators/citaValidator');
 
-// TODAS las rutas de citas requieren autenticación
+// Verificar disponibilidad de fecha y hora (sin autenticación)
+router.post('/verificar-disponibilidad', 
+    citaController.verificarDisponibilidad.bind(citaController)
+);
+
+// TODAS las rutas de citas siguientes requieren autenticación
 router.use(verificarToken);
 
 // Crear nueva cita (pacientes y admin)
@@ -66,6 +71,24 @@ router.put('/:citaId',
 router.delete('/:citaId', 
     verificarRol('admin'),
     citaController.eliminarCita.bind(citaController)
+);
+
+// Marcar cita como revisada (veterinario)
+router.patch('/:citaId/revisada', 
+    verificarRol('veterinario'),
+    citaController.marcarComoRevisada.bind(citaController)
+);
+
+// Obtener citas activas (no revisadas) por veterinario
+router.get('/veterinario/:veterinarioId/activas', 
+    verificarRol('veterinario', 'admin'),
+    citaController.obtenerCitasActivas.bind(citaController)
+);
+
+// Obtener historial de citas revisadas por veterinario
+router.get('/veterinario/:veterinarioId/historial', 
+    verificarRol('veterinario', 'admin'),
+    citaController.obtenerHistorialCitas.bind(citaController)
 );
 
 module.exports = router;

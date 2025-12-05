@@ -13,9 +13,12 @@ import { AlertService } from '../../services/alert.service';
 })
 export class HistorialMascotaVeterinario implements OnInit {
   
-  // Obtener mascotas del servicio compartido
+  // Array local de citas del historial
+  private citasHistorial: any[] = [];
+
+  // Obtener mascotas del historial local
   get mascotas() {
-    return this.citasService.getCitas();
+    return this.citasHistorial;
   }
 
   // Control de modales
@@ -66,9 +69,41 @@ export class HistorialMascotaVeterinario implements OnInit {
   }
 
   async ngOnInit() {
-    console.log('Historial - Cargando citas...');
-    await this.citasService.cargarCitas();
-    console.log('Historial - Citas cargadas:', this.citasService.getCitas());
+    console.log('Historial - Cargando citas revisadas...');
+    
+    try {
+      // Obtener el ID del veterinario del localStorage
+      const usuario = JSON.parse(localStorage.getItem('usuario') || '{}');
+      const veterinarioId = usuario._id || usuario.id;
+      
+      if (!veterinarioId) {
+        console.error('No se encontró el ID del veterinario');
+        this.citasHistorial = [];
+        return;
+      }
+
+      // Cargar solo las citas revisadas (historial)
+      const token = localStorage.getItem('accessToken');
+      const response = await fetch(`http://localhost:3000/api/citas/veterinario/${veterinarioId}/historial`, {
+        headers: { 
+          'Content-Type': 'application/json',
+          'Authorization': token ? `Bearer ${token}` : ''
+        }
+      });
+
+      const resultado = await response.json();
+      
+      if (resultado.success) {
+        this.citasHistorial = resultado.citas || [];
+        console.log('Historial - Citas revisadas cargadas:', this.citasHistorial.length);
+      } else {
+        console.error('Error al cargar historial:', resultado);
+        this.citasHistorial = [];
+      }
+    } catch (error) {
+      console.error('Error al cargar historial:', error);
+      this.citasHistorial = [];
+    }
     
     // Forzar detección de cambios para que Angular actualice la vista
     this.cdr.detectChanges();
@@ -102,7 +137,7 @@ export class HistorialMascotaVeterinario implements OnInit {
    */
   verHistorial(indiceMascota: number) {
     this.indiceMascotaSeleccionada = indiceMascota;
-    this.mascotaSeleccionada = this.citasService.getCita(indiceMascota);
+    this.mascotaSeleccionada = this.citasHistorial[indiceMascota];
     console.log('Mascota seleccionada:', this.mascotaSeleccionada);
     console.log('Registros clínicos:', this.mascotaSeleccionada?.registrosClinicosHistorial);
     this.mostrarModalHistorial = true;
@@ -148,7 +183,7 @@ export class HistorialMascotaVeterinario implements OnInit {
     this.indiceMascotaSeleccionada = indiceMascota;
     
     // Cargar datos del registro en el formulario
-    const mascota = this.citasService.getCita(indiceMascota);
+    const mascota = this.citasHistorial[indiceMascota];
     if (mascota && mascota.registrosClinicosHistorial && mascota.registrosClinicosHistorial.length > 0) {
       // Si no se especifica índice, editar el último registro
       const idx = indiceRegistro !== undefined ? indiceRegistro : mascota.registrosClinicosHistorial.length - 1;
@@ -217,7 +252,7 @@ export class HistorialMascotaVeterinario implements OnInit {
       }
 
       try {
-        const cita = this.citasService.getCita(this.indiceMascotaSeleccionada);
+        const cita = this.citasHistorial[this.indiceMascotaSeleccionada];
         
         console.log('Actualizando registro para cita:', cita._id);
         console.log('Datos a enviar:', this.registroClinico);
@@ -252,12 +287,13 @@ export class HistorialMascotaVeterinario implements OnInit {
           this.indiceRegistroEditando = -1;
           this.limpiarFormularioRegistro();
           
-          // Recargar todas las citas desde el backend
-          await this.citasService.cargarCitas();
+          // Actualizar la cita localmente con los datos del backend
+          if (resultado.cita) {
+            this.citasHistorial[indiceTemp] = resultado.cita;
+          }
           
           // Actualizar la mascota seleccionada con los datos frescos del backend
-          this.indiceMascotaSeleccionada = indiceTemp;
-          this.mascotaSeleccionada = this.citasService.getCita(indiceTemp);
+          this.mascotaSeleccionada = this.citasHistorial[indiceTemp];
           
           // Mantener el modal de historial abierto
           this.mostrarModalHistorial = true;

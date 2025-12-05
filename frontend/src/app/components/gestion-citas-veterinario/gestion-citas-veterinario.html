@@ -64,8 +64,15 @@
                 <td class="col-acciones">
                     <!-- Botón Editar: Pasa la cita completa y su índice al método -->
                     <button class="btn-action btn-edit" (click)="abrirModalEditar(cita, i)">Editar</button>
-                    <!-- Botón Revisado: Marca la cita como revisada -->
-                    <button class="btn-action btn-revisado" (click)="marcarRevisado(i)">Revisado</button>
+                    <!-- Botón Revisado: Marca la cita como revisada - Solo activo si tiene registro clínico -->
+                    <button 
+                        class="btn-action btn-revisado" 
+                        [disabled]="!cita.tieneRegistroClinico"
+                        [class.btn-disabled]="!cita.tieneRegistroClinico"
+                        [title]="!cita.tieneRegistroClinico ? 'Debe crear un registro clínico primero' : 'Marcar como revisada'"
+                        (click)="marcarRevisado(i)">
+                        Revisado
+                    </button>
                     <!-- Botón Eliminar: Elimina la cita del array -->
                     <button class="btn-action btn-delete" (click)="eliminarCita(i)">Eliminar</button>
                 </td>

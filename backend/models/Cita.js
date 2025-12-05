@@ -171,6 +171,16 @@ const citaSchema = new mongoose.Schema({
         default: []
     },
     
+    // Control de flujo de revisión
+    tieneRegistroClinico: {
+        type: Boolean,
+        default: false
+    },
+    revisada: {
+        type: Boolean,
+        default: false
+    },
+    
     // Fechas de control
     fechaCreacion: {
         type: Date,

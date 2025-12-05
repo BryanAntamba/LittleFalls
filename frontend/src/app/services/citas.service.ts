@@ -62,6 +62,28 @@ export class CitasService {
         }
     }
 
+    async obtenerCitasActivas(veterinarioId: string): Promise<any> {
+        try {
+            const response = await fetch(`${this.apiUrl}/veterinario/${veterinarioId}/activas`, {
+                headers: this.getHeaders()
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, mensaje: 'Error de conexión' };
+        }
+    }
+
+    async obtenerHistorialCitas(veterinarioId: string): Promise<any> {
+        try {
+            const response = await fetch(`${this.apiUrl}/veterinario/${veterinarioId}/historial`, {
+                headers: this.getHeaders()
+            });
+            return await response.json();
+        } catch (error) {
+            return { success: false, mensaje: 'Error de conexión' };
+        }
+    }
+
     async actualizarEstadoCita(citaId: string, estado: string): Promise<any> {
         try {
             const response = await fetch(`${this.apiUrl}/${citaId}/estado`, {
