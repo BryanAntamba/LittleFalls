@@ -9,7 +9,7 @@ const crearUsuariosIniciales = async () => {
     try {
         // Conectar a MongoDB
         await mongoose.connect(process.env.MONGODB_URI);
-        console.log('✅ Conectado a MongoDB');
+        console.log('Conectado a MongoDB');
 
         // Verificar si ya existen usuarios
         const usuariosExistentes = await Usuario.find({ 
@@ -17,14 +17,14 @@ const crearUsuariosIniciales = async () => {
         });
 
         if (usuariosExistentes.length > 0) {
-            console.log('⚠️  Ya existen usuarios admin o veterinario:');
+            console.log('Ya existen usuarios admin o veterinario:');
             usuariosExistentes.forEach(u => {
                 console.log(`   - ${u.tipoUsuario}: ${u.correo}`);
             });
             
             const respuesta = await preguntarSiContinuar();
             if (!respuesta) {
-                console.log('❌ Operación cancelada');
+                console.log('Operación cancelada');
                 process.exit(0);
             }
         }
@@ -59,37 +59,36 @@ const crearUsuariosIniciales = async () => {
 
         // Guardar usuarios
         await admin.save();
-        console.log('✅ Usuario Administrador creado:');
-        console.log('   Correo: admin@littlefalls.com');
-        console.log('   Contraseña: admin123');
+        console.log('Usuario Administrador creado:');
+        console.log('Correo: admin@littlefalls.com');
+        console.log('Contraseña: admin123');
 
         await veterinario.save();
-        console.log('✅ Usuario Veterinario creado:');
-        console.log('   Correo: veterinario@littlefalls.com');
-        console.log('   Contraseña: vet12345');
+        console.log('Usuario Veterinario creado:');
+        console.log('Correo: veterinario@littlefalls.com');
+        console.log('Contraseña: vet12345');
 
-        console.log('\n🎉 Usuarios creados exitosamente!');
+        console.log('\nUsuarios creados exitosamente!');
         console.log('\nPuedes iniciar sesión con:');
-        console.log('┌─────────────────────────────────────────────┐');
-        console.log('│ ADMINISTRADOR                               │');
-        console.log('│ Correo: admin@littlefalls.com              │');
-        console.log('│ Contraseña: admin123                       │');
-        console.log('├─────────────────────────────────────────────┤');
-        console.log('│ VETERINARIO                                 │');
-        console.log('│ Correo: veterinario@littlefalls.com        │');
-        console.log('│ Contraseña: vet12345                       │');
-        console.log('└─────────────────────────────────────────────┘');
+        console.log('─────────────────────────────────────────────');
+        console.log('ADMINISTRADOR');
+        console.log('Correo: admin@littlefalls.com');
+        console.log('Contraseña: admin123');
+        console.log('─────────────────────────────────────────────');
+        console.log('VETERINARIO');
+        console.log('Correo: veterinario@littlefalls.com');
+        console.log('Contraseña: vet12345');
 
     } catch (error) {
         if (error.code === 11000) {
-            console.error('❌ Error: Ya existe un usuario con ese correo');
+            console.error('Error: Ya existe un usuario con ese correo');
             console.log('\nUsuarios existentes en la base de datos:');
             const usuarios = await Usuario.find({});
             usuarios.forEach(u => {
                 console.log(`   - ${u.tipoUsuario}: ${u.correo}`);
             });
         } else {
-            console.error('❌ Error al crear usuarios:', error.message);
+            console.error('Error al crear usuarios:', error.message);
         }
     } finally {
         await mongoose.connection.close();

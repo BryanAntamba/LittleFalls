@@ -85,7 +85,7 @@ class EmailService {
                             
                             <div style="background-color: #E0F7F4; border-left: 4px solid #00bfa6; padding: 15px; margin: 20px 0; border-radius: 5px;">
                                 <p style="color: #00a693; margin: 0; font-size: 14px;">
-                                    💡 <strong>Consejo:</strong> No compartas este código con nadie. Nuestro equipo nunca te pedirá este código por teléfono o email.
+                                     <strong>Consejo:</strong> No compartas este código con nadie. Nuestro equipo nunca te pedirá este código por teléfono o email.
                                 </p>
                             </div>
                         </td>
@@ -104,7 +104,7 @@ class EmailService {
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
                             </p>
                             <p style="color: #999999; margin: 10px 0 0 0; font-size: 12px;">
-                                Cuidando a tus mascotas con amor 🐶🐱
+                                Cuidando a tus mascotas con amor.
                             </p>
                         </td>
                     </tr>
@@ -134,7 +134,7 @@ class EmailService {
             };
 
             const info = await this.transporter.sendMail(mailOptions);
-            console.log('✅ Email enviado:', info.messageId);
+            console.log('Email enviado:', info.messageId);
             
             return {
                 success: true,
@@ -142,7 +142,7 @@ class EmailService {
             };
 
         } catch (error) {
-            console.error('❌ Error al enviar email:', error);
+            console.error('Error al enviar email:', error);
             return {
                 success: false,
                 mensaje: 'Error al enviar el correo de verificación'
@@ -172,7 +172,7 @@ class EmailService {
                     <tr>
                         <td style="background: linear-gradient(135deg, #FF6B6B 0%, #EE5A6F 100%); padding: 40px 20px; text-align: center;">
                             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
-                                🔒 LittleFalls
+                                LittleFalls
                             </h1>
                             <p style="color: #FFE0E0; margin: 10px 0 0 0; font-size: 14px;">
                                 Recuperación de Contraseña
@@ -213,7 +213,7 @@ class EmailService {
                             
                             <div style="background-color: #FFF5F5; border-left: 4px solid #FF6B6B; padding: 15px; margin: 20px 0; border-radius: 5px;">
                                 <p style="color: #C53030; margin: 0; font-size: 14px;">
-                                    ⚠️ <strong>Atención:</strong> Si no solicitaste este cambio, ignora este correo. Tu contraseña permanecerá sin cambios.
+                                    <strong>Atención:</strong> Si no solicitaste este cambio, ignora este correo. Tu contraseña permanecerá sin cambios.
                                 </p>
                             </div>
                         </td>
@@ -232,7 +232,7 @@ class EmailService {
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
                             </p>
                             <p style="color: #999999; margin: 10px 0 0 0; font-size: 12px;">
-                                Cuidando a tus mascotas con amor 🐶🐱
+                                Cuidando a tus mascotas con amor.
                             </p>
                         </td>
                     </tr>
@@ -268,7 +268,7 @@ class EmailService {
                     <tr>
                         <td style="background: linear-gradient(135deg, #48BB78 0%, #38A169 100%); padding: 40px 20px; text-align: center;">
                             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
-                                ✅ LittleFalls
+                                LittleFalls
                             </h1>
                             <p style="color: #E6FFFA; margin: 10px 0 0 0; font-size: 14px;">
                                 Contraseña Actualizada
@@ -295,7 +295,7 @@ class EmailService {
                             
                             <div style="background-color: #FFF5F5; border-left: 4px solid #FF6B6B; padding: 15px; margin: 20px 0; border-radius: 5px;">
                                 <p style="color: #C53030; margin: 0; font-size: 14px;">
-                                    ⚠️ <strong>¿No fuiste tú?</strong> Si no realizaste este cambio, contacta inmediatamente a nuestro equipo de soporte.
+                                    <strong>¿No fuiste tú?</strong> Si no realizaste este cambio, contacta inmediatamente a nuestro equipo de soporte.
                                 </p>
                             </div>
                         </td>
@@ -314,7 +314,7 @@ class EmailService {
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
                             </p>
                             <p style="color: #999999; margin: 10px 0 0 0; font-size: 12px;">
-                                Cuidando a tus mascotas con amor 🐶🐱
+                                Cuidando a tus mascotas con amor.
                             </p>
                         </td>
                     </tr>
@@ -339,12 +339,12 @@ class EmailService {
                     address: process.env.EMAIL_USER
                 },
                 to: destinatario,
-                subject: '🔒 Recuperación de Contraseña - LittleFalls',
+                subject: 'Recuperación de Contraseña - LittleFalls',
                 html: this.plantillaRecuperacion(nombre, codigo)
             };
 
             const info = await this.transporter.sendMail(mailOptions);
-            console.log('✅ Email de recuperación enviado:', info.messageId);
+            console.log('Email de recuperación enviado:', info.messageId);
             
             return {
                 success: true,
@@ -352,7 +352,7 @@ class EmailService {
             };
 
         } catch (error) {
-            console.error('❌ Error al enviar email de recuperación:', error);
+            console.error('Error al enviar email de recuperación:', error);
             return {
                 success: false,
                 mensaje: 'Error al enviar el correo de recuperación'
@@ -371,12 +371,12 @@ class EmailService {
                     address: process.env.EMAIL_USER
                 },
                 to: destinatario,
-                subject: '✅ Contraseña Actualizada - LittleFalls',
+                subject: 'Contraseña Actualizada - LittleFalls',
                 html: this.plantillaConfirmacionCambio(nombre)
             };
 
             const info = await this.transporter.sendMail(mailOptions);
-            console.log('✅ Email de confirmación enviado:', info.messageId);
+            console.log('Email de confirmación enviado:', info.messageId);
             
             return {
                 success: true,
@@ -384,7 +384,7 @@ class EmailService {
             };
 
         } catch (error) {
-            console.error('❌ Error al enviar email de confirmación:', error);
+            console.error('Error al enviar email de confirmación:', error);
             return {
                 success: false,
                 mensaje: 'Error al enviar el correo de confirmación'
@@ -398,10 +398,10 @@ class EmailService {
     async verificarConexion() {
         try {
             await this.transporter.verify();
-            console.log('✅ Servidor de correo conectado y listo');
+            console.log('Servidor de correo conectado y listo');
             return true;
         } catch (error) {
-            console.error('❌ Error de conexión con servidor de correo:', error);
+            console.error('Error de conexión con servidor de correo:', error);
             return false;
         }
     }

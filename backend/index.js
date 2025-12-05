@@ -31,7 +31,7 @@ mongoose.connect(process.env.MONGODB_URI)
         }
     })
     .catch((error) => {
-        console.error('❌ ERROR: No se pudo conectar a MongoDB');
+        console.error('ERROR: No se pudo conectar a MongoDB');
         console.error(`Razón: ${error.message}`);
         process.exit(1);
     });
