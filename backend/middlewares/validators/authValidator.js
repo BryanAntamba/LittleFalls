@@ -84,11 +84,11 @@ const validateRegistro = (req, res, next) => {
         errors.push('El formato del correo no es válido');
     } else if (correo) {
         // Validar dominios permitidos
-        const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+        const dominiosPermitidos = ['@gmail.com', '@hotmail.com', '@veterinario.com', '@littlefalls.com'];
         const correoLower = correo.toLowerCase();
         const dominioValido = dominiosPermitidos.some(dominio => correoLower.endsWith(dominio));
         if (!dominioValido) {
-            errors.push('El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com');
+            errors.push('El correo debe terminar en @gmail.com, @hotmail.com, @veterinario.com o @littlefalls.com');
         }
     }
 
