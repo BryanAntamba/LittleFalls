@@ -164,7 +164,7 @@ export class Registro {
 
       if (resultado.success) {
         if (resultado.requiereVerificacion) {
-          this.successMessage = '✅ ' + resultado.mensaje;
+          this.successMessage = resultado.mensaje;
           // Redirigir a la página de verificación con el correo como parámetro
           this.router.navigate(['/Verificar-Codigo'], {
             queryParams: { correo: this.correo.trim() }
