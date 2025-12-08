@@ -122,13 +122,13 @@ export class Registro {
     } else {
       const correoTrimmed = this.correo.trim().toLowerCase();
       // Validar dominios permitidos
-      const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
+      const dominiosPermitidos = ['@gmail.com'];
       const dominioValido = dominiosPermitidos.some(dominio => correoTrimmed.endsWith(dominio));
       
       if (!dominioValido) {
-        this.errorCorreo = 'El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com';
+        this.errorCorreo = 'El correo debe terminar en @gmail.com';
         hasError = true;
-      } else if (!/^[A-Za-z0-9._\-]+@(gmail|veterinario|littlefalls)\.com$/.test(correoTrimmed)) {
+      } else if (!/^[A-Za-z0-9._\-]+@(gmail)\.com$/.test(correoTrimmed)) {
         this.errorCorreo = 'Por favor ingresa un correo válido';
         hasError = true;
       }
