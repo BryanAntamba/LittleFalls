@@ -3,7 +3,7 @@
 # Sistema de Gestión Veterinaria
 # ========================================
 
-## 📋 Descripción
+## Descripción
 
 Sistema web completo para la gestión de una clínica veterinaria que incluye:
 - Gestión de usuarios (Admin, Veterinarios, Pacientes)
@@ -13,7 +13,7 @@ Sistema web completo para la gestión de una clínica veterinaria que incluye:
 - Recuperación de contraseña
 - Autenticación con JWT
 
-## 🏗️ Estructura del Proyecto
+## Estructura del Proyecto
 
 ```
 LittleFalls/
@@ -33,14 +33,14 @@ LittleFalls/
         └── assets/
 ```
 
-## 🚀 Requisitos Previos
+## Requisitos Previos
 
 - **Node.js** v18 o superior
 - **MongoDB** v6 o superior (local o Atlas)
 - **npm** v9 o superior
 - **Angular CLI** v20 o superior
 
-## ⚙️ Instalación
+## Instalación
 
 ### 1. Clonar el repositorio
 ```bash
@@ -100,7 +100,7 @@ npm start
 # La aplicación estará en http://localhost:4200
 ```
 
-## 👥 Usuarios por Defecto
+## Usuarios por Defecto
 
 Después de ejecutar `seedUsers.js`, estarán disponibles:
 
@@ -119,7 +119,7 @@ Después de ejecutar `seedUsers.js`, estarán disponibles:
 - **Contraseña:** Paciente123
 - **Rol:** Paciente/Dueño de mascota
 
-## 🔑 Características Principales
+## Características Principales
 
 ### Sistema de Autenticación
 - Login con JWT (Access Token + Refresh Token)
@@ -151,7 +151,7 @@ Después de ejecutar `seedUsers.js`, estarán disponibles:
 - Observaciones y recomendaciones
 - Historial completo por mascota
 
-## 📡 API Endpoints
+## API Endpoints
 
 ### Autenticación (`/api/auth`)
 ```
@@ -190,7 +190,7 @@ PUT    /:id                         # Actualizar cita (Vet/Admin)
 DELETE /:id                         # Eliminar cita (Admin)
 ```
 
-## 🛡️ Seguridad
+## Seguridad
 
 - **Autenticación:** JWT con Access y Refresh Tokens
 - **Contraseñas:** Encriptadas con bcrypt (12 rondas)
@@ -199,7 +199,7 @@ DELETE /:id                         # Eliminar cita (Admin)
 - **Guards:** Protección de rutas por roles
 - **Sanitización:** Protección contra XSS e inyecciones
 
-## 🧪 Testing
+## Testing
 
 ```bash
 # Backend
@@ -211,7 +211,7 @@ cd frontend
 npm test
 ```
 
-## 📦 Deployment
+## Deployment
 
 ### Backend (Render, Railway, etc.)
 1. Configurar variables de entorno en la plataforma
@@ -225,7 +225,7 @@ npm run build
 # Los archivos compilados estarán en dist/
 ```
 
-## 🤝 Contribución
+## Contribución
 
 1. Fork el proyecto
 2. Crea una rama para tu feature (`git checkout -b feature/AmazingFeature`)
@@ -233,25 +233,25 @@ npm run build
 4. Push a la rama (`git push origin feature/AmazingFeature`)
 5. Abre un Pull Request
 
-## 📝 Licencia
+## Licencia
 
 Este proyecto está bajo la Licencia ISC.
 
-## 👨‍💻 Desarrolladores
+## Desarrolladores
 
 - **Bryan Antamba** - [GitHub](https://github.com/BryanAntamba)
 
-## 📧 Contacto
+## Contacto
 
 Para preguntas o soporte: stivoter1234567@gmail.com
 
-## 🐛 Problemas Conocidos
+## Problemas Conocidos
 
 - Asegúrate de tener MongoDB corriendo antes de iniciar el backend
 - Para Gmail, necesitas habilitar "Contraseñas de aplicación"
 - El frontend debe correr en puerto 4200 para que CORS funcione correctamente
 
-## 📚 Tecnologías Utilizadas
+## Tecnologías Utilizadas
 
 ### Backend
 - Node.js
@@ -271,4 +271,4 @@ Para preguntas o soporte: stivoter1234567@gmail.com
 
 ---
 
-⭐ Si te gusta este proyecto, dale una estrella en GitHub!
+Si te gusta este proyecto, dale una estrella en GitHub!

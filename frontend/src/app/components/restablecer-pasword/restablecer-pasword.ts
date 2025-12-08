@@ -128,7 +128,7 @@ export class RestablecerPasword implements OnInit {
       const resultado = await response.json();
 
       if (resultado.success) {
-        this.successMessage = '✅ ' + resultado.mensaje;
+        this.successMessage = resultado.mensaje;
         this.cdr.markForCheck();
         this.router.navigate(['/Login-LittleFalls']);
       } else {
