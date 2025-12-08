@@ -1,51 +1,86 @@
+// Importación de jsonwebtoken para crear y verificar tokens JWT
 const jwt = require('jsonwebtoken');
 
 /**
- * Servicio para manejo de JSON Web Tokens
+ * Servicio para manejo de JSON Web Tokens (JWT)
+ * Gestiona la creación, verificación y renovación de tokens de autenticación
+ * 
+ * JWT se usa para:
+ * - Autenticar usuarios sin guardar sesiones en el servidor (stateless)
+ * - Transmitir información de forma segura entre cliente y servidor
+ * - Implementar sistema de refresh tokens para renovar acceso
  */
 class JWTService {
     constructor() {
-        // Clave secreta desde variables de entorno
+        // ========== CLAVES SECRETAS ==========
+        // Clave para firmar Access Tokens (tokens de corta duración)
+        // process.env.JWT_SECRET viene del archivo .env
+        // || proporciona un valor por defecto si no existe la variable
         this.SECRET_KEY = process.env.JWT_SECRET || 'tu_clave_secreta_super_segura_cambiar_en_produccion';
+        
+        // Clave diferente para Refresh Tokens (mayor seguridad)
         this.REFRESH_SECRET = process.env.JWT_REFRESH_SECRET || 'tu_refresh_secret_super_segura';
 
-        // Tiempos de expiración
+        // ========== TIEMPOS DE EXPIRACIÓN ==========
+        // Access Token: corta duración para minimizar riesgo si es robado
         this.ACCESS_TOKEN_EXPIRE = '15m'; // 15 minutos
+        
+        // Refresh Token: larga duración para no requerir login frecuente
         this.REFRESH_TOKEN_EXPIRE = '7d';  // 7 días
     }
 
     /**
-     * Generar Access Token (corta duración)
-     * @param {Object} payload - Datos del usuario
-     * @returns {string} Token JWT
+     * Genera un Access Token (token de corta duración)
+     * Se usa para autenticar peticiones al API
+     * Expira en 15 minutos para mayor seguridad
+     * 
+     * @param {Object} payload - Datos del usuario a incluir en el token
+     * @param {string} payload.id - ID del usuario
+     * @param {string} payload.correo - Email del usuario
+     * @param {string} payload.tipoUsuario - Rol (paciente, veterinario, admin)
+     * @returns {string} Token JWT firmado
      */
     generarAccessToken(payload) {
+        // Construir payload del token con información esencial
         const tokenPayload = {
-            id: payload.id,
-            correo: payload.correo,
-            tipoUsuario: payload.tipoUsuario,
-            tipo: 'access'
+            id: payload.id,                    // ID del usuario para identificarlo
+            correo: payload.correo,            // Email para validaciones
+            tipoUsuario: payload.tipoUsuario,  // Rol para control de acceso
+            tipo: 'access'                     // Marca que es un access token
         };
 
+        // jwt.sign() crea y firma el token
+        // Parámetros:
+        // 1. tokenPayload = datos a codificar
+        // 2. this.SECRET_KEY = clave para firmar
+        // 3. opciones = configuración adicional
         return jwt.sign(tokenPayload, this.SECRET_KEY, {
-            expiresIn: this.ACCESS_TOKEN_EXPIRE,
-            issuer: 'littlefalls-api',
-            audience: 'littlefalls-app'
+            expiresIn: this.ACCESS_TOKEN_EXPIRE,  // Tiempo de expiración
+            issuer: 'littlefalls-api',            // Quién emitió el token
+            audience: 'littlefalls-app'           // Para quién es el token
         });
     }
 
     /**
-     * Generar Refresh Token (larga duración)
-     * @param {Object} payload - Datos del usuario
-     * @returns {string} Refresh token
+     * Genera un Refresh Token (token de larga duración)
+     * Se usa solo para renovar Access Tokens expirados
+     * Expira en 7 días
+     * Contiene menos información por seguridad
+     * 
+     * @param {Object} payload - Datos mínimos del usuario
+     * @param {string} payload.id - ID del usuario
+     * @param {string} payload.correo - Email del usuario
+     * @returns {string} Refresh token JWT firmado
      */
     generarRefreshToken(payload) {
+        // Payload más simple para refresh token (menos datos = más seguro)
         const tokenPayload = {
             id: payload.id,
             correo: payload.correo,
-            tipo: 'refresh'
+            tipo: 'refresh'  // Marca que es un refresh token
         };
 
+        // Firmar con clave diferente para mayor seguridad
         return jwt.sign(tokenPayload, this.REFRESH_SECRET, {
             expiresIn: this.REFRESH_TOKEN_EXPIRE,
             issuer: 'littlefalls-api',
