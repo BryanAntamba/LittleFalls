@@ -248,28 +248,24 @@ export class Registro {
       // Normalizar el correo: trim() elimina espacios, toLowerCase() convierte a minúsculas
       const correoTrimmed = this.correo.trim().toLowerCase();
       
-      // Definir array de dominios permitidos para el registro
-      const dominiosPermitidos = ['@gmail.com', '@veterinario.com', '@littlefalls.com'];
-      
-      // Verificar si el correo termina con alguno de los dominios permitidos
-      // some() retorna true si al menos un elemento cumple la condición
-      // dominio => correoTrimmed.endsWith(dominio) : función flecha que verifica cada dominio
+      // IMPORTANTE: El registro público SOLO acepta @gmail.com
+      // Los dominios @veterinario.com y @littlefalls.com son exclusivos para:
+      // - Usuarios creados por el administrador
+      // - Personal de la clínica (veterinarios y admins)
+      // Verificar si el correo termina con @gmail.com
       // endsWith() verifica si el string termina con el patrón dado
-      const dominioValido = dominiosPermitidos.some(dominio => correoTrimmed.endsWith(dominio));
-      
-      // Si el dominio NO es válido
-      if (!dominioValido) {
-        this.errorCorreo = 'El correo debe terminar en @gmail.com, @veterinario.com o @littlefalls.com';
+      if (!correoTrimmed.endsWith('@gmail.com')) {
+        this.errorCorreo = 'El correo debe terminar en @gmail.com';
         hasError = true;
       } 
-      // Validar formato completo del correo con regex más estricta
-      // ^ : inicio
-      // [A-Za-z0-9._\\-]+ : parte local
-      // @ : arroba
-      // (gmail|veterinario|littlefalls) : dominios permitidos (alternancia con |)
-      // \\.com$ : .com al final
-      else if (!/^[A-Za-z0-9._\-]+@(gmail|veterinario|littlefalls)\.com$/.test(correoTrimmed)) {
-        this.errorCorreo = 'Por favor ingresa un correo válido';
+      // Validar formato completo del correo con regex estricta
+      // ^ : inicio del string
+      // [A-Za-z0-9._\\-]+ : parte local (antes del @) con letras, números, puntos, guiones
+      // @ : arroba obligatoria
+      // gmail : dominio único permitido
+      // \\.com$ : .com al final (\\. escapa el punto literal)
+      else if (!/^[A-Za-z0-9._\-]+@gmail\.com$/.test(correoTrimmed)) {
+        this.errorCorreo = 'Por favor ingresa un correo de Gmail válido';
         hasError = true;
       }
     }

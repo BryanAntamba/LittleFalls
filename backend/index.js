@@ -30,7 +30,7 @@ const PORT = process.env.PORT || 3000;
 mongoose.connect(process.env.MONGODB_URI)
     .then(async () => {
         // Callback ejecutado cuando la conexión es exitosa
-        console.log('✓ Conectado al servidor MongoDB');
+        console.log('Conectado al servidor MongoDB');
         
         // Obtener nombre de la base de datos conectada
         const dbName = mongoose.connection.db.databaseName;
@@ -45,12 +45,12 @@ mongoose.connect(process.env.MONGODB_URI)
             // forEach itera sobre cada colección
             collections.forEach(col => console.log(`   - ${col.name}`));
         } else {
-            console.log('⚠ La base de datos está vacía');
+            console.log('La base de datos está vacía');
         }
     })
     .catch((error) => {
         // Callback ejecutado si hay error en la conexión
-        console.error('❌ ERROR: No se pudo conectar a MongoDB');
+        console.error('ERROR: No se pudo conectar a MongoDB');
         console.error(`Razón: ${error.message}`);
         // Terminar proceso con código de error 1
         process.exit(1);
@@ -104,5 +104,5 @@ app.use((req, res) => {
 // ========== INICIAR SERVIDOR ==========
 // Escucha peticiones HTTP en el puerto especificado
 app.listen(PORT, () => {
-    console.log(`🚀 Servidor corriendo en http://localhost:${PORT}`);
+    console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });

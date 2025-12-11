@@ -36,6 +36,14 @@ class AuthController {
         try {
             const { nombre, apellido, edad, correo, password } = req.body;
 
+            // LOG DETALLADO para debugging
+            console.log('Intento de registro:');
+            console.log('   Nombre:', nombre);
+            console.log('   Apellido:', apellido);
+            console.log('   Edad:', edad);
+            console.log('   Correo:', correo);
+            console.log('   Password length:', password?.length);
+
             const resultado = await authService.registro({
                 nombre,
                 apellido,
@@ -45,12 +53,18 @@ class AuthController {
             });
 
             if (!resultado.success) {
+                console.log('Registro fallido:', resultado.mensaje);
+                if (resultado.errores) {
+                    console.log('   Errores:', resultado.errores);
+                }
                 return res.status(400).json(resultado);
             }
 
+            console.log('Registro exitoso:', correo);
             res.status(201).json(resultado);
 
         } catch (error) {
+            console.error('Error en registro controller:', error);
             next(error);
         }
     }

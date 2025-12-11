@@ -44,7 +44,7 @@ class EmailService {
                     <tr>
                         <td style="background: linear-gradient(135deg, #00bfa6 0%, #00a693 100%); padding: 40px 20px; text-align: center;">
                             <h1 style="color: #ffffff; margin: 0; font-size: 28px; font-weight: bold;">
-                                🐾 LittleFalls
+                                LittleFalls
                             </h1>
                             <p style="color: #E0F7F4; margin: 10px 0 0 0; font-size: 14px;">
                                 Clínica Veterinaria
@@ -98,7 +98,7 @@ class EmailService {
                                 ¿Necesitas ayuda? Contáctanos
                             </p>
                             <p style="color: #00bfa6; margin: 0 0 20px 0; font-size: 14px; font-weight: bold;">
-                                📧 stivoter1234567@gmail.com
+                                stivoter1234567@gmail.com
                             </p>
                             <p style="color: #999999; margin: 0; font-size: 12px;">
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
@@ -129,7 +129,7 @@ class EmailService {
                     address: process.env.EMAIL_USER
                 },
                 to: destinatario,
-                subject: '🐾 Verifica tu cuenta en LittleFalls',
+                subject: 'Verifica tu cuenta en LittleFalls',
                 html: this.plantillaVerificacion(nombre, codigo)
             };
 
@@ -226,7 +226,7 @@ class EmailService {
                                 ¿Necesitas ayuda? Contáctanos
                             </p>
                             <p style="color: #FF6B6B; margin: 0 0 20px 0; font-size: 14px; font-weight: bold;">
-                                📧 stivoter1234567@gmail.com
+                                stivoter1234567@gmail.com
                             </p>
                             <p style="color: #999999; margin: 0; font-size: 12px;">
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
@@ -289,7 +289,7 @@ class EmailService {
                             
                             <div style="background-color: #F0FFF4; border-left: 4px solid #48BB78; padding: 15px; margin: 20px 0; border-radius: 5px;">
                                 <p style="color: #276749; margin: 0; font-size: 14px;">
-                                    ✅ <strong>Cambio confirmado:</strong> Tu contraseña se actualizó el ${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}.
+                                    <strong>Cambio confirmado:</strong> Tu contraseña se actualizó el ${new Date().toLocaleDateString('es-ES', { day: 'numeric', month: 'long', year: 'numeric', hour: '2-digit', minute: '2-digit' })}.
                                 </p>
                             </div>
                             
@@ -308,7 +308,7 @@ class EmailService {
                                 ¿Necesitas ayuda? Contáctanos
                             </p>
                             <p style="color: #48BB78; margin: 0 0 20px 0; font-size: 14px; font-weight: bold;">
-                                📧 stivoter1234567@gmail.com
+                                stivoter1234567@gmail.com
                             </p>
                             <p style="color: #999999; margin: 0; font-size: 12px;">
                                 © ${new Date().getFullYear()} LittleFalls - Clínica Veterinaria. Todos los derechos reservados.
